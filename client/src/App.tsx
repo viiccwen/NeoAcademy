@@ -5,6 +5,7 @@ import NotFound from "./pages/notfound";
 import Login from "./pages/login";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./pages/dashboard";
+import Quiz from "./pages/quiz";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/quiz/:quizId/:questionIndex" element={<Quiz />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
