@@ -4,10 +4,13 @@ interface OAuthButtonProps {
   text: String;
 }
 
-// todo: change the LinkTo prop to the correct path
-export const GoogleButton = ({ text } : OAuthButtonProps) => {
-    return (
-    <Button LinkTo="/" variant="outline" className="w-full font-bold">
+const API_URL = process.env.API_URL;
+const GOOGLE_URL = `${API_URL}/auth/google`;
+const GITHUB_URL = `${API_URL}/auth/github`;
+
+export const GoogleButton = ({ text }: OAuthButtonProps) => {
+  return (
+    <Button LinkTo={GOOGLE_URL} variant="outline" className="w-full font-bold">
       {text}
       <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <title>Google</title>
@@ -17,10 +20,9 @@ export const GoogleButton = ({ text } : OAuthButtonProps) => {
   );
 };
 
-// todo: change the LinkTo prop to the correct path
-export const GitHubButton = ({ text } : OAuthButtonProps) => {
+export const GitHubButton = ({ text }: OAuthButtonProps) => {
   return (
-    <Button LinkTo="/" variant="outline" className="w-full font-bold">
+    <Button LinkTo={GITHUB_URL} variant="outline" className="w-full font-bold">
       {text}
       <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <title>GitHub</title>
