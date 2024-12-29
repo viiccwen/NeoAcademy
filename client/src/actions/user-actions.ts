@@ -1,6 +1,6 @@
 import axios from "axios";
 const Cookies = require("js-cookie");
-const API_URL = process.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 // GET /user: get user
 export const getUser = async () => {
