@@ -1,24 +1,17 @@
-import type { RequestHandler } from 'express';
+import type { DeleteResult } from 'mongoose';
+import type { TUser } from 'models/user';
 
-import prisma from 'client';
-
-
-export const getUser: RequestHandler = async (req, res): Promise<void> => {
-    const user = req.user!;
-    res.status(200).json({
-        email: user.email,
-        problems: user.problems
-    });
-};
-
-export const deleteUser: RequestHandler = async (req, res): Promise<void> => {
-    prisma.user.delete({
-        where: { id: req.user!.id }
-    });
-    res.status(204).end();
-};
+import { User } from 'models/user';
 
 
-export function getUser() {
+export async function createOAuthUser(name: string, email: string, authProvider: string, accessToken: string): Promise<TUser> {
+    return await User.create({ name, email, authProvider, accessToken, createdAt: new Date() });
+}
 
+export async function findByOAuth(authProvider: TUser['authProvider'], accessToken: string): Promise<TUser | null> {
+    return await User.findOne({ authProvider, accessToken });
+}
+
+export async function deleteUser(user: TUser): Promise<DeleteResult> {
+    return await user.deleteOne();
 }

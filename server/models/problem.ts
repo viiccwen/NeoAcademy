@@ -1,19 +1,32 @@
-import { model, Schema } from 'mongoose';
+import type { Document } from 'mongoose';
+import { Schema } from 'mongoose';
 
 
-const ProblemSchema = new Schema({
-    text: String,
-    options: [String],
-    answer: [Number],
-    response: [Number],
-});
+export interface IProblem {
+    text: string;
+    options: string[];
+    answer: number[];
+    response: number[];
+}
 
-const UnansweredProblemSchema = new Schema({
-    text: String,
-    options: [String],
-    answer: [Number],
-});
+export interface IUnansweredProblem {
+    text: string;
+    options: string[];
+    answer: number[];
+}
 
+export type TProblem = Document<unknown, {}, IProblem> & IProblem;
+export type TUnansweredProblem = Document<unknown, {}, IUnansweredProblem> & IUnansweredProblem;
 
-export const Problem = model('Quiz', ProblemSchema);
-export const UnansweredProblem = model('Quiz', UnansweredProblemSchema);
+export const ProblemSchema = new Schema({
+    text: { type: String, required: true },
+    options: { type: [String], required: true },
+    answer: { type: [Number], required: true },
+    response: { type: [Number], required: true },
+}, { id: false });
+
+export const UnansweredProblemSchema = new Schema<IUnansweredProblem>({
+    text: { type: String, required: true },
+    options: { type: [String], required: true },
+    answer: { type: [Number], required: true },
+}, { id: false });

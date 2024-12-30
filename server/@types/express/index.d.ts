@@ -1,8 +1,9 @@
-import type { User as UserModel } from '@prisma/client';
+import type { TUser } from 'models/user';
+import type { Document } from 'mongoose';
 
 
 declare global {
     namespace Express {
-        interface User extends UserModel {}
+        interface User extends TUser {}
     }
 }

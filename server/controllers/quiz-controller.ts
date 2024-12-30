@@ -1,36 +1,64 @@
-const dummi = [
+import type { IUnansweredProblem } from 'models/problem';
+import type { IUnansweredQuiz } from 'models/quiz';
+import type { TUser } from 'models/user';
+
+import { ObjectId } from 'mongodb';
+
+
+const dummi: IUnansweredProblem[] = [
   {
-    "id": '',
-    "text": "Consider a surface \( S \) given by \( z = f(x, y) \) in \( \mathbb{R}^3 \), where \( f(x, y) \) is a smooth function. What is the expression for the Gaussian curvature \( K \) of the surface at a point?",
+    "text": "Let \( M \) be a smooth manifold and \( X, Y \in \Gamma(TM) \) be two vector fields on \( M \). What is the Lie bracket \( [X, Y] \) of these two vector fields?",
     "options": [
-      "K = 0",
-      "K = \frac{f_{xx} f_{yy} - f_{xy}^2}{(1 + f_x^2 + f_y^2)^2}",
-      "K = \frac{f_{xx}}{(1 + f_x^2 + f_y^2)^{3/2}}",
-      "K = \frac{f_{yy}}{(1 + f_x^2 + f_y^2)^{3/2}}"
+      "The Lie bracket is defined as \( [X, Y] = X(Y) - Y(X) \).",
+      "The Lie bracket is defined as \( [X, Y] = X(Y) + Y(X) \).",
+      "The Lie bracket is defined as \( [X, Y] = X(Y) \circ Y(X) \).",
+      "The Lie bracket is defined as \( [X, Y] = \mathcal{L}_X Y - \mathcal{L}_Y X \)."
     ],
-    "answer": 0,
-    "createdAt": new Date(),
-    "userId": ''
+    "answer": [3],
   },
   {
-    "id": '',
-    "text": "Let \( \mathbf{r}(u, v) \) be a parametric surface in \( \mathbb{R}^3 \). The first fundamental form is given by \( I = E du^2 + 2F dudv + G dv^2 \). What is the relation between the coefficients \( E, F, G \) and the partial derivatives of \( \mathbf{r}(u, v) \)?",
+    "text": "Let \( g \) be a Riemannian metric on a smooth manifold \( M \). Which of the following statements about the covariant derivative \( \nabla \) is true?",
     "options": [
-      "E = \langle \mathbf{r}_u, \mathbf{r}_u \rangle, F = \langle \mathbf{r}_u, \mathbf{r}_v \rangle, G = \langle \mathbf{r}_v, \mathbf{r}_v \rangle",
-      "E = \langle \mathbf{r}_v, \mathbf{r}_v \rangle, F = \langle \mathbf{r}_u, \mathbf{r}_v \rangle, G = \langle \mathbf{r}_u, \mathbf{r}_u \rangle",
-      "E = \langle \mathbf{r}_u, \mathbf{r}_v \rangle, F = \langle \mathbf{r}_u, \mathbf{r}_u \rangle, G = \langle \mathbf{r}_v, \mathbf{r}_v \rangle",
-      "E = \langle \mathbf{r}_u, \mathbf{r}_v \rangle, F = \langle \mathbf{r}_v, \mathbf{r}_v \rangle, G = \langle \mathbf{r}_u, \mathbf{r}_u \rangle"
+      "The covariant derivative \( \nabla_X Y \) of two vector fields \( X, Y \) is always symmetric.",
+      "The covariant derivative \( \nabla_X Y \) satisfies the Leibniz rule, i.e., \( \nabla_X (fY) = f \nabla_X Y + (Xf) Y \).",
+      "The covariant derivative \( \nabla_X Y \) is always parallel to \( Y \).",
+      "The covariant derivative \( \nabla_X Y \) of two vector fields \( X, Y \) is the same as their cross product."
     ],
-    "answer": 0,
-    "createdAt": new Date(),
-    "userId": '',
+    "answer": [1],
   }
 ];
 
-export async function generateQuiz(numberOfOptions: number, category: string, difficulty: string): Promise<string> {
-    return JSON.stringify(dummi);
+const dummy: Omit<IUnansweredQuiz, '_id'> = {
+    name: 'henlo mathz',
+    category: 'differential geometry',
+    difficulty: 'medium',
+    problems: dummi,
+    multipleAnswers: false,
+    createdAt: new Date(),
+};
+
+export async function generateUnansweredQuiz(name: string, category: string, difficulty: string, option: number, problem: number, mulAnswer: boolean, remarks: string): Promise<IUnansweredQuiz> {
+    return { _id: new ObjectId(), ...dummy };
 }
 
-export async function getAnswer(quizId: string): Promise<number | undefined> {
-    return dummi.find(quiz => quiz.id == quizId)?.answer;
+export async function recordUnansweredQuiz(user: TUser, quiz: Omit<IUnansweredQuiz, '_id'>): Promise<void> {
+    await user.updateOne({ $push: { unansweredQuizzes: quiz } });
+}
+
+export async function submitAndGetAnswers(user: TUser, quizId: string, answers: number[][]): Promise<number[][]> {
+    const unansweredQuiz = user.unansweredQuizzes.find(q => q._id.toString() == quizId);
+    if (!unansweredQuiz) {
+        throw new Error('Not found');
+    }
+
+    unansweredQuiz.problems.forEach((p, i) => {
+        p.response = answers[i];
+    });
+
+    await user.updateOne({
+        $push: { quizzes: unansweredQuiz },
+        $pull: { unansweredQuizzes: { _id: unansweredQuiz._id } }
+    });
+
+    return unansweredQuiz.problems.map(problem => problem.answer);
 }
