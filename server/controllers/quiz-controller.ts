@@ -45,14 +45,14 @@ export async function recordUnansweredQuiz(user: TUser, quiz: Omit<IUnansweredQu
     await user.updateOne({ $push: { unansweredQuizzes: quiz } });
 }
 
-export async function submitAndGetAnswers(user: TUser, quizId: string, answers: number[][]): Promise<number[][]> {
+export async function submitAndGetAnswers(user: TUser, quizId: string, responses: number[][]): Promise<number[]> {
     const unansweredQuiz = user.unansweredQuizzes.find(q => q._id.toString() == quizId);
     if (!unansweredQuiz) {
         throw new Error('Not found');
     }
 
     unansweredQuiz.problems.forEach((p, i) => {
-        p.response = answers[i];
+        p.response = responses[i];
     });
 
     await user.updateOne({
@@ -60,5 +60,11 @@ export async function submitAndGetAnswers(user: TUser, quizId: string, answers: 
         $pull: { unansweredQuizzes: { _id: unansweredQuiz._id } }
     });
 
-    return unansweredQuiz.problems.map(problem => problem.answer);
+    const answers = unansweredQuiz.problems.map(problem => problem.answer);
+    const incorrectProblems = [];
+    for (let i = 0; i < answers.length; i++) {
+        if (responses[i].some((x, j) => answers[i][j] != x))
+            incorrectProblems.push(i);
+    }
+    return incorrectProblems;
 }
