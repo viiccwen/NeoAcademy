@@ -1,6 +1,6 @@
 import { QuestionCard } from "@/components/customs/quiz/question-card";
 import { Button } from "@/components/ui/button";
-import { parseQuestionIndex, prevQuestion } from "@/lib/utils";
+import { parseQuestionIndex } from "@/lib/utils";
 import { sample_question, useQuizStore } from "@/stores/question-store";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { useEffect } from "react";
@@ -15,10 +15,7 @@ export default function Quiz() {
     currentQuestionId,
     currentQuestionIndex,
     amount,
-    questions,
-    loadQuestions,
     setCurrentQuestionIndex,
-    resetQuiz,
   } = useQuizStore();
 
   const prevQuestion = () => {
@@ -51,8 +48,8 @@ export default function Quiz() {
         {currentQuestionIndex !== -1 && (
           <QuestionCard
             questionId={currentQuestionId.toString()}
-            questionIndex={currentQuestionIndex}
-            question={sample_question[currentQuestionIndex]}
+            questionIndex={currentQuestionIndex - 1}
+            question={sample_question[currentQuestionIndex - 1]}
           />
         )}
 
