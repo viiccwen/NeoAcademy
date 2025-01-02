@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { categories, difficulties, options, problems } from "@/lib/type";
 import { createQuizSchema, CreateQuizType } from "@/lib/type";
-import { useCreateQuiz } from "@/hooks/create-quiz";
+import { useCreateQuiz } from "@/hooks/quiz";
 
 interface CreateQuizFormProps {
   className?: string;
