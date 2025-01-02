@@ -1,11 +1,12 @@
-import type { IUnansweredProblem } from 'models/problem';
-import type { IUnansweredQuiz } from 'models/quiz';
+import type { IQuestion, IUnansweredQuestion } from 'models/question';
+import type { IQuiz, IUnansweredQuiz } from 'models/quiz';
 import type { TUser } from 'models/user';
 
 import { ObjectId } from 'mongodb';
+import { on } from 'node:events';
 
 
-const dummi: IUnansweredProblem[] = [
+const dummi: IUnansweredQuestion[] = [
   {
     "text": "Let \( M \) be a smooth manifold and \( X, Y \in \Gamma(TM) \) be two vector fields on \( M \). What is the Lie bracket \( [X, Y] \) of these two vector fields?",
     "options": [
@@ -32,12 +33,16 @@ const dummy: Omit<IUnansweredQuiz, '_id'> = {
     name: 'henlo mathz',
     category: 'differential geometry',
     difficulty: 'medium',
-    problems: dummi,
+    questions: dummi,
     multipleAnswers: false,
     createdAt: new Date(),
 };
 
-export async function generateUnansweredQuiz(name: string, category: string, difficulty: string, option: number, problem: number, mulAnswer: boolean, remarks: string): Promise<IUnansweredQuiz> {
+export function getQuiz(user: TUser, quizId: string): IQuiz | undefined {
+    return user.quizzes.find(({ _id }) => _id.toString() == quizId);
+}
+
+export async function generateUnansweredQuiz(name: string, category: string, difficulty: string, option: number, question: number, mulAnswer: boolean, remarks: string): Promise<IUnansweredQuiz> {
     return { _id: new ObjectId(), ...dummy };
 }
 
@@ -45,26 +50,34 @@ export async function recordUnansweredQuiz(user: TUser, quiz: Omit<IUnansweredQu
     await user.updateOne({ $push: { unansweredQuizzes: quiz } });
 }
 
-export async function submitAndGetAnswers(user: TUser, quizId: string, responses: number[][]): Promise<number[]> {
+export async function submitAndGetAnswers(user: TUser, quizId: string, responses: number[][]):
+        Promise<{ index: number; answer: number[]; response: number[] }[]> {
     const unansweredQuiz = user.unansweredQuizzes.find(q => q._id.toString() == quizId);
     if (!unansweredQuiz) {
         throw new Error('Not found');
     }
 
-    unansweredQuiz.problems.forEach((p, i) => {
-        p.response = responses[i];
-    });
+    const { _id, name, category, difficulty, multipleAnswers, createdAt } = unansweredQuiz;
+    const questions = unansweredQuiz.questions.map(({ text, options, answer }, i) =>
+                                                   ({ text, options, answer, response: responses[i] }));
+    const quiz = { _id, name, category, difficulty, multipleAnswers, createdAt, questions };
 
     await user.updateOne({
-        $push: { quizzes: unansweredQuiz },
+        $push: { quizzes: quiz },
         $pull: { unansweredQuizzes: { _id: unansweredQuiz._id } }
     });
 
-    const answers = unansweredQuiz.problems.map(problem => problem.answer);
+    const answers = unansweredQuiz.questions.map(question => question.answer);
     const incorrectProblems = [];
     for (let i = 0; i < answers.length; i++) {
         if (responses[i].some((x, j) => answers[i][j] != x))
-            incorrectProblems.push(i);
+            incorrectProblems.push({ index: i, answer: answers[i], response: responses[i] });
     }
     return incorrectProblems;
+}
+
+export async function deleteQuiz(user: TUser, quizId: string): Promise<void> {
+    await user.updateOne({
+        $pull: { quizzes: { _id: quizId } }
+    });
 }

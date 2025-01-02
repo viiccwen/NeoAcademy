@@ -1,8 +1,8 @@
 import type { Document, ObjectId } from 'mongoose';
-import type { IProblem, IUnansweredProblem } from './problem';
+import type { IQuestion, IUnansweredQuestion } from './question';
 
 import { Schema, Types } from 'mongoose';
-import { ProblemSchema, UnansweredProblemSchema } from './problem';
+import { QuestionSchema, UnansweredQuestionSchema } from './question';
 
 
 export interface IQuiz {
@@ -10,7 +10,7 @@ export interface IQuiz {
     name: string;
     category: string;
     difficulty: string;
-    problems: IProblem[];
+    questions: IQuestion[];
     multipleAnswers: boolean;
     remarks?: string;
     createdAt: Date;
@@ -21,7 +21,7 @@ export interface IUnansweredQuiz {
     name: string;
     category: string;
     difficulty: string;
-    problems: IUnansweredProblem[];
+    questions: IUnansweredQuestion[];
     multipleAnswers: boolean;
     remarks?: string;
     createdAt: Date;
@@ -35,7 +35,7 @@ export const QuizSchema = new Schema<IQuiz>({
     name: { type: String, required: true },
     category: { type: String, required: true },
     difficulty: { type: String, required: true },
-    problems: { type: [ProblemSchema], required: true },
+    questions: { type: [QuestionSchema], required: true },
     multipleAnswers: { type: Boolean, required: true },
     remarks: String,
     createdAt: { type: Date, required: true },
@@ -46,7 +46,7 @@ export const UnansweredQuizSchema = new Schema<IUnansweredQuiz>({
     name: { type: String, required: true },
     category: { type: String, required: true },
     difficulty: { type: String, required: true },
-    problems: { type: [UnansweredProblemSchema], required: true },
+    questions: { type: [UnansweredQuestionSchema], required: true },
     multipleAnswers: { type: Boolean, required: true },
     remarks: String,
     createdAt: { type: Date, required: true, default: Date.now, expires: 60 * 60 },

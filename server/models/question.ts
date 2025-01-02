@@ -1,32 +1,33 @@
 import type { Document } from 'mongoose';
 import { Schema } from 'mongoose';
+import type { IQuiz } from './quiz';
 
 
-export interface IProblem {
+export interface IQuestion {
     text: string;
     options: string[];
     answer: number[];
     response: number[];
 }
 
-export interface IUnansweredProblem {
+export interface IUnansweredQuestion {
     text: string;
     options: string[];
     answer: number[];
 }
 
-export type TProblem = Document<unknown, {}, IProblem> & IProblem;
-export type TUnansweredProblem = Document<unknown, {}, IUnansweredProblem> & IUnansweredProblem;
+export type TQuestion = Document<unknown, {}, IQuiz> & IQuiz;
+export type TUnansweredQuestion = Document<unknown, {}, IUnansweredQuestion> & IUnansweredQuestion;
 
-export const ProblemSchema = new Schema({
+export const QuestionSchema = new Schema({
     text: { type: String, required: true },
     options: { type: [String], required: true },
     answer: { type: [Number], required: true },
     response: { type: [Number], required: true },
-}, { id: false });
+}, { _id: false });
 
-export const UnansweredProblemSchema = new Schema<IUnansweredProblem>({
+export const UnansweredQuestionSchema = new Schema<IUnansweredQuestion>({
     text: { type: String, required: true },
     options: { type: [String], required: true },
     answer: { type: [Number], required: true },
-}, { id: false });
+}, { _id: false });
