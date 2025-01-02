@@ -1,10 +1,10 @@
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 interface OAuthButtonProps {
   text: String;
 }
 
-const API_URL = process.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 const GOOGLE_URL = `${API_URL}/auth/google`;
 const GITHUB_URL = `${API_URL}/auth/github`;
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 const Cookies = require("js-cookie");
-const API_URL = process.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 // GET /user: get user
 export const getUser = async () => {
@@ -22,7 +22,7 @@ export const getUser = async () => {
       throw new Error("取得使用者資料錯誤！");
     }
   } catch (error: any) {
-    return error;
+    throw new Error(error.message || "未知錯誤發生！");
   }
 };
 
@@ -47,6 +47,6 @@ export const deleteUser = async () => {
       throw new Error("刪除使用者資料錯誤！");
     }
   } catch (error: any) {
-    return error;
+    throw new Error(error.message || "未知錯誤發生！");
   }
 };

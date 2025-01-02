@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { GitHubButton, GoogleButton } from "@/components/customs/oauth-button";
+import { GitHubButton, GoogleButton } from "@/components/customs/user/oauth-button";
 import { cn } from "@/lib/utils";
 
 export default function Login() {
