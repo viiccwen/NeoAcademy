@@ -1,16 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 
 import { cn } from "@/lib/utils";
-import { QuestionType, useQuizStore } from "@/stores/question-store";
+import { useQuizStore } from "@/stores/question-store";
+import { QuestionType } from "@/lib/type";
 
 interface QuestionCardProps {
-  questionId: string;
   questionIndex: number;
   question: QuestionType;
 }
 
 export const QuestionCard = (props: QuestionCardProps) => {
   const { setUsersAnswer, userAnswers, currentQuestionIndex } = useQuizStore();
+  const question_text = props.question.text;
   const options = props.question.options;
 
   const handleOptionClick = (questionId: number, selectedOption: number) => {
@@ -22,7 +23,9 @@ export const QuestionCard = (props: QuestionCardProps) => {
       <Card className="max-w-[500px] min-h-[350px] w-[500px]">
         <CardContent>
           <div className="flex flex-col w-full gap-4 mt-5">
-            <h1 className="text-xl">{currentQuestionIndex}. {props.question.text}</h1>
+            <h1 className="text-xl">
+              {currentQuestionIndex}. {question_text}
+            </h1>
 
             {/* option button */}
             <div className="flex flex-col gap-2">
