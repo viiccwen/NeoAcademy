@@ -8,14 +8,11 @@ export const categories: string[] = [
   "Maths",
   "History",
 ];
-
 export const difficulties: string[] = ["Easy", "Medium", "Hard"];
-// change it to number type
 export const problems: number[] = [5, 10, 15, 20, 25];
-
 export const options: number[] = [2, 3, 4, 5];
 
-// form type
+// create quiz type
 export const createQuizSchema = z.object({
   name: z.string().nonempty(),
   category: z.string().nonempty(),
@@ -26,3 +23,14 @@ export const createQuizSchema = z.object({
   remarks: z.string().max(100, "Remarks should be less than 100 characters!"),
 });
 export type CreateQuizType = z.infer<typeof createQuizSchema>;
+
+// Quiz type
+export type QuestionType = {
+  text: string;
+  options: string[];
+}
+
+export type QuizReturnType = {
+  id: string;
+  problems: QuestionType[];
+};

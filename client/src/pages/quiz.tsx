@@ -1,7 +1,7 @@
 import { QuestionCard } from "@/components/customs/quiz/question-card";
 import { Button } from "@/components/ui/button";
 import { parseQuestionIndex } from "@/lib/utils";
-import { sample_question, useQuizStore } from "@/stores/question-store";
+import { useQuizStore } from "@/stores/question-store";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,14 +9,27 @@ import { Toaster } from "sonner";
 
 export default function Quiz() {
   const navigate = useNavigate();
-  const { quizId, questionIndex } = useParams();
+  const { quizId: currentQuizId, index: questionIndex } = useParams();
 
   const {
-    currentQuestionId,
+    quizId,
+    questions,
     currentQuestionIndex,
     amount,
     setCurrentQuestionIndex,
   } = useQuizStore();
+
+  // check if the quiz id is the same
+  if(quizId !== currentQuizId) {
+    console.log(quizId, currentQuizId);
+    navigate("/notfound");
+  }
+
+  // check if the questions are loaded
+  if(questions === null) {
+    console.log(questions);
+    navigate("/notfound");
+  }
 
   const prevQuestion = () => {
     if (currentQuestionIndex > 1) {
@@ -34,7 +47,8 @@ export default function Quiz() {
     const validIndex = parseQuestionIndex(questionIndex, amount);
 
     if (!validIndex) {
-      navigate("/dashboard");
+      console.log(validIndex);
+      navigate("/notfound");
       return;
     }
 
@@ -45,11 +59,10 @@ export default function Quiz() {
     <>
       <Toaster richColors />
       <div className="w-full min-h-screen flex flex-col justify-center items-center">
-        {currentQuestionIndex !== -1 && (
+        {currentQuestionIndex !== -1 && questions && (
           <QuestionCard
-            questionId={currentQuestionId.toString()}
             questionIndex={currentQuestionIndex - 1}
-            question={sample_question[currentQuestionIndex - 1]}
+            question={questions[currentQuestionIndex - 1]}
           />
         )}
 

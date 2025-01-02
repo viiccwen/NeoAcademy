@@ -32,7 +32,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
   });
 
   // change mutationFn to createQuiz
-  const mutation = useCreateQuiz({ onSuccessRedirect: "/quiz" });
+  const mutation = useCreateQuiz();
 
   const onSubmit: SubmitHandler<CreateQuizType> = (formdata) => {
     mutation.mutate(formdata);
