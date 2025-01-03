@@ -1,12 +1,10 @@
-import type { IQuestion, IUnansweredQuestion } from 'models/question';
-import type { IQuiz, IUnansweredQuiz } from 'models/quiz';
-import type { TUser } from 'models/user';
+import type { Quiz, UnansweredQuestion, UnansweredQuiz, User } from 'database';
 
+import { users } from 'database';
 import { ObjectId } from 'mongodb';
-import { on } from 'node:events';
 
 
-const dummi: IUnansweredQuestion[] = [
+const dummi: UnansweredQuestion[] = [
   {
     "text": "Let \( M \) be a smooth manifold and \( X, Y \in \Gamma(TM) \) be two vector fields on \( M \). What is the Lie bracket \( [X, Y] \) of these two vector fields?",
     "options": [
@@ -29,45 +27,46 @@ const dummi: IUnansweredQuestion[] = [
   }
 ];
 
-const dummy: Omit<IUnansweredQuiz, '_id'> = {
+const dummy: Omit<UnansweredQuiz, '_id'> = {
     name: 'henlo mathz',
     category: 'differential geometry',
     difficulty: 'medium',
     questions: dummi,
     multipleAnswers: false,
     createdAt: new Date(),
+    answered: false
 };
 
-export function getQuiz(user: TUser, quizId: string): IQuiz | undefined {
+export function getQuiz(user: User, quizId: string): Quiz | UnansweredQuiz | undefined {
     return user.quizzes.find(({ _id }) => _id.toString() == quizId);
 }
 
-export async function generateUnansweredQuiz(name: string, category: string, difficulty: string, option: number, question: number, mulAnswer: boolean, remarks: string): Promise<IUnansweredQuiz> {
+export async function generateUnansweredQuiz(name: string, category: string, difficulty: string, option: number, question: number, multipleAnswers: boolean, remarks: string): Promise<UnansweredQuiz> {
     return { _id: new ObjectId(), ...dummy };
 }
 
-export async function recordUnansweredQuiz(user: TUser, quiz: Omit<IUnansweredQuiz, '_id'>): Promise<void> {
-    await user.updateOne({ $push: { unansweredQuizzes: quiz } });
+export async function recordUnansweredQuiz({ _id }: User, quiz: UnansweredQuiz): Promise<void> {
+    await users.updateOne(
+        { _id },
+        { $push: { quizzes: quiz } }
+    );
 }
 
-export async function submitAndGetAnswers(user: TUser, quizId: string, responses: number[][]):
+export async function submitAndGetAnswers(user: User, quizId: string, responses: number[][]):
         Promise<{ index: number; answer: number[]; response: number[] }[]> {
-    const unansweredQuiz = user.unansweredQuizzes.find(q => q._id.toString() == quizId);
-    if (!unansweredQuiz) {
-        throw new Error('Not found');
-    }
+    const quiz = getQuiz(user, quizId);
+    if (!quiz) throw new Error('Not found');
 
-    const { _id, name, category, difficulty, multipleAnswers, createdAt } = unansweredQuiz;
-    const questions = unansweredQuiz.questions.map(({ text, options, answer }, i) =>
-                                                   ({ text, options, answer, response: responses[i] }));
-    const quiz = { _id, name, category, difficulty, multipleAnswers, createdAt, questions };
+    quiz.answered = true;
+    quiz.questions = quiz.questions.map(({ text, options, answer }, i) =>
+                                        ({ text, options, answer, response: responses[i] }));
 
-    await user.updateOne({
-        $push: { quizzes: quiz },
-        $pull: { unansweredQuizzes: { _id: unansweredQuiz._id } }
-    });
+    await users.updateOne(
+        { 'quizzes._id': new ObjectId(quizId) },
+        { $set: { 'quizzes.$': quiz } }
+    );
 
-    const answers = unansweredQuiz.questions.map(question => question.answer);
+    const answers = quiz.questions.map(question => question.answer);
     const incorrectProblems = [];
     for (let i = 0; i < answers.length; i++) {
         if (responses[i].some((x, j) => answers[i][j] != x))
@@ -76,8 +75,9 @@ export async function submitAndGetAnswers(user: TUser, quizId: string, responses
     return incorrectProblems;
 }
 
-export async function deleteQuiz(user: TUser, quizId: string): Promise<void> {
-    await user.updateOne({
-        $pull: { quizzes: { _id: quizId } }
-    });
+export async function deleteQuiz(user: User, quizId: string): Promise<void> {
+    await users.updateOne(
+        { _id: user._id },
+        { $pull: { 'quizzes._id': quizId } }
+    );
 }

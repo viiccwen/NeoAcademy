@@ -1,17 +1,20 @@
-import type { DeleteResult } from 'mongoose';
-import type { TUser } from 'models/user';
+import type { AuthProvider, User } from 'database';
+import type { DeleteResult } from 'mongodb';
 
-import { User } from 'models/user';
+import { users } from 'database';
+import { ObjectId } from 'mongodb';
 
 
-export async function createOAuthUser(name: string, email: string, authProvider: string, accessToken: string): Promise<TUser> {
-    return await User.create({ name, email, authProvider, accessToken, createdAt: new Date() });
+export async function createOAuthUser(name: string, email: string, authProvider: AuthProvider, accessToken: string): Promise<User> {
+    const user = { _id: new ObjectId(), name, email, authProvider, accessToken, quizzes: [], createdAt: new Date() };
+    await users.insertOne(user);
+    return user;
 }
 
-export async function findByOAuth(authProvider: TUser['authProvider'], accessToken: string): Promise<TUser | null> {
-    return await User.findOne({ authProvider, accessToken });
+export async function findByOAuth(authProvider: AuthProvider, accessToken: string): Promise<User | null> {
+    return await users.findOne({ authProvider, accessToken });
 }
 
-export async function deleteUser(user: TUser): Promise<DeleteResult> {
-    return await user.deleteOne();
+export async function deleteUser({ _id }: User): Promise<DeleteResult> {
+    return await users.deleteOne({ _id });
 }

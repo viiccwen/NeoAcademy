@@ -1,9 +1,8 @@
-import type { TUser } from 'models/user';
-import type { Document } from 'mongoose';
+import type { User as UserType } from 'database';
 
 
 declare global {
     namespace Express {
-        interface User extends TUser {}
+        interface User extends UserType {}
     }
 }

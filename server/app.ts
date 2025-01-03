@@ -2,11 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import userRouter from 'routers/user-router';
 import authRouter from 'routers/auth-router';
-import mongoose from 'mongoose';
 import quizRouter from 'routers/quiz-router';
 
-
-await mongoose.connect(process.env.DATABASE_URL!, { autoIndex: true });
 
 const API_PORT = process.env.API_PORT ?? 3000;
 const app = express();

@@ -6,8 +6,8 @@ import { deleteQuiz, generateUnansweredQuiz, getQuiz, recordUnansweredQuiz, subm
 const quizRouter = Router();
 
 quizRouter.get('/quiz', authMiddleware, (req, res) => {
-    const quizzes = req.user!.quizzes.map(({ _id, name, category, difficulty, multipleAnswers, createdAt }) =>
-                                          ({ id: _id, name, category, difficulty, multipleAnswers, createdAt }));
+    const quizzes = req.user!.quizzes.map(({ _id, name, category, difficulty, multipleAnswers, answered, createdAt }) =>
+                                          ({ id: _id, name, category, difficulty, multipleAnswers, answered, createdAt }));
     
     res.status(200).json(quizzes);
 });
@@ -20,13 +20,13 @@ quizRouter.get('/quiz/:quizId', authMiddleware, (req, res) => {
         return;
     }
 
-    const { _id: id, name, category, difficulty, questions, multipleAnswers, createdAt, remarks } = quiz;
-    res.status(200).json({ id, name, category, difficulty, questions, multipleAnswers, createdAt, remarks });
+    const { _id: id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt } = quiz;
+    res.status(200).json({ id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt });
 });
 
 quizRouter.post('/quiz', authMiddleware, async (req, res) => {
-    const { name, category, difficulty, option, question, mul_answer: mulAnswer, remarks } = req.body;
-    const unansweredQuiz = await generateUnansweredQuiz(name, category, difficulty, option, question, mulAnswer, remarks);
+    const { name, category, difficulty, option, question, multipleAnswers, remarks } = req.body;
+    const unansweredQuiz = await generateUnansweredQuiz(name, category, difficulty, option, question, multipleAnswers, remarks);
     await recordUnansweredQuiz(req.user!, unansweredQuiz);
 
     const questions = unansweredQuiz.questions.map(({ text, options }) => ({ text, options }));
