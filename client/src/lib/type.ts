@@ -28,9 +28,36 @@ export type CreateQuizType = z.infer<typeof createQuizSchema>;
 export type QuestionType = {
   text: string;
   options: string[];
-}
+};
 
 export type QuizReturnType = {
   id: string;
   problems: QuestionType[];
+};
+
+export type SubmitQuizType = {
+  quizId: string;
+  answers: number[][];
+};
+
+export type SubmitQuizReturnType = {
+  index: number;
+  answer: number[];
+  response: number[];
+}[];
+
+export type GetQuizType = {
+  id: string;
+  name: string;
+  category: string;
+  difficulty: string;
+  questions: {
+    text: string;
+    options: string[];
+    answer: number[];
+    response: number[];
+  }[];
+  multipleAnswers: boolean;
+  createdAt: Date;
+  remarks?: string;
 };
