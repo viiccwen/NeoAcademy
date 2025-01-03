@@ -4,6 +4,7 @@ import { useGetAllQuiz } from "@/hooks/quiz";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { NavBar } from "@/components/customs/dashboard/navbar";
 
 export default function Dashboard() {
   const _quiz = useGetAllQuiz();
@@ -29,8 +30,11 @@ export default function Dashboard() {
 
   if (_quiz.isSuccess && quiz) {
     return (
-      <div className="min-h-screen bg-gray-900 py-8 px-4 text-white">
-        <div className="max-w-5xl mx-auto">
+      <div className="min-h-screen h-[5000px] bg-gray-900 py-8 px-4 text-white">
+        {/* Navbar */}
+        <NavBar className="p-4 top-0 w-full left-0 z-50 fixed" />
+
+        <div className="max-w-5xl mx-auto pt-20">
           <h1 className="text-4xl font-extrabold text-center mb-8">
             Dashboard
           </h1>
@@ -73,17 +77,14 @@ export default function Dashboard() {
                     </span>
                   </p>
                   <div className="flex justify-between mt-4">
-                    <Button
-                      variant="default"
-                      onClick={() => navigate(`/quiz/${q.id}/1`)}
-                    >
+                    <Button variant="default" LinkTo={`/quiz/${q.id}/1`}>
                       Start Quiz
                     </Button>
                     <Button
-                      variant="outline"
-                      onClick={() => navigate(`/result/${q.id}`)}
+                      className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shover:shadow-lg"
+                      LinkTo={`/result/${q.id}`}
                     >
-                      View Results
+                     Results
                     </Button>
                   </div>
                 </CardContent>

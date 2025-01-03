@@ -61,3 +61,12 @@ export type GetQuizType = {
   createdAt: Date;
   remarks?: string;
 };
+
+export type GetAllQuizType = {
+  id: string;
+  name: string;
+  category: string;
+  difficulty: string;
+  multipleAnswers: boolean;
+  createdAt: Date;
+}[];

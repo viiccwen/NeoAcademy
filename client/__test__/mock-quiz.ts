@@ -1,4 +1,9 @@
-import { GetQuizType, QuizReturnType, SubmitQuizReturnType } from "@/lib/type";
+import {
+  GetAllQuizType,
+  GetQuizType,
+  QuizReturnType,
+  SubmitQuizReturnType,
+} from "@/lib/type";
 
 export const mock_question_1: QuizReturnType = {
   id: "67718a5e3211088baed0aa40",
@@ -204,3 +209,46 @@ export const mock_get_quiz_1: GetQuizType = {
   createdAt: new Date("2022-05-15T14:28:23.382Z"),
   remarks: "Review before the final exam.",
 };
+
+export const mock_get_all_quiz_1: GetAllQuizType = [
+  {
+    id: "4e8d7e47-3e24-49f8-8741-1a5f237a2f7e",
+    name: "Introduction to Calculus",
+    category: "Math",
+    difficulty: "Medium",
+    multipleAnswers: true,
+    createdAt: new Date("2023-04-15T12:34:56Z"),
+  },
+  {
+    id: "7c6d5a90-64f3-4bfa-bcab-44c3f517cb87",
+    name: "World History Basics",
+    category: "History",
+    difficulty: "Hard",
+    multipleAnswers: false,
+    createdAt: new Date("2023-03-22T08:12:45Z"),
+  },
+  {
+    id: "2c2c4568-bcd8-4f3e-a983-81d7adcc4936",
+    name: "Fundamentals of Physics",
+    category: "Science",
+    difficulty: "Easy",
+    multipleAnswers: true,
+    createdAt: new Date("2023-05-10T10:30:15Z"),
+  },
+  {
+    id: "1f21be67-e23c-452b-9a6b-e7cb98b8d4b4",
+    name: "Advanced Language Skills",
+    category: "Language",
+    difficulty: "Medium",
+    multipleAnswers: false,
+    createdAt: new Date("2023-01-18T15:45:30Z"),
+  },
+  {
+    id: "f07c1b42-0a2e-4e14-b78c-a2e6cd3f5d24",
+    name: "Geometry Essentials",
+    category: "Math",
+    difficulty: "Hard",
+    multipleAnswers: true,
+    createdAt: new Date("2023-02-14T18:25:00Z"),
+  },
+];
