@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useQuizStore } from "@/stores/question-store";
 import { QuestionType } from "@/lib/type";
+import { Button } from "@/components/ui/button";
 
 interface QuestionCardProps {
   questionIndex: number;
@@ -20,7 +21,7 @@ export const QuestionCard = (props: QuestionCardProps) => {
 
   return (
     <>
-      <Card className="max-w-[500px] min-h-[350px] w-[500px]">
+      <Card className="max-w-[500px] w-[500px]">
         <CardContent>
           <div className="flex flex-col w-full gap-4 mt-5">
             <h1 className="text-xl">
@@ -36,7 +37,7 @@ export const QuestionCard = (props: QuestionCardProps) => {
                   userAnswers[props.questionIndex]?.includes(optionId);
 
                 return (
-                  <button
+                  <Button
                     onClick={() =>
                       handleOptionClick(props.questionIndex, optionId)
                     }
@@ -49,7 +50,7 @@ export const QuestionCard = (props: QuestionCardProps) => {
                     key={key}
                   >
                     {text}
-                  </button>
+                  </Button>
                 );
               })}
             </div>
