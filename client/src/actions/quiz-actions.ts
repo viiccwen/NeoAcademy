@@ -1,8 +1,19 @@
 import Cookies from "js-cookie";
 import axios, { AxiosResponse } from "axios";
-import { CreateQuizType, QuizReturnType } from "@/lib/type";
+import {
+  CreateQuizType,
+  GetQuizType,
+  QuizReturnType,
+  SubmitQuizReturnType,
+  SubmitQuizType,
+} from "@/lib/type";
 import { DelayFunc } from "@/lib/utils";
-import { mock_question_1, mock_question_2 } from "@test/mock-quiz";
+import {
+  mock_get_quiz_1,
+  mock_question_1,
+  mock_question_2,
+  mock_wrong_question_1,
+} from "@test/mock-quiz";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,7 +25,7 @@ export const createQuiz = async (
     return DelayFunc({
       isError: false,
       delay: 2000,
-      func: () => mock_question_2,
+      func: () => mock_question_1,
     });
 
     const token = await Cookies.get("token");
@@ -36,6 +47,76 @@ export const createQuiz = async (
       return response.data;
     } else {
       throw new Error("建立測驗錯誤！");
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "未知錯誤發生！");
+  }
+};
+
+export const submitQuiz = async ({
+  quizId,
+  answers,
+}: SubmitQuizType): Promise<SubmitQuizReturnType> => {
+  try {
+    // todo: test
+    return DelayFunc({
+      isError: false,
+      delay: 2000,
+      func: () => mock_wrong_question_1,
+    });
+
+    const token = await Cookies.get("token");
+    if (!token) {
+      throw new Error("使用者請重新登入！");
+    }
+
+    const response: AxiosResponse<SubmitQuizReturnType, any> = await axios.put(
+      `${API_URL}/quiz/${quizId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        answers,
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("提交測驗錯誤！");
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "未知錯誤發生！");
+  }
+};
+
+export const getQuiz = async (quizId: string): Promise<GetQuizType> => {
+  try {
+    // todo: test
+    return DelayFunc({
+      isError: false,
+      delay: 2000,
+      func: () => mock_get_quiz_1,
+    });
+
+    const token = await Cookies.get("token");
+    if (!token) {
+      throw new Error("使用者請重新登入！");
+    }
+
+    const response: AxiosResponse<GetQuizType, any> = await axios.get(
+      `${API_URL}/quiz/${quizId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("取得測驗錯誤！");
     }
   } catch (error: any) {
     throw new Error(error.message || "未知錯誤發生！");

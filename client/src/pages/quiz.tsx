@@ -1,5 +1,6 @@
 import { QuestionCard } from "@/components/customs/quiz/question-card";
 import { Button } from "@/components/ui/button";
+import { useSubmitQuiz } from "@/hooks/quiz";
 import { parseQuestionIndex } from "@/lib/utils";
 import { useQuizStore } from "@/stores/question-store";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
@@ -9,6 +10,9 @@ import { Toaster } from "sonner";
 
 export default function Quiz() {
   const navigate = useNavigate();
+  // todo: get quiz details (action, hook)
+
+  const submit = useSubmitQuiz();
   const { quizId: currentQuizId, index: questionIndex } = useParams();
 
   const {
@@ -16,6 +20,7 @@ export default function Quiz() {
     questions,
     currentQuestionIndex,
     amount,
+    userAnswers,
     setCurrentQuestionIndex,
   } = useQuizStore();
 
@@ -42,6 +47,10 @@ export default function Quiz() {
       navigate(`/quiz/${quizId}/${currentQuestionIndex + 1}`);
     }
   };
+
+  const submitQuiz = () => {
+    submit.mutate({ quizId, answers: userAnswers });
+  }
 
   useEffect(() => {
     const validIndex = parseQuestionIndex(questionIndex, amount);
@@ -81,7 +90,7 @@ export default function Quiz() {
             </Button>
           )}
           {currentQuestionIndex === amount && (
-            <Button className="flex-1" onClick={() => navigate("/dashboard")}>
+            <Button className="flex-1" onClick={submitQuiz}>
               Submit
             </Button>
           )}

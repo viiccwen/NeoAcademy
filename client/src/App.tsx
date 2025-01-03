@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Quiz from "./pages/quiz";
 import Create from "./pages/create";
 import { ThemeProvider } from "./components/ui/theme-provider";
+import Result from "./pages/result";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/create" element={<Create />} />
             <Route path="/quiz/:quizId/:index" element={<Quiz />} />
+            <Route path="/result/:quizId" element={<Result />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

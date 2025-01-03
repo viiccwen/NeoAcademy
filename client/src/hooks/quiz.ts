@@ -1,8 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { DelayFunc } from "@/lib/utils";
-import { createQuiz, deleteQuiz, updateQuiz } from "@/actions/quiz-actions";
-import { QuizReturnType } from "@/lib/type";
+import {
+  createQuiz,
+  deleteQuiz,
+  getQuiz,
+  submitQuiz,
+  updateQuiz,
+} from "@/actions/quiz-actions";
+import { GetQuizType, QuizReturnType, SubmitQuizReturnType } from "@/lib/type";
 import { useQuizStore } from "@/stores/question-store";
 
 export const useCreateQuiz = () => {
@@ -16,7 +22,7 @@ export const useCreateQuiz = () => {
     },
     onError: (error: any) => {
       // close loading toast
-      toast.dismiss(); 
+      toast.dismiss();
       toast.error(error.message || "Error Occurred!");
     },
     onSuccess: async (data: QuizReturnType) => {
@@ -33,6 +39,58 @@ export const useCreateQuiz = () => {
         delay: 2000,
         func: () => (window.location.href = `/quiz/${data.id}/1`),
       });
+    },
+  });
+};
+
+export const useSubmitQuiz = () => {
+  const { quizId, resetQuiz } = useQuizStore();
+
+  return useMutation({
+    mutationKey: ["quiz", "submit"],
+    mutationFn: submitQuiz,
+    onMutate: () => {
+      toast.loading("Submitting Quiz...");
+    },
+    onError: (error: any) => {
+      // close loading toast
+      toast.dismiss();
+      toast.error(error.message || "Error Occurred!");
+    },
+    onSuccess: async (data: SubmitQuizReturnType) => {
+      // close loading toast
+      toast.dismiss();
+      toast.success("Quiz Submitted Successfully!");
+
+      // redirect to result page
+      await DelayFunc({
+        isError: false,
+        delay: 2000,
+        func: () => {
+          resetQuiz();
+          window.location.href = `/result/${quizId}`;
+        },
+      });
+    },
+  });
+};
+
+export const useGetQuiz = () => {
+  return useMutation({
+    mutationKey: ["quiz", "get"],
+    mutationFn: getQuiz,
+    onMutate: () => {
+      toast.loading("Fetching Quiz...");
+    },
+    onError: (error: any) => {
+      // close loading toast
+      toast.dismiss();
+      toast.error(error.message || "Error Occurred!");
+    },
+    onSuccess: async (data: GetQuizType) => {
+      // close loading toast
+      toast.dismiss();
+      return data;
     },
   });
 };
@@ -55,7 +113,7 @@ export const useUpdateQuiz = () => {
       toast.success("Quiz Updated Successfully!");
     },
   });
-}
+};
 
 export const useDeleteQuiz = () => {
   return useMutation({
@@ -75,4 +133,4 @@ export const useDeleteQuiz = () => {
       toast.success("Quiz Deleted Successfully!");
     },
   });
-}
+};
