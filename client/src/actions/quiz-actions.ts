@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import axios, { AxiosResponse } from "axios";
 import {
   CreateQuizType,
+  GetAllQuizType,
   GetQuizType,
   QuizReturnType,
   SubmitQuizReturnType,
@@ -9,6 +10,7 @@ import {
 } from "@/lib/type";
 import { DelayFunc } from "@/lib/utils";
 import {
+  mock_get_all_quiz_1,
   mock_get_quiz_1,
   mock_question_1,
   mock_question_2,
@@ -171,6 +173,39 @@ export const deleteQuiz = async (id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("刪除測驗資料錯誤！");
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "未知錯誤發生！");
+  }
+};
+
+export const getAllQuiz = async (): Promise<GetAllQuizType> => {
+  try {
+    // todo: test
+    return DelayFunc({
+      isError: false,
+      delay: 2000,
+      func: () => mock_get_all_quiz_1,
+    });
+
+    const token = await Cookies.get("token");
+    if (!token) {
+      throw new Error("使用者請重新登入！");
+    }
+
+    const response: AxiosResponse<GetAllQuizType, any> = await axios.get(
+      `${API_URL}/quiz`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.status === 200) {
       return response.data;
