@@ -19,7 +19,7 @@ export const createQuizSchema = z.object({
   difficulty: z.string().nonempty(),
   problem: z.number().positive(),
   option: z.number().positive(),
-  mul_answer: z.boolean(),
+  multipleAnswers: z.boolean(),
   remarks: z.string().max(100, "Remarks should be less than 100 characters!"),
 });
 export type CreateQuizType = z.infer<typeof createQuizSchema>;

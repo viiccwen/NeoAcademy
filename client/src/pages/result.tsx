@@ -1,94 +1,81 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGetAllQuiz } from "@/hooks/quiz";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function Dashboard() {
-  const _quiz = useGetAllQuiz();
+import { Button } from "@/components/ui/button";
+import { Question } from "@/components/customs/result/question";
+import { Summary } from "@/components/customs/result/summary";
+
+import { useGetQuiz } from "@/hooks/quiz";
+import { useAuth } from "@/hooks/user";
+
+export default function Result() {
+  const { quizId } = useParams();
+  const { isAuth } = useAuth();
   const navigate = useNavigate();
+
+  const _quiz = useGetQuiz();
   const quiz = _quiz.data;
 
+  // Redirect to login if user is not authenticated
   useEffect(() => {
-    _quiz.mutate();
-  }, []);
+    if (!isAuth) navigate("/login");
+  }, [isAuth]);
+
+  if (!quizId) {
+    navigate("/notfound");
+    return;
+  }
+
+  useEffect(() => {
+    _quiz.mutate(quizId);
+  }, [quizId]);
 
   if (_quiz.isPending) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-900 text-white">
-        Loading...
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
       </div>
     );
   }
 
   if (_quiz.isError) {
     navigate("/notfound");
-    return null;
+    return;
   }
 
   if (_quiz.isSuccess && quiz) {
+    // Calculate stats
+    const totalQuestions = quiz.questions.length;
+    const correctAnswers = quiz.questions.filter(
+      (q) =>
+        q.answer.every((ans) => q.response.includes(ans)) &&
+        q.response.every((resp) => q.answer.includes(resp))
+    ).length;
+    const scorePercentage = Math.round((correctAnswers / totalQuestions) * 100);
+
     return (
-      <div className="min-h-screen bg-gray-900 py-8 px-4 text-white">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl font-extrabold text-center mb-8">
-            Dashboard
+      <div className="min-h-screen bg-gray-900 py-8 px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <h1 className="text-4xl font-extrabold text-white text-center mb-8">
+            Quiz Results
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quiz.map((q) => (
-              <Card
-                key={q.id}
-                className="bg-gray-800 border-gray-700 hover:shadow-lg transition duration-300"
-              >
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
-                    {q.name}
-                  </CardTitle>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge
-                      variant="outline"
-                      className={`${
-                        q.difficulty === "Easy"
-                          ? "bg-green-500"
-                          : q.difficulty === "Medium"
-                          ? "bg-yellow-500"
-                          : "bg-red-500"
-                      } text-white`}
-                    >
-                      {q.difficulty}
-                    </Badge>
-                    <span className="text-sm text-gray-400">
-                      {new Date(q.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <p className="text-sm text-gray-300 mb-4">
-                    Category: <span className="font-medium">{q.category}</span>
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    Multiple Answers:{" "}
-                    <span className="font-medium">
-                      {q.multipleAnswers ? "Yes" : "No"}
-                    </span>
-                  </p>
-                  <div className="flex justify-between mt-4">
-                    <Button
-                      variant="default"
-                      onClick={() => navigate(`/quiz/${q.id}/1`)}
-                    >
-                      Start Quiz
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate(`/result/${q.id}`)}
-                    >
-                      View Results
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+
+          {/* Summary Section */}
+          <Summary
+            quiz={quiz}
+            totalQuestions={totalQuestions}
+            correctAnswers={correctAnswers}
+            scorePercentage={scorePercentage}
+          />
+
+          {/* Questions Section */}
+          <Question quiz={quiz} />
+
+          {/* Actions Section */}
+          <div className="flex justify-center gap-4 mt-8">
+            <Button LinkTo={`/quiz/${quizId}/1`}>Retake Quiz</Button>
+            <Button LinkTo="/dashboard">Back to Dashboard</Button>
           </div>
         </div>
       </div>
@@ -96,8 +83,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-900 text-white">
-      Something went wrong...
+    <div className="min-h-screen flex items-center justify-center">
+      <p>Loading...</p>
     </div>
   );
 }
