@@ -3,9 +3,9 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 // [questionIndex][selectedOptionIndex]
-export type UserAnswer = number[][]; 
+export type UserAnswer = number[][];
 
-interface QuestionStore {
+interface QuizStoreInterface {
   quizId: string;
   questions: QuestionType[] | null;
   amount: number;
@@ -24,7 +24,7 @@ interface QuestionStore {
   resetQuiz: () => void;
 }
 
-export const useQuizStore = create<QuestionStore>()(
+export const useQuizStore = create<QuizStoreInterface>()(
   persist(
     (set) => ({
       quizId: "",
@@ -96,11 +96,13 @@ export const useQuizStore = create<QuestionStore>()(
           currentQuestionIndex: -1,
           userAnswers: [],
           isCompleted: false,
+          timeLeft: 0,
+          isTimerRunning: false,
         }));
       },
     }),
     {
-      name: "question-store",
+      name: "quiz-store",
       storage: createJSONStorage(() => localStorage),
     }
   )

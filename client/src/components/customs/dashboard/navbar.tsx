@@ -9,6 +9,8 @@ import {
 import { Link } from "react-router-dom";
 import { forwardRef } from "react";
 import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import { useLogout } from "@/hooks/user";
 
 type compType = {
   title: string;
@@ -23,7 +25,7 @@ const components: compType[] = [
   {
     title: "Analytics",
     href: "/analytics",
-  }
+  },
 ];
 
 interface NavBarProps {
@@ -31,6 +33,8 @@ interface NavBarProps {
 }
 
 export const NavBar = (props: NavBarProps) => {
+  const Logout = useLogout();
+
   return (
     <div
       className={cn(
@@ -67,11 +71,15 @@ export const NavBar = (props: NavBarProps) => {
       </div>
 
       {/* Login */}
-      <div className="hidden md:flex items-center space-x-4 animate-fade animate-delay-500">
+      <div className="hidden md:flex items-center space-x-4">
         <Button
           LinkTo="/create"
           className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
-        >New Quiz
+        >
+          New Quiz
+        </Button>
+        <Button onClick={Logout} className="bg-red-600 hover:bg-red-700">
+          <LogOut className="w-5 text-white" />
         </Button>
       </div>
 

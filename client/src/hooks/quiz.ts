@@ -10,7 +10,8 @@ import {
   updateQuiz,
 } from "@/actions/quiz-actions";
 import { GetAllQuizType, GetQuizType, QuizReturnType, SubmitQuizReturnType } from "@/lib/type";
-import { useQuizStore } from "@/stores/question-store";
+import { useQuizStore } from "@/stores/quiz-store";
+import { useUserStore } from "@/stores/user-store";
 
 export const useCreateQuiz = () => {
   const { loadQuiz } = useQuizStore();
@@ -137,8 +138,10 @@ export const useDeleteQuiz = () => {
 };
 
 export const useGetAllQuiz = () => {
+  const { token } = useUserStore();
+
   return useMutation({
-    mutationKey: ["quiz", "get", "all"],
+    mutationKey: ["quiz", "get-all", token],
     mutationFn: getAllQuiz,
     onMutate: () => {
       toast.loading("Get Quiz...");

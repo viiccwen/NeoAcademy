@@ -1,11 +1,23 @@
+import { DelayFunc } from "@/lib/utils";
+import { UserType } from "@/stores/user-store";
 import axios from "axios";
-const Cookies = require("js-cookie");
 const API_URL = import.meta.env.VITE_API_URL;
 
 // GET /user: get user
-export const getUser = async () => {
+export const getUser = async (token: string | null) => {
   try {
-    const token = await Cookies.get("token");
+    const res: UserType = {
+      name: "Neo Wang",
+      email: "wang@gmail.com"
+    };
+
+    // todo: remove this line
+    return DelayFunc({
+      isError: false,
+      delay: 1000,
+      func: () => res,
+    });
+
     if (!token) {
       throw new Error("使用者請重新登入！");
     }
@@ -27,13 +39,8 @@ export const getUser = async () => {
 };
 
 // DELETE /user: delete user
-export const deleteUser = async () => {
+export const deleteUser = async (token: string | null) => {
   try {
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
     const response = await axios.delete(`${API_URL}/user`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -41,8 +48,7 @@ export const deleteUser = async () => {
     });
 
     if (response.status === 200) {
-        // remove token
-        Cookies.remove("token");
+      return true;
     } else {
       throw new Error("刪除使用者資料錯誤！");
     }
