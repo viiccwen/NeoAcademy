@@ -1,10 +1,11 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { DelayFunc } from "@/lib/utils";
 import {
   createQuiz,
   deleteQuiz,
   getAllQuiz,
+  getDetailsAllQuiz,
   getQuiz,
   submitQuiz,
   updateQuiz,
@@ -158,3 +159,12 @@ export const useGetAllQuiz = () => {
     },
   });
 };
+
+export const useGetAllQuizDetails = () => {
+  const { token } = useUserStore();
+
+  return useQuery({
+    queryKey: ["quiz", "get-all-details", token],
+    queryFn: getDetailsAllQuiz,
+  });
+}
