@@ -252,3 +252,95 @@ export const mock_get_all_quiz_1: GetAllQuizType = [
     createdAt: new Date("2023-02-14T18:25:00Z"),
   },
 ];
+
+export const mock_get_all_details_quiz_1: GetQuizType[] = [
+  {
+    id: "4e8d7e47-3e24-49f8-8741-1a5f237a2f7e",
+    name: "Introduction to Calculus",
+    category: "Math",
+    difficulty: "Medium",
+    questions: [
+      {
+        text: "What is the derivative of x^2?",
+        options: ["2x", "3x", "x^2", "2"],
+        answer: [0],
+        response: [0],
+      },
+      {
+        text: "What is the integral of sin(x)?",
+        options: ["cos(x)", "sin(x)", "tan(x)", "csc(x)"],
+        answer: [0],
+        response: [0],
+      },
+      {
+        text: "What is the limit of 1/x as x approaches infinity?",
+        options: ["0", "1", "infinity", "undefined"],
+        answer: [0],
+        response: [0],
+      },
+    ],
+    multipleAnswers: true,
+    createdAt: new Date("2023-04-15T12:34:56Z"),
+  },
+  {
+    id: "7c6d5a90-64f3-4bfa-bcab-44c3f517cb87",
+    name: "World History Basics",
+    category: "History",
+    difficulty: "Hard",
+    questions: [
+      {
+        text: "Who was the first president of the United States?",
+        options: [
+          "George Washington",
+          "Thomas Jefferson",
+          "John Adams",
+          "James Madison",
+        ],
+        answer: [0],
+        response: [0],
+      },
+      {
+        text: "When did World War II end?",
+        options: ["1945", "1918", "1939", "1941"],
+        answer: [0],
+        response: [0],
+      },
+      {
+        text: "What was the name of the ship that carried the Pilgrims to America in 1620?",
+        options: ["Mayflower", "Santa Maria", "Nina", "Pinta"],
+        answer: [0],
+        response: [0],
+      },
+    ],
+    multipleAnswers: false,
+    createdAt: new Date("2023-03-22T08:12:45Z"),
+  },
+  {
+    id: "2c2c4568-bcd8-4f3e-a983-81d7adcc4936",
+    name: "Fundamentals of Physics",
+    category: "Science",
+    difficulty: "Easy",
+    questions: [
+      {
+        text: "What is the formula for force?",
+        options: ["F = ma", "F = mv", "F = mgh", "F = mg"],
+        answer: [0],
+        response: [0],
+      },
+      {
+        text: "What is the unit of resistance?",
+        options: ["Ohm", "Volt", "Ampere", "Watt"],
+        answer: [0],
+        response: [0],
+      },
+      {
+        text: "What is the SI unit of energy?",
+        options: ["Joule", "Watt", "Newton", "Coulomb"],
+        answer: [0],
+        response: [3],
+      },
+    ],
+    multipleAnswers: true,
+    createdAt: new Date("2023-05-10T10:30:15Z"),
+  },
+];

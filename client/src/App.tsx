@@ -9,6 +9,7 @@ import Create from "./pages/create";
 import { ThemeProvider } from "./components/ui/theme-provider";
 import Result from "./pages/result";
 import Dashboard from "./pages/dashboard";
+import Analytics from "./pages/Analytics";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/create" element={<Create />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/analytics" element={<Analytics />} />
             <Route path="/quiz/:quizId/:index" element={<Quiz />} />
             <Route path="/result/:quizId" element={<Result />} />
             <Route path="*" element={<NotFound />} />
