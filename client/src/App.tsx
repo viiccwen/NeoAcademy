@@ -9,7 +9,7 @@ import Create from "./pages/create";
 import { ThemeProvider } from "./components/ui/theme-provider";
 import Result from "./pages/result";
 import Dashboard from "./pages/dashboard";
-import Analytics from "./pages/Analytics";
+import Analytics from "./pages/analytics";
 
 const queryClient = new QueryClient();
 

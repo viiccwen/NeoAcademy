@@ -5,7 +5,7 @@ export const categories: string[] = [
   "Language",
   "Programming",
   "Science",
-  "Maths",
+  "Math",
   "History",
 ];
 export const difficulties: string[] = ["Easy", "Medium", "Hard"];

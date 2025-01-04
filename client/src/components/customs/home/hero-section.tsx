@@ -1,31 +1,43 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
+import { BackgroundEffect } from "./background-effect";
 
 export const HeroSection = () => {
+  const blurInVariants = {
+    hidden: { filter: "blur(10px)", opacity: 0 },
+    visible: { filter: "blur(0px)", opacity: 1 },
+  };
+
   return (
     <section
       id="home"
       className="relative h-screen flex items-center justify-center overflow-hidden pt-16"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-blue-900 opacity-50"></div>
+      {/* background text */}
+      <BackgroundEffect />
+
       <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-4 animate-fade-up animate-delay-100">
+        <h1 className="z-50 text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-4 animate-fade-up animate-delay-100">
           NeoAcademy
         </h1>
         <p className="mt-3 max-w-md mx-auto text-md font-medium italic text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl animate-fade-up animate-delay-300">
           "Personalized Learning, Powered by AI"
         </p>
         <p className="mt-3 max-w-md mx-auto text-sm font-medium text-gray-400 sm:text-sm md:mt-5 md:text-lg md:max-w-xl animate-fade-up animate-delay-300">
-          A platform that provides personalized learning experience to students
-          using Large Language Models.
+          Provides personalized learning experience to students using
+          <p className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+            Large Language Models.
+          </p>
         </p>
         <div className="mt-10 animate-fade animate-delay-500">
           <Button
             asChild
             className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
           >
-            <Link to="/login">Getting Start <LogIn className="w-5" /></Link>
+            <Link to="/login">
+              Getting Start <LogIn className="w-5" />
+            </Link>
           </Button>
         </div>
       </div>

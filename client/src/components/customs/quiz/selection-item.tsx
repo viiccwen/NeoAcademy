@@ -22,7 +22,7 @@ interface SelectItemProps {
 
 export const SelectionItem = (props: SelectItemProps) => {
   return (
-    <>
+    <div>
       <label
         htmlFor={props.name}
         className="block text-sm font-medium text-gray-700"
@@ -53,6 +53,6 @@ export const SelectionItem = (props: SelectItemProps) => {
           </Select>
         )}
       />
-    </>
+    </div>
   );
 };
