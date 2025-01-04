@@ -7,6 +7,7 @@ import { Summary } from "@/components/customs/result/summary";
 
 import { useGetQuiz } from "@/hooks/quiz";
 import { useAuth } from "@/hooks/user";
+import { Metadata } from "@/components/customs/metadata";
 
 export default function Result() {
   const { quizId } = useParams();
@@ -54,31 +55,37 @@ export default function Result() {
     const scorePercentage = Math.round((correctAnswers / totalQuestions) * 100);
 
     return (
-      <div className="min-h-screen bg-gray-900 py-8 px-4">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <h1 className="text-4xl font-extrabold text-white text-center mb-8">
-            Quiz Results
-          </h1>
+      <>
+        <Metadata
+          title="Results"
+          description="Review your quiz performance with AI-driven insights and personalized feedback."
+        />
+        <div className="min-h-screen bg-gray-900 py-8 px-4">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <h1 className="text-4xl font-extrabold text-white text-center mb-8">
+              Quiz Results
+            </h1>
 
-          {/* Summary Section */}
-          <Summary
-            quiz={quiz}
-            totalQuestions={totalQuestions}
-            correctAnswers={correctAnswers}
-            scorePercentage={scorePercentage}
-          />
+            {/* Summary Section */}
+            <Summary
+              quiz={quiz}
+              totalQuestions={totalQuestions}
+              correctAnswers={correctAnswers}
+              scorePercentage={scorePercentage}
+            />
 
-          {/* Questions Section */}
-          <Question quiz={quiz} />
+            {/* Questions Section */}
+            <Question quiz={quiz} />
 
-          {/* Actions Section */}
-          <div className="flex justify-center gap-4 mt-8">
-            <Button LinkTo={`/quiz/${quizId}/1`}>Retake Quiz</Button>
-            <Button LinkTo="/dashboard">Back to Dashboard</Button>
+            {/* Actions Section */}
+            <div className="flex justify-center gap-4 mt-8">
+              <Button LinkTo={`/quiz/${quizId}/1`}>Retake Quiz</Button>
+              <Button LinkTo="/dashboard">Back to Dashboard</Button>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 

@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import Logo from "@/assets/logo.png";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -53,7 +54,7 @@ export const NavBar = (props: NavBarProps) => {
       {/* Logo - Always visible */}
       <div className="flex-shrink-0 flex">
         <Link to="/">
-          <img src="#" alt="Logo" className="h-8 w-auto" />
+          <img src={Logo} alt="Logo" width={150} />
         </Link>
       </div>
 
@@ -84,13 +85,15 @@ export const NavBar = (props: NavBarProps) => {
           <>
             <Button
               asChild
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
+              className="px-6 py-2 bg-transparent hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
             >
-              <Link to="/dashboard"><Home className="w-5" /></Link>
+              <Link to="/dashboard">
+                <Home className="w-5" />
+              </Link>
             </Button>
             <Button
               onClick={Logout}
-              className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
+              className="px-6 py-2 bg-transparent hover:bg-red-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               <LogOut className="w-5 text-white" />
             </Button>

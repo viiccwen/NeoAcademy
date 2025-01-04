@@ -1,3 +1,4 @@
+import { Metadata } from "@/components/customs/metadata";
 import { CreateQuizForm } from "@/components/customs/quiz/create-quiz-form";
 import { useAuth } from "@/hooks/user";
 import { useEffect } from "react";
@@ -14,9 +15,12 @@ export default function Create() {
   }, [isAuth]);
 
   return (
-    <div className="w-full min-h-screen flex justify-center items-center">
-      <Toaster richColors />
-      <CreateQuizForm className="w-[400px]" />
-    </div>
+    <>
+      <Metadata title="Create Quiz" description="Create a new quiz using NeoAcademy's quiz generator." />
+      <div className="w-full min-h-screen flex justify-center items-center bg-gray-900">
+        <Toaster richColors />
+        <CreateQuizForm className="w-[400px]" />
+      </div>
+    </>
   );
 }

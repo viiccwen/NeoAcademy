@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import Logo from "@/assets/logo.png";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -45,7 +46,7 @@ export const NavBar = (props: NavBarProps) => {
       {/* Logo - Always visible */}
       <div className="flex-shrink-0 flex">
         <Link to="/">
-          <img src="#" alt="Logo" className="h-8 w-auto" />
+        <img src={Logo} alt="Logo" width={150} />
         </Link>
       </div>
 
