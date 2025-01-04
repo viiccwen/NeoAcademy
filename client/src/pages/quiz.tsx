@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { ConfirmDialog } from "@/components/customs/quiz/confirm-dialog";
 import { useAuth } from "@/hooks/user";
+import { Metadata } from "@/components/customs/metadata";
 
 export default function Quiz() {
   const { isAuth } = useAuth();
@@ -84,9 +85,10 @@ export default function Quiz() {
 
   return (
     <>
+      <Metadata title="Quiz" description="Taking quiz!" />
       <Toaster richColors />
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-gray-900 text-white p-6">
-        {/* 進度條 */}
+        {/* progress bar */}
         <div className="w-full max-w-xl mb-4">
           <Progress value={(currentQuestionIndex / amount) * 100} />
           <p className="text-center text-gray-400 text-sm mt-1">

@@ -1,6 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useRef } from "react";
 
+import ResultBarImg from "@/assets/result-bar.jpg";
+import ResultImg from "@/assets/result.jpg";
+import QuizImg from "@/assets/quiz.jpg";
+import DashboardImg from "@/assets/dashboard.jpg";
+import CreateImg from "@/assets/create.jpg";
+import AnalyticsImg from "@/assets/analytics.jpg";
+
 type FeatureItem = {
   title: string;
   description: string;
@@ -10,22 +17,40 @@ type FeatureItem = {
 // todo: replace with actual photos
 const features: FeatureItem[] = [
   {
-    title: "Intuitive Design",
+    title: "AI-Powered Quiz Creation",
     description:
-      "Our user-friendly interface ensures a smooth experience for all users, regardless of their technical expertise.",
-    image: "/placeholder.svg?height=200&width=300",
+      "Generate quizzes tailored to your needs with AI. Simply provide a topic or learning objective, and let the model craft engaging questions for you.",
+    image: CreateImg,
   },
   {
-    title: "Powerful Analytics",
+    title: "Smart Performance Analytics",
     description:
-      "Gain valuable insights with our advanced analytics tools, helping you make data-driven decisions.",
-    image: "/placeholder.svg?height=200&width=300",
+      "Track your quiz results and learning progress with in-depth analytics. Get personalized AI-generated feedback to improve your understanding.",
+    image: AnalyticsImg,
   },
   {
-    title: "Seamless Integration",
+    title: "Adaptive Quiz Experience",
     description:
-      "Easily integrate with your existing tools and workflows for a streamlined experience.",
-    image: "/placeholder.svg?height=200&width=300",
+      "Enjoy a dynamic quiz-taking experience with adaptive questions. Challenge yourself with questions that adjust to your skill level.",
+    image: QuizImg,
+  },
+  {
+    title: "Detailed Result Insights",
+    description:
+      "Receive an in-depth breakdown of your answers. Identify mistakes, review explanations, and get AI-driven suggestions for improvement.",
+    image: ResultImg,
+  },
+  {
+    title: "Comprehensive Learning Dashboard",
+    description:
+      "Manage all your quizzes and progress in one place. Access past attempts, monitor improvements, and plan your learning path efficiently.",
+    image: DashboardImg,
+  },
+  {
+    title: "Data-Driven Learning Strategies",
+    description:
+      "Visualize your learning trends with interactive charts. Use AI-recommended strategies to focus on areas that need improvement.",
+    image: ResultBarImg,
   },
 ];
 
@@ -57,25 +82,31 @@ export const About = () => {
         <h2 className="text-3xl font-extrabold text-center text-white mb-12">
           About Our Platform
         </h2>
-        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className=" grid grid-cols-1 lg:grid-cols-2 gap-8">
           {features.map((feature, index) => (
             <Card
               key={index}
               className="about-item bg-gray-700 border-gray-600 opacity-0"
               style={{ animationDelay: `${index * 300}ms` }}
             >
-              <CardContent className="p-6">
-                <img
-                  src={feature.image}
-                  alt={feature.title}
-                  width={300}
-                  height={200}
-                  className="rounded-lg mb-4 w-full"
-                />
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-300">{feature.description}</p>
+              <CardContent className="p-6 h-full">
+                <div className="grid grid-rows-[auto_1fr] gap-4 h-full">
+                  {/* 確保圖片固定大小，避免不對齊 */}
+                  <div className="flex h-full items-center">
+                    <img
+                      src={feature.image}
+                      alt={feature.title}
+                      className="rounded-lg w-auto object-cover"
+                    />
+                  </div>
+                  {/* 確保文字區域統一高度 */}
+                  <div className="h-full flex flex-col justify-end">
+                    <h3 className="text-xl font-semibold text-white mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-300">{feature.description}</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           ))}
