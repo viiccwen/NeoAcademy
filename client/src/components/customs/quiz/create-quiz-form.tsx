@@ -27,7 +27,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
     resolver: zodResolver(createQuizSchema),
     mode: "onChange",
     defaultValues: {
-      mul_answer: false,
+      multipleAnswers: false,
     },
   });
 

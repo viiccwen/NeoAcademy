@@ -1,13 +1,40 @@
 import { deleteUser, getUser } from "@/actions/user-actions";
 import { DelayFunc } from "@/lib/utils";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { UserType, useUserStore } from "@/stores/user-store";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export const useUser = () => {
-  return useQuery({
+export const useAuth = () => {
+  const { isAuth, setIsAuth, setUser, token } = useUserStore();
+  const { data: user, isFetching } = useQuery<UserType>({
     queryKey: ["user", "details"],
-    queryFn: getUser,
+    queryFn: () => getUser(token),
   });
+
+  useEffect(() => {
+    if (user) {
+      setUser({ name: user.name, email: user.email });
+      setIsAuth(true);
+    }
+  }, [user]);
+
+  return { isAuth, isLoading: isFetching, user };
+};
+
+export const useLogout = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { logout } = useUserStore();
+
+  const Logout = () => {
+    logout();
+    queryClient.removeQueries({ queryKey: ["user"] }); // remove cache
+    navigate("/");
+  };
+
+  return Logout;
 };
 
 export const useDeleteUser = () => {

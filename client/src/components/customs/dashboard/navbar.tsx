@@ -7,31 +7,24 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
 import { forwardRef } from "react";
 import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 import { useLogout } from "@/hooks/user";
-import { Home, LogOut } from "lucide-react";
-import { useUserStore } from "@/stores/user-store";
 
 type compType = {
   title: string;
   href: string;
-  protected?: boolean;
 };
 
 const components: compType[] = [
   {
-    title: "Home",
-    href: "/#",
+    title: "Dashboard",
+    href: "/dashboard",
   },
   {
-    title: "Features",
-    href: "#features",
-  },
-  {
-    title: "About",
-    href: "#about",
+    title: "Analytics",
+    href: "/analytics",
   },
 ];
 
@@ -40,7 +33,6 @@ interface NavBarProps {
 }
 
 export const NavBar = (props: NavBarProps) => {
-  const { isAuth } = useUserStore();
   const Logout = useLogout();
 
   return (
@@ -63,7 +55,7 @@ export const NavBar = (props: NavBarProps) => {
           <NavigationMenuList>
             {components.map((comp, index) => (
               <NavigationMenuItem key={index}>
-                <HashLink to={comp.href}>
+                <Link to={comp.href}>
                   <NavigationMenuLink
                     className={cn(
                       "text-md font-medium text-gray-200 duration-300 rounded-md p-3 hover:text-white hover:bg-slate-800"
@@ -71,7 +63,7 @@ export const NavBar = (props: NavBarProps) => {
                   >
                     {comp.title}
                   </NavigationMenuLink>
-                </HashLink>
+                </Link>
               </NavigationMenuItem>
             ))}
           </NavigationMenuList>
@@ -79,30 +71,16 @@ export const NavBar = (props: NavBarProps) => {
       </div>
 
       {/* Login */}
-      <div className="hidden md:flex items-center space-x-4 animate-fade animate-delay-500">
-        {isAuth ? (
-          <>
-            <Button
-              asChild
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
-            >
-              <Link to="/dashboard"><Home className="w-5" /></Link>
-            </Button>
-            <Button
-              onClick={Logout}
-              className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
-            >
-              <LogOut className="w-5 text-white" />
-            </Button>
-          </>
-        ) : (
-          <Button
-            asChild
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
-          >
-            <Link to="/login">Login</Link>
-          </Button>
-        )}
+      <div className="hidden md:flex items-center space-x-4">
+        <Button
+          LinkTo="/create"
+          className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
+        >
+          New Quiz
+        </Button>
+        <Button onClick={Logout} className="bg-red-600 hover:bg-red-700">
+          <LogOut className="w-5 text-white" />
+        </Button>
       </div>
 
       {/* Sidebar - Hidden on large screens */}

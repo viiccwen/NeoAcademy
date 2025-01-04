@@ -1,15 +1,17 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { DelayFunc } from "@/lib/utils";
 import {
   createQuiz,
   deleteQuiz,
+  getAllQuiz,
   getQuiz,
   submitQuiz,
   updateQuiz,
 } from "@/actions/quiz-actions";
-import { GetQuizType, QuizReturnType, SubmitQuizReturnType } from "@/lib/type";
-import { useQuizStore } from "@/stores/question-store";
+import { GetAllQuizType, GetQuizType, QuizReturnType, SubmitQuizReturnType } from "@/lib/type";
+import { useQuizStore } from "@/stores/quiz-store";
+import { useUserStore } from "@/stores/user-store";
 
 export const useCreateQuiz = () => {
   const { loadQuiz } = useQuizStore();
@@ -131,6 +133,28 @@ export const useDeleteQuiz = () => {
       // close loading toast
       toast.dismiss();
       toast.success("Quiz Deleted Successfully!");
+    },
+  });
+};
+
+export const useGetAllQuiz = () => {
+  const { token } = useUserStore();
+
+  return useMutation({
+    mutationKey: ["quiz", "get-all", token],
+    mutationFn: getAllQuiz,
+    onMutate: () => {
+      toast.loading("Get Quiz...");
+    },
+    onError: (error: any) => {
+      // close loading toast
+      toast.dismiss();
+      toast.error(error.message || "Error Occurred!");
+    },
+    onSuccess: async (data: GetAllQuizType) => {
+      // close loading toast
+      toast.dismiss();
+      return data;
     },
   });
 };

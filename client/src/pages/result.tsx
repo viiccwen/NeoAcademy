@@ -6,12 +6,20 @@ import { Question } from "@/components/customs/result/question";
 import { Summary } from "@/components/customs/result/summary";
 
 import { useGetQuiz } from "@/hooks/quiz";
+import { useAuth } from "@/hooks/user";
 
 export default function Result() {
   const { quizId } = useParams();
+  const { isAuth } = useAuth();
   const navigate = useNavigate();
+
   const _quiz = useGetQuiz();
   const quiz = _quiz.data;
+
+  // Redirect to login if user is not authenticated
+  useEffect(() => {
+    if (!isAuth) navigate("/login");
+  }, [isAuth]);
 
   if (!quizId) {
     navigate("/notfound");
@@ -66,12 +74,8 @@ export default function Result() {
 
           {/* Actions Section */}
           <div className="flex justify-center gap-4 mt-8">
-            <Button onClick={() => navigate(`/quiz/${quizId}/1`)}>
-              Retake Quiz
-            </Button>
-            <Button onClick={() => navigate("/dashboard")}>
-              Back to Dashboard
-            </Button>
+            <Button LinkTo={`/quiz/${quizId}/1`}>Retake Quiz</Button>
+            <Button LinkTo="/dashboard">Back to Dashboard</Button>
           </div>
         </div>
       </div>
