@@ -16,7 +16,7 @@ quizRouter.get('/quiz/:quizId', authMiddleware, (req, res) => {
     const quiz = getQuiz(req.user!, req.params.quizId);
 
     if (!quiz) {
-        res.status(404).json({ message: 'Not found' });
+        res.status(404).json({ message: 'Quiz not found.' });
         return;
     }
 
@@ -25,25 +25,41 @@ quizRouter.get('/quiz/:quizId', authMiddleware, (req, res) => {
 });
 
 quizRouter.post('/quiz', authMiddleware, async (req, res) => {
-    const { name, category, difficulty, option, question, multipleAnswers, remarks } = req.body;
-    const unansweredQuiz = await generateUnansweredQuiz(name, category, difficulty, option, question, multipleAnswers, remarks);
-    await recordUnansweredQuiz(req.user!, unansweredQuiz);
+    try {
+        const { name, category, difficulty, option, question, multipleAnswers, remarks } = req.body;
+        const unansweredQuiz = await generateUnansweredQuiz(name, category, difficulty, option, question, multipleAnswers, remarks ?? '');
+        await recordUnansweredQuiz(req.user!, unansweredQuiz);
 
-    const questions = unansweredQuiz.questions.map(({ text, options }) => ({ text, options }));
-    res.status(200).json({ id: unansweredQuiz._id, questions });
+        const questions = unansweredQuiz.questions.map(({ text, options }) => ({ text, options }));
+        res.status(200).json({ id: unansweredQuiz._id, questions });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error!' });
+    }
 });
 
 quizRouter.put('/quiz/:quizId', authMiddleware, async (req, res) => {
     try {
-        res.status(200).json(await submitAndGetAnswers(req.user!, req.params.quizId, req.body));
-    } catch (_) {
-        res.status(404).json({ message: 'Not found' });
+        const quiz = getQuiz(req.user!, req.params.quizId);
+        if (!quiz) {
+            res.status(404).json({ message: 'Quiz not found.' });
+            return;
+        }
+        res.status(200).json(await submitAndGetAnswers(quiz, req.body));
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error!' });
     }
 });
 
 quizRouter.delete('/quiz/:quizId', authMiddleware, async (req, res) => {
-    await deleteQuiz(req.user!, req.params.quizId);
-    res.status(204).end();
+    try {
+        await deleteQuiz(req.user!, req.params.quizId);
+        res.status(204).end();
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error!' });
+    }
 });
 
 

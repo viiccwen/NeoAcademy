@@ -12,8 +12,13 @@ userRouter.get('/user', authMiddleware, (req, res) => {
 });
 
 userRouter.delete('/user', authMiddleware, async (req, res) => {
-    await deleteUser(req.user!);
-    res.status(204).end();
+    try {
+        await deleteUser(req.user!);
+        res.status(204).end();
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error!' });
+    } 
 });
 
 

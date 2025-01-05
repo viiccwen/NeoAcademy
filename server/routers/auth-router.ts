@@ -18,12 +18,16 @@ passport.use(
             callbackURL: `${process.env.AUTH_CALLBACK_BASE_URL}/github`
         } satisfies GitHubStrategyOptions,
         (async (accessToken: string, _: string, profile: GithubProfile, done: VerifyCallback) => {
-            const emails = await getUserEmails(accessToken);
-            const email = emails.find(email => email.primary)?.email!;
-            const user = await findByOAuth('GITHUB', accessToken)
-                      || await createOAuthUser(profile.displayName, email, 'GITHUB', accessToken);
+            try {
+                const emails = await getUserEmails(accessToken);
+                const email = emails.find(email => email.primary)?.email!;
+                const user = await findByOAuth('GITHUB', accessToken)
+                          || await createOAuthUser(profile.displayName, email, 'GITHUB', accessToken);
 
-            done(null, user);
+                done(null, user);
+            } catch (e) {
+                console.error(e);
+            }
         }) satisfies VerifyFunction,
     ),
 );
@@ -37,10 +41,14 @@ passport.use(
         } satisfies GoogleStrategyOptions,
         (async (accessToken: string, _: string, profile: GoogleProfile, done: VerifyCallback) => {
             const email = profile.emails![0].value;
-            const user = await findByOAuth('GOOGLE', accessToken)
-                      || await createOAuthUser(profile.displayName, email, 'GOOGLE', accessToken);
+            try {
+                const user = await findByOAuth('GOOGLE', accessToken)
+                          || await createOAuthUser(profile.displayName, email, 'GOOGLE', accessToken);
 
-            done(null, user);
+                done(null, user);
+            } catch (e) {
+                console.error(e);
+            }
         }) satisfies VerifyFunction,
     )
 );

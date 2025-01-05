@@ -1,48 +1,57 @@
 import type { Quiz, UnansweredQuestion, UnansweredQuiz, User } from 'database';
 
+import { ChatOpenAI } from '@langchain/openai';
 import { users } from 'database';
 import { ObjectId } from 'mongodb';
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 
 
-const dummi: UnansweredQuestion[] = [
-  {
-    "text": "Let \( M \) be a smooth manifold and \( X, Y \in \Gamma(TM) \) be two vector fields on \( M \). What is the Lie bracket \( [X, Y] \) of these two vector fields?",
-    "options": [
-      "The Lie bracket is defined as \( [X, Y] = X(Y) - Y(X) \).",
-      "The Lie bracket is defined as \( [X, Y] = X(Y) + Y(X) \).",
-      "The Lie bracket is defined as \( [X, Y] = X(Y) \circ Y(X) \).",
-      "The Lie bracket is defined as \( [X, Y] = \mathcal{L}_X Y - \mathcal{L}_Y X \)."
-    ],
-    "answer": [3],
-  },
-  {
-    "text": "Let \( g \) be a Riemannian metric on a smooth manifold \( M \). Which of the following statements about the covariant derivative \( \nabla \) is true?",
-    "options": [
-      "The covariant derivative \( \nabla_X Y \) of two vector fields \( X, Y \) is always symmetric.",
-      "The covariant derivative \( \nabla_X Y \) satisfies the Leibniz rule, i.e., \( \nabla_X (fY) = f \nabla_X Y + (Xf) Y \).",
-      "The covariant derivative \( \nabla_X Y \) is always parallel to \( Y \).",
-      "The covariant derivative \( \nabla_X Y \) of two vector fields \( X, Y \) is the same as their cross product."
-    ],
-    "answer": [1],
-  }
-];
-
-const dummy: Omit<UnansweredQuiz, '_id'> = {
-    name: 'henlo mathz',
-    category: 'differential geometry',
-    difficulty: 'medium',
-    questions: dummi,
-    multipleAnswers: false,
-    createdAt: new Date(),
-    answered: false
-};
+const model = new ChatOpenAI({ model: 'gpt-4o-mini' });
 
 export function getQuiz(user: User, quizId: string): Quiz | UnansweredQuiz | undefined {
     return user.quizzes.find(({ _id }) => _id.toString() == quizId);
 }
 
 export async function generateUnansweredQuiz(name: string, category: string, difficulty: string, option: number, question: number, multipleAnswers: boolean, remarks: string): Promise<UnansweredQuiz> {
-    return { _id: new ObjectId(), ...dummy };
+    const systemMessage = formatSystemMessage(option, question, multipleAnswers);
+    const humanMessage = formatHumanMessage(name, category, difficulty, remarks);
+    const aiMessage = await model.invoke([systemMessage, humanMessage]);
+
+    return {
+        _id: new ObjectId(),
+        name,
+        category,
+        difficulty,
+        multipleAnswers,
+        answered: false,
+        questions: JSON.parse(aiMessage.content.toString()) as UnansweredQuestion[],
+        createdAt: new Date(),
+    };
+}
+
+function formatSystemMessage(option: number, question: number, multipleAnswers: boolean): SystemMessage {
+    return new SystemMessage(
+`You are a quiz generator.
+ You will generate ${question} questions in total, and each question will have ${option} options. 
+ Every question is a ${multipleAnswers ? 'single' : 'multiple'}-choice question.
+ You will return an array of objects in JSON format, each object correspond to a question.
+ The question object will look like:
+ \`\`\`json{
+    "text": "the text of the question",
+    "options": ["text of option 0", "text of option 1", "text of option 2", "text of option 3"],
+    "answer": [numbers of the correct options]
+ }\`\`\`
+Return the JSON string without line breaks and code block.`
+    );
+}
+
+function formatHumanMessage(name: string, category: string, difficulty: string, remarks: string): HumanMessage {
+    return new HumanMessage(
+`Title of the quiz: ${name}.
+Category of the quiz: ${category}.
+Difficulty of the quiz: ${difficulty}.
+Remarks: "${remarks}"`
+    );
 }
 
 export async function recordUnansweredQuiz({ _id }: User, quiz: UnansweredQuiz): Promise<void> {
@@ -52,17 +61,14 @@ export async function recordUnansweredQuiz({ _id }: User, quiz: UnansweredQuiz):
     );
 }
 
-export async function submitAndGetAnswers(user: User, quizId: string, responses: number[][]):
+export async function submitAndGetAnswers(quiz: Quiz | UnansweredQuiz, responses: number[][]):
         Promise<{ index: number; answer: number[]; response: number[] }[]> {
-    const quiz = getQuiz(user, quizId);
-    if (!quiz) throw new Error('Not found');
-
     quiz.answered = true;
     quiz.questions = quiz.questions.map(({ text, options, answer }, i) =>
                                         ({ text, options, answer, response: responses[i] }));
 
     await users.updateOne(
-        { 'quizzes._id': new ObjectId(quizId) },
+        { 'quizzes._id': new ObjectId(quiz._id) },
         { $set: { 'quizzes.$': quiz } }
     );
 
@@ -78,6 +84,6 @@ export async function submitAndGetAnswers(user: User, quizId: string, responses:
 export async function deleteQuiz(user: User, quizId: string): Promise<void> {
     await users.updateOne(
         { _id: user._id },
-        { $pull: { 'quizzes._id': quizId } }
+        { $pull: { quizzes: { _id: new ObjectId(quizId) } } }
     );
 }
