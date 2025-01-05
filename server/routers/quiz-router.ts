@@ -1,6 +1,8 @@
 import authMiddleware from 'middlewares/auth-middleware';
 import { Router } from 'express';
 import { deleteQuiz, generateUnansweredQuiz, getQuiz, recordUnansweredQuiz, submitAndGetAnswers } from 'controllers/quiz-controller';
+import validateBodyMiddleware from 'middlewares/validate-body-middleware';
+import { createQuizSchema, submitQuizSchema } from 'schemas/quiz';
 
 
 const quizRouter = Router();
@@ -24,7 +26,7 @@ quizRouter.get('/quiz/:quizId', authMiddleware, (req, res) => {
     res.status(200).json({ id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt });
 });
 
-quizRouter.post('/quiz', authMiddleware, async (req, res) => {
+quizRouter.post('/quiz', authMiddleware, validateBodyMiddleware(createQuizSchema), async (req, res) => {
     try {
         const { name, category, difficulty, option, question, multipleAnswers, remarks } = req.body;
         const unansweredQuiz = await generateUnansweredQuiz(name, category, difficulty, option, question, multipleAnswers, remarks ?? '');
@@ -38,7 +40,7 @@ quizRouter.post('/quiz', authMiddleware, async (req, res) => {
     }
 });
 
-quizRouter.put('/quiz/:quizId', authMiddleware, async (req, res) => {
+quizRouter.put('/quiz/:quizId', authMiddleware, validateBodyMiddleware(submitQuizSchema), async (req, res) => {
     try {
         const quiz = getQuiz(req.user!, req.params.quizId);
         if (!quiz) {
