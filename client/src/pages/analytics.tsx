@@ -1,7 +1,7 @@
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import { useGetAllQuizDetails } from "@/hooks/quiz";
 import { useAuth } from "@/hooks/user";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pie, Bar } from "react-chartjs-2";
@@ -244,7 +244,7 @@ export default function Analytics() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {quiz.map((q, index) => (
+                    {quiz.map((q, _) => (
                       <TableRow key={q.id}>
                         <TableCell>{q.name}</TableCell>
                         <TableCell>{q.category}</TableCell>

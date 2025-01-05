@@ -10,11 +10,9 @@ import {
 } from "@/lib/type";
 import { DelayFunc } from "@/lib/utils";
 import {
-  mock_get_all_details_quiz_1,
   mock_get_all_quiz_1,
   mock_get_quiz_1,
   mock_question_1,
-  mock_question_2,
   mock_wrong_question_1,
 } from "@test/mock-quiz";
 import { generateQuiz } from "@/lib/mock";

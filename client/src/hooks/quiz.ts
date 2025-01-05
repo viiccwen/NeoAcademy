@@ -10,7 +10,7 @@ import {
   submitQuiz,
   updateQuiz,
 } from "@/actions/quiz-actions";
-import { GetAllQuizType, GetQuizType, QuizReturnType, SubmitQuizReturnType } from "@/lib/type";
+import { GetAllQuizType, GetQuizType, QuizReturnType } from "@/lib/type";
 import { useQuizStore } from "@/stores/quiz-store";
 import { useUserStore } from "@/stores/user-store";
 
@@ -60,7 +60,7 @@ export const useSubmitQuiz = () => {
       toast.dismiss();
       toast.error(error.message || "Error Occurred!");
     },
-    onSuccess: async (data: SubmitQuizReturnType) => {
+    onSuccess: async () => {
       // close loading toast
       toast.dismiss();
       toast.success("Quiz Submitted Successfully!");

@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { categories, difficulties, options, problems } from "@/lib/type";
 import { createQuizSchema, CreateQuizType } from "@/lib/type";
 import { useCreateQuiz } from "@/hooks/quiz";
-import { toast } from "sonner";
 
 interface CreateQuizFormProps {
   className?: string;

@@ -4,7 +4,7 @@ import { useSubmitQuiz } from "@/hooks/quiz";
 import { parseQuestionIndex } from "@/lib/utils";
 import { useQuizStore } from "@/stores/quiz-store";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Toaster } from "sonner";
 import { Progress } from "@/components/ui/progress";
