@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { GetAllQuizType, GetQuizType, QuestionType } from "./type";
+import { GetQuizType, QuestionType } from "./type";
 
 interface GenerateQuestionType {
   options_num: number;

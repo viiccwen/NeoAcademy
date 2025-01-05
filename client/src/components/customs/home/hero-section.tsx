@@ -4,11 +4,6 @@ import { LogIn } from "lucide-react";
 import { BackgroundEffect } from "./background-effect";
 
 export const HeroSection = () => {
-  const blurInVariants = {
-    hidden: { filter: "blur(10px)", opacity: 0 },
-    visible: { filter: "blur(0px)", opacity: 1 },
-  };
-
   return (
     <section
       id="home"
