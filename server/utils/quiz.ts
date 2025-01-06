@@ -2,7 +2,7 @@ import type { getAllQuizType, Quiz, UnansweredQuiz, User } from "database";
 
 export function getQuiz(
   user: User,
-  quizId?: string
+  quizId?: string | undefined
 ): Quiz | getAllQuizType | UnansweredQuiz | Quiz[] | undefined {
   try {
     if (quizId) {

@@ -21,7 +21,23 @@ export const getAllQuiz = async (req: Request, res: Response) => {
     const user = req.user!;
     const quizzes = getQuiz(user) as getAllQuizType;
 
+    if (!quizzes) throw new Error("找不到任何測驗！");
+
     res.status(200).json(quizzes);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "發生錯誤！" });
+  }
+};
+
+export const getQuizById = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const quiz = getQuiz(user, req.params.quizId);
+
+    if (!quiz) throw new Error("找不到測驗！");
+
+    res.status(200).json(quiz);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: error.message || "發生錯誤！" });
