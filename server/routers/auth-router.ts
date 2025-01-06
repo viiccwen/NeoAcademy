@@ -13,7 +13,7 @@ import { Router } from "express";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { getUserEmails } from "utils/github";
-import { githubAuthCallback } from "controllers/auth-controller";
+import { githubAuthCallback, googleAuthCallback } from "controllers/auth-controller";
 import type { AuthProvider } from "database";
 import { createUser, findByOAuthId } from "utils/user";
 
@@ -106,7 +106,7 @@ authRouter.get(
 authRouter.get(
   "/auth/callback/google",
   passport.authenticate("google", { session: false }),
-  (_, res) => res.redirect(process.env.AUTH_REDIRECT_URL!)
+  googleAuthCallback
 );
 
 export default authRouter;

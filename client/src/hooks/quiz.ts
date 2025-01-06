@@ -12,7 +12,6 @@ import {
 } from "@/actions/quiz-actions";
 import {
   CreateQuizType,
-  GetQuizType,
   QuizReturnType,
   SubmitQuizType,
 } from "@/lib/type";

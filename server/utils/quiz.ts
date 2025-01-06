@@ -24,7 +24,16 @@ export function getQuiz(
   try {
     if (quizId) {
       // single quiz search
-      const quiz = user.quizzes.find(({ _id }) => _id.toString() === quizId);
+      const _quiz = user.quizzes.find(({ _id }) => _id.toString() === quizId);
+
+      if (!_quiz) {
+        throw new Error("找不到測驗！");
+      }
+
+      const quiz = {
+        id: _quiz._id.toString(),
+        ..._quiz,
+      };
 
       return quiz;
     } else {
