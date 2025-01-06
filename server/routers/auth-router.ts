@@ -28,6 +28,7 @@ passport.use(
                 done(null, user);
             } catch (e) {
                 console.error(e);
+                done(null);
             }
         }) satisfies VerifyFunction,
     ),
@@ -49,6 +50,7 @@ passport.use(
                 done(null, user);
             } catch (e) {
                 console.error(e);
+                done(null);
             }
         }) satisfies VerifyFunction,
     )
