@@ -157,6 +157,6 @@ export const useGetAllQuizDetails = () => {
 
   return useQuery({
     queryKey: ["quiz", "get-all-details", token],
-    queryFn: getDetailsAllQuiz,
+    queryFn: () => getDetailsAllQuiz(token!),
   });
 };

@@ -3,7 +3,7 @@ import { MongoClient, ObjectId } from "mongodb";
 export type AuthProvider = "GITHUB" | "GOOGLE";
 
 export interface User {
-  _id: ObjectId;
+  id: ObjectId;
   name: string;
   email: string;
   authProvider: AuthProvider;
@@ -19,7 +19,7 @@ export type UnansweredQuiz = Omit<Quiz, "questions" | "answered"> & {
 };
 
 export interface Quiz {
-  _id: ObjectId;
+  id: ObjectId;
   name: string;
   category: string;
   difficulty: string;

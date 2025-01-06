@@ -5,7 +5,7 @@ import {
   type UnansweredQuiz,
   type User,
 } from "database";
-import type { getAllQuizType } from "./type";
+import type { getAllQuizType, QuizRequestType } from "./type";
 import {
   AIMessageChunk,
   HumanMessage,
@@ -17,39 +17,61 @@ import { ObjectId } from "mongodb";
 
 const model = new ChatOpenAI({ model: "gpt-4o-mini" });
 
-export function getQuiz(
+export function getQuiz <T extends Quiz | getAllQuizType | UnansweredQuiz | Quiz[]>(
   user: User,
+  type: QuizRequestType,
   quizId?: string | undefined
-): Quiz | getAllQuizType | UnansweredQuiz | Quiz[] | undefined {
+): T | undefined {
   try {
     if (quizId) {
       // single quiz search
-      const _quiz = user.quizzes.find(({ _id }) => _id.toString() === quizId);
+      const _quiz = user.quizzes.find(({ id }) => id.toString() === quizId);
 
       if (!_quiz) {
         throw new Error("找不到測驗！");
       }
 
-      const quiz = {
-        id: _quiz._id.toString(),
-        ..._quiz,
-      };
+      if (type === "details") {
+        return _quiz as T;
+      }
 
-      return quiz;
+      // type === "take-quiz"
+      const quiz = {
+        ..._quiz,
+        questions: _quiz.questions.map(({ text, options, answer }) => ({
+          text,
+          options,
+          answer,
+        })),
+      } as UnansweredQuiz;
+
+      return quiz as T;
     } else {
       // multiple quiz search
-      const quizzes = user.quizzes.map(
-        ({ _id, name, category, difficulty, multipleAnswers, createdAt }) => ({
-          id: _id.toString(),
-          name,
-          category,
-          difficulty,
-          multipleAnswers,
-          createdAt,
-        })
-      );
 
-      return quizzes;
+      // fix here
+      if (type === "details") {
+        const quizzes: T = user.quizzes.map(
+          ({ id, name, category, difficulty, multipleAnswers, questions, remarks, answered, createdAt }) => ({
+            id,
+            name,
+            category,
+            difficulty,
+            multipleAnswers,
+            questions: questions.map(({ text, options, answer, response }) => ({
+              text,
+              options,
+              answer,
+              response: response ?? [],
+            })),
+            remarks,
+            answered,
+            createdAt
+          })
+        );
+
+        return quizzes;
+      }
     }
   } catch (error) {
     console.error("Error retrieving quiz:", error);
@@ -87,7 +109,7 @@ export async function generateQuiz(
   ) as UnansweredQuestion[];
 
   return {
-    _id: new ObjectId(),
+    id: new ObjectId(),
     name,
     category,
     difficulty,
@@ -99,10 +121,10 @@ export async function generateQuiz(
 }
 
 export const recordQuiz = async <T extends Quiz | UnansweredQuiz>(
-  _id: ObjectId,
+  id: ObjectId,
   quiz: T
 ) => {
-  const _quiz = await users.updateOne({ _id }, { $push: { quizzes: quiz } });
+  const _quiz = await users.updateOne({ id }, { $push: { quizzes: quiz } });
   if (!_quiz) {
     throw new Error("Quiz not found.");
   }
@@ -115,9 +137,7 @@ export const submitAnswer = async (
 ) => {
   try {
     // get the quiz index
-    const quizIndex = user.quizzes.findIndex(
-      (q) => q._id.toString() === quizId
-    );
+    const quizIndex = user.quizzes.findIndex((q) => q.id.toString() === quizId);
     if (quizIndex === -1) throw new Error("找不到測驗！");
 
     // get the quiz
@@ -136,7 +156,7 @@ export const submitAnswer = async (
 
     // update the quiz
     const result = await users.updateOne(
-      { "quizzes._id": new ObjectId(quizId) },
+      { "quizzes.id": new ObjectId(quizId) },
       { $set: { [`quizzes.${quizIndex}`]: quiz } }
     );
 

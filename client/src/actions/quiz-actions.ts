@@ -155,20 +155,8 @@ export const getAllQuiz = async (token: string): Promise<GetAllQuizType> => {
   }
 };
 
-export const getDetailsAllQuiz = async (): Promise<GetQuizType[]> => {
+export const getDetailsAllQuiz = async (token: string): Promise<GetQuizType[]> => {
   try {
-    // todo: test
-    // return DelayFunc({
-    //   isError: false,
-    //   delay: 2000,
-    //   func: () => Array.from({ length: 10 }, generateQuiz),
-    // });
-
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
     const response: AxiosResponse<GetQuizType[], any> = await axios.get(
       `${API_URL}/quiz`,
       {

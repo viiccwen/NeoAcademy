@@ -6,12 +6,13 @@ import z from "zod";
 
 import type { createQuizSchema } from "schemas/quiz";
 import { generateQuiz, getQuiz, recordQuiz, submitAnswer } from "utils/quiz";
-import type { getAllQuizType } from "utils/type";
+import type { getAllQuizType, QuizRequestType } from "utils/type";
 
 export const getAllQuiz = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
-    const quizzes = getQuiz(user) as getAllQuizType;
+    const { type } = req.query as { type: QuizRequestType };
+    const quizzes = getQuiz(user, type) as getAllQuizType;
 
     if (!quizzes) throw new Error("找不到任何測驗！");
 
@@ -25,7 +26,8 @@ export const getAllQuiz = async (req: Request, res: Response) => {
 export const getQuizById = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
-    const quiz = getQuiz(user, req.params.quizId);
+    const { type } = req.query as { type: QuizRequestType };
+    const quiz = getQuiz(user, type, req.params.quizId);
 
     if (!quiz) throw new Error("找不到測驗！");
 
@@ -47,11 +49,11 @@ export const createQuiz = async (req: Request, res: Response) => {
       multipleAnswers,
       remarks,
     } = req.body as z.infer<typeof createQuizSchema>;
-    const { _id } = req.user!;
+    const { id } = req.user!;
 
     // genearate quiz
     const quiz = {
-      _id: new ObjectId(),
+      id: new ObjectId(),
       name,
       category,
       difficulty,
@@ -100,14 +102,14 @@ export const createQuiz = async (req: Request, res: Response) => {
     // );
 
     // record quiz
-    await recordQuiz<UnansweredQuiz>(_id, quiz);
+    await recordQuiz<UnansweredQuiz>(id, quiz);
 
     const questions = quiz.questions.map(({ text, options }) => ({
       text,
       options,
     }));
 
-    res.status(200).json({ id: quiz._id, questions });
+    res.status(200).json({ id: quiz.id, questions });
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: error.message || "發生錯誤！" });
@@ -135,8 +137,8 @@ export async function deleteQuiz(req: Request, res: Response) {
     const { quizId } = req.params;
 
     const updated_user = await users.updateOne(
-      { _id: user._id },
-      { $pull: { quizzes: { _id: new ObjectId(quizId) } } }
+      { id: user.id },
+      { $pull: { quizzes: { id: new ObjectId(quizId) } } }
     );
 
     if(!updated_user) throw new Error("刪除測驗失敗！");

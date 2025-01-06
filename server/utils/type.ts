@@ -19,3 +19,5 @@ export type getAllQuizType = {
   multipleAnswers: boolean;
   createdAt: Date;
 }[];
+
+export type QuizRequestType = "take-quiz" | "details";
