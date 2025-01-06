@@ -128,24 +128,16 @@ export const updateQuiz = async ({ type, text }: UpdateQuizType) => {
   }
 };
 
-export const deleteQuiz = async (id: string) => {
+export const deleteQuiz = async (id: string, token: string) => {
   try {
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
-    const response = await axios.delete(`${API_URL}/quiz`, {
-      params: {
-        id,
-      },
+    const response = await axios.delete(`${API_URL}/quiz/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (response.status === 200) {
-      return response.data;
+      return;
     } else {
       throw new Error("刪除測驗資料錯誤！");
     }

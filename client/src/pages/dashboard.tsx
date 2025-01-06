@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/user";
 import { useGetAllQuiz } from "@/hooks/quiz";
 import { FilterHelper, SortHelper } from "@/lib/utils";
 import { Metadata } from "@/components/customs/metadata";
+import { Toaster } from "sonner";
 
 export default function Dashboard() {
   const { isAuth } = useAuth();
@@ -27,9 +28,10 @@ export default function Dashboard() {
     "name" | "date" | "difficulty" | "category"
   >("name"); // Default sort by name
 
-  // Fetch Quiz Data
   useEffect(() => {
-    if (isAuth) _quiz.mutate();
+    if (!isAuth) {
+      navigate("/login");
+    }
   }, [isAuth]);
 
   if (_quiz.isPending) {
@@ -60,6 +62,7 @@ export default function Dashboard() {
 
     return (
       <>
+        <Toaster richColors />
         <Metadata
           title="Dashboard"
           description="View all available quizzes and start learning!"

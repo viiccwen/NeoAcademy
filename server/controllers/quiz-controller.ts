@@ -4,7 +4,6 @@ import type { Quiz, UnansweredQuiz, User } from "database";
 import { users } from "database";
 import z from "zod";
 
-
 import type { createQuizSchema } from "schemas/quiz";
 import { generateQuiz, getQuiz, recordQuiz, submitAnswer } from "utils/quiz";
 import type { getAllQuizType } from "utils/type";
@@ -121,7 +120,7 @@ export const submitQuiz = async (req: Request, res: Response) => {
     const responses = req.body as number[][];
     const { quizId } = req.params;
 
-    await submitAnswer(user, quizId, responses) as Quiz;
+    (await submitAnswer(user, quizId, responses)) as Quiz;
 
     res.sendStatus(200);
   } catch (error: any) {
@@ -130,9 +129,21 @@ export const submitQuiz = async (req: Request, res: Response) => {
   }
 };
 
-export async function deleteQuiz(user: User, quizId: string): Promise<void> {
-  await users.updateOne(
-    { _id: user._id },
-    { $pull: { quizzes: { _id: new ObjectId(quizId) } } }
-  );
+export async function deleteQuiz(req: Request, res: Response) {
+  try {
+    const user = req.user!;
+    const { quizId } = req.params;
+
+    const updated_user = await users.updateOne(
+      { _id: user._id },
+      { $pull: { quizzes: { _id: new ObjectId(quizId) } } }
+    );
+
+    if(!updated_user) throw new Error("刪除測驗失敗！");
+
+    res.sendStatus(200);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "發生未知錯誤！" });
+  }
 }
