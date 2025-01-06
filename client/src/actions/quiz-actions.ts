@@ -62,20 +62,8 @@ export const submitQuiz = async ({
   }
 };
 
-export const getQuiz = async (quizId: string): Promise<GetQuizType> => {
+export const getQuiz = async (quizId: string, token: string): Promise<GetQuizType> => {
   try {
-    // todo: test
-    // return DelayFunc({
-    //   isError: false,
-    //   delay: 2000,
-    //   func: () => mock_get_quiz_1,
-    // });
-
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
     const response: AxiosResponse<GetQuizType, any> = await axios.get(
       `${API_URL}/quiz/${quizId}`,
       {

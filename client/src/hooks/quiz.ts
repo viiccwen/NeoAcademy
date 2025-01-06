@@ -12,7 +12,6 @@ import {
 } from "@/actions/quiz-actions";
 import {
   CreateQuizType,
-  GetAllQuizType,
   GetQuizType,
   QuizReturnType,
   SubmitQuizType,
@@ -89,23 +88,13 @@ export const useSubmitQuiz = () => {
   });
 };
 
-export const useGetQuiz = () => {
-  return useMutation({
-    mutationKey: ["quiz", "get"],
-    mutationFn: getQuiz,
-    onMutate: () => {
-      toast.loading("Fetching Quiz...");
-    },
-    onError: (error: any) => {
-      // close loading toast
-      toast.dismiss();
-      toast.error(error.message || "Error Occurred!");
-    },
-    onSuccess: async (data: GetQuizType) => {
-      // close loading toast
-      toast.dismiss();
-      return data;
-    },
+export const useGetQuiz = (quizId: string) => {
+  const { token } = useUserStore();
+
+  return useQuery({
+    queryKey: ["quiz", "get"],
+    queryFn: () => getQuiz(quizId, token!),
+    enabled: !!quizId,
   });
 };
 
