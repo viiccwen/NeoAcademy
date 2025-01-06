@@ -12,7 +12,7 @@ export async function createUser(
   accessToken: string,
 ): Promise<User> {
   const user = {
-    id: new ObjectId(),
+    _id: new ObjectId(),
     name,
     email,
     authProvider,

@@ -3,7 +3,7 @@ import { MongoClient, ObjectId } from "mongodb";
 export type AuthProvider = "GITHUB" | "GOOGLE";
 
 export interface User {
-  id: ObjectId;
+  _id: ObjectId;
   name: string;
   email: string;
   authProvider: AuthProvider;

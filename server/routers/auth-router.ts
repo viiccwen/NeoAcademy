@@ -14,7 +14,6 @@ import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { getUserEmails } from "utils/github";
 import { githubAuthCallback, googleAuthCallback } from "controllers/auth-controller";
-import type { AuthProvider } from "database";
 import { createUser, findByOAuthId } from "utils/user";
 
 passport.use(
@@ -38,7 +37,7 @@ passport.use(
           (await createUser(
             profile.displayName,
             email,
-            "GITHUB" as AuthProvider,
+            "GITHUB",
             profile.id,
             accessToken
           ));
@@ -72,7 +71,7 @@ passport.use(
           (await createUser(
             profile.displayName,
             email,
-            "GOOGLE" as AuthProvider,
+            "GOOGLE",
             profile.id,
             accessToken
           ));

@@ -1,11 +1,6 @@
-import {
-  users,
-  type Quiz,
-  type UnansweredQuestion,
-  type UnansweredQuiz,
-  type User,
-} from "database";
-import type { getAllQuizType, QuizRequestType } from "./type";
+import type { Quiz, UnansweredQuestion, UnansweredQuiz, User } from "database";
+
+import { users } from "database";
 import {
   AIMessageChunk,
   HumanMessage,
@@ -17,66 +12,14 @@ import { ObjectId } from "mongodb";
 
 const model = new ChatOpenAI({ model: "gpt-4o-mini" });
 
-export function getQuiz <T extends Quiz | getAllQuizType | UnansweredQuiz | Quiz[]>(
-  user: User,
-  type: QuizRequestType,
-  quizId?: string | undefined
-): T | undefined {
-  try {
-    if (quizId) {
-      // single quiz search
-      const _quiz = user.quizzes.find(({ id }) => id.toString() === quizId);
 
-      if (!_quiz) {
-        throw new Error("找不到測驗！");
-      }
+export function getQuiz(user: User, quizId: string) {
+    return user.quizzes.find(({ id }) => id.toString() === quizId);
+}
 
-      if (type === "details") {
-        return _quiz as T;
-      }
-
-      // type === "take-quiz"
-      const quiz = {
-        ..._quiz,
-        questions: _quiz.questions.map(({ text, options, answer }) => ({
-          text,
-          options,
-          answer,
-        })),
-      } as UnansweredQuiz;
-
-      return quiz as T;
-    } else {
-      // multiple quiz search
-
-      // fix here
-      if (type === "details") {
-        const quizzes: T = user.quizzes.map(
-          ({ id, name, category, difficulty, multipleAnswers, questions, remarks, answered, createdAt }) => ({
-            id,
-            name,
-            category,
-            difficulty,
-            multipleAnswers,
-            questions: questions.map(({ text, options, answer, response }) => ({
-              text,
-              options,
-              answer,
-              response: response ?? [],
-            })),
-            remarks,
-            answered,
-            createdAt
-          })
-        );
-
-        return quizzes;
-      }
-    }
-  } catch (error) {
-    console.error("Error retrieving quiz:", error);
-    return undefined;
-  }
+export function stripQuestions(quiz: Quiz) {
+    const { id, name, category, difficulty, questions, multipleAnswers, answered, createdAt } = quiz;
+    return { id, name, category, difficulty, questions, multipleAnswers, answered, createdAt };
 }
 
 export async function generateQuiz(
@@ -120,12 +63,13 @@ export async function generateQuiz(
   };
 }
 
-export const recordQuiz = async <T extends Quiz | UnansweredQuiz>(
-  id: ObjectId,
-  quiz: T
+export const recordQuiz = async (
+  { authId }: User,
+  quiz: Quiz | UnansweredQuiz
 ) => {
-  const _quiz = await users.updateOne({ id }, { $push: { quizzes: quiz } });
-  if (!_quiz) {
+  const _quiz = await users.updateOne({ authId }, { $push: { quizzes: quiz } });
+  // quiz.id === id doesn't exist
+  if (!_quiz.matchedCount) {
     throw new Error("Quiz not found.");
   }
 };
