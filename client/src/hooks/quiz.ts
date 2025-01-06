@@ -15,6 +15,7 @@ import {
   GetAllQuizType,
   GetQuizType,
   QuizReturnType,
+  SubmitQuizType,
 } from "@/lib/type";
 import { useQuizStore } from "@/stores/quiz-store";
 import { useUserStore } from "@/stores/user-store";
@@ -55,11 +56,13 @@ export const useCreateQuiz = () => {
 };
 
 export const useSubmitQuiz = () => {
+  const { token } = useUserStore();
   const { quizId, resetQuiz } = useQuizStore();
 
   return useMutation({
     mutationKey: ["quiz", "submit"],
-    mutationFn: submitQuiz,
+    mutationFn: ({ quizId, answers }: SubmitQuizType) =>
+      submitQuiz({ token: token!, quizId, answers }),
     onMutate: () => {
       toast.loading("Submitting Quiz...");
     },

@@ -29,6 +29,9 @@ export default function Quiz() {
 
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
 
+  const isQuizCompleted = userAnswers.every((answer) => answer.length > 0);
+
+
   // Redirect to login if user is not authenticated
   useEffect(() => {
     if (!isAuth) navigate("/login");
@@ -129,6 +132,7 @@ export default function Quiz() {
             <Button
               className="flex-1 p-3 text-white bg-blue-600 hover:bg-blue-700 transition-all"
               onClick={handleSubmitQuiz}
+              disabled={!isQuizCompleted}
             >
               Submit
             </Button>
