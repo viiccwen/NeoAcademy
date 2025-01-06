@@ -24,11 +24,11 @@ export const createQuiz = async (
 ): Promise<QuizReturnType> => {
   try {
     // todo: test
-    return DelayFunc({
-      isError: false,
-      delay: 2000,
-      func: () => mock_question_1,
-    });
+    // return DelayFunc({
+    //   isError: false,
+    //   delay: 2000,
+    //   func: () => mock_question_1,
+    // });
 
     const token = await Cookies.get("token");
     if (!token) {
@@ -61,11 +61,11 @@ export const submitQuiz = async ({
 }: SubmitQuizType): Promise<SubmitQuizReturnType> => {
   try {
     // todo: test
-    return DelayFunc({
-      isError: false,
-      delay: 2000,
-      func: () => mock_wrong_question_1,
-    });
+    // return DelayFunc({
+    //   isError: false,
+    //   delay: 2000,
+    //   func: () => mock_wrong_question_1,
+    // });
 
     const token = await Cookies.get("token");
     if (!token) {
@@ -95,11 +95,11 @@ export const submitQuiz = async ({
 export const getQuiz = async (quizId: string): Promise<GetQuizType> => {
   try {
     // todo: test
-    return DelayFunc({
-      isError: false,
-      delay: 2000,
-      func: () => mock_get_quiz_1,
-    });
+    // return DelayFunc({
+    //   isError: false,
+    //   delay: 2000,
+    //   func: () => mock_get_quiz_1,
+    // });
 
     const token = await Cookies.get("token");
     if (!token) {
@@ -187,11 +187,11 @@ export const deleteQuiz = async (id: string) => {
 export const getAllQuiz = async (): Promise<GetAllQuizType> => {
   try {
     // todo: test
-    return DelayFunc({
-      isError: false,
-      delay: 2000,
-      func: () => mock_get_all_quiz_1,
-    });
+    // return DelayFunc({
+    //   isError: false,
+    //   delay: 2000,
+    //   func: () => mock_get_all_quiz_1,
+    // });
 
     const token = await Cookies.get("token");
     if (!token) {
@@ -220,11 +220,11 @@ export const getAllQuiz = async (): Promise<GetAllQuizType> => {
 export const getDetailsAllQuiz = async (): Promise<GetQuizType[]> => {
   try {
     // todo: test
-    return DelayFunc({
-      isError: false,
-      delay: 2000,
-      func: () => Array.from({ length: 10 }, generateQuiz),
-    });
+    // return DelayFunc({
+    //   isError: false,
+    //   delay: 2000,
+    //   func: () => Array.from({ length: 10 }, generateQuiz),
+    // });
 
     const token = await Cookies.get("token");
     if (!token) {

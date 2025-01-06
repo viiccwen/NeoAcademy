@@ -8,15 +8,21 @@ import { toast } from "sonner";
 
 export const useAuth = () => {
   const { isAuth, setIsAuth, setUser, token } = useUserStore();
-  const { data: user, isFetching } = useQuery<UserType>({
+
+  const { data: user, isFetching, isError, error } = useQuery<UserType>({
     queryKey: ["user", "details"],
     queryFn: () => getUser(token),
+    enabled: !!token,
   });
 
+  if(isError) {
+    console.error(error);
+  }
+
   useEffect(() => {
-    if (user) {
-      setUser({ name: user.name, email: user.email });
+    if (user && !isAuth) {
       setIsAuth(true);
+      setUser({ name: user.name, email: user.email });
     }
   }, [user]);
 

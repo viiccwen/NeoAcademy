@@ -10,6 +10,7 @@ import { ThemeProvider } from "./components/ui/theme-provider";
 import Result from "./pages/result";
 import Dashboard from "./pages/dashboard";
 import Analytics from "./pages/analytics";
+import { Auth } from "./pages/auth";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/quiz/:quizId/:index" element={<Quiz />} />
             <Route path="/result/:quizId" element={<Result />} />
+            <Route path="/auth/:token" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

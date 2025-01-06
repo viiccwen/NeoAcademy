@@ -1,23 +1,9 @@
-import { DelayFunc } from "@/lib/utils";
-import { UserType } from "@/stores/user-store";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 // GET /user: get user
 export const getUser = async (token: string | null) => {
   try {
-    const res: UserType = {
-      name: "Neo Wang",
-      email: "wang@gmail.com"
-    };
-
-    // todo: remove this line
-    return DelayFunc({
-      isError: false,
-      delay: 1000,
-      func: () => res,
-    });
-
     if (!token) {
       throw new Error("使用者請重新登入！");
     }
