@@ -1,20 +1,19 @@
-import type { AuthProvider, User } from 'database';
-import type { DeleteResult } from 'mongodb';
-
-import { users } from 'database';
-import { ObjectId } from 'mongodb';
+import type { RequestHandler } from 'express';
+import { deleteUserById } from 'utils/user';
 
 
-export async function createOAuthUser(name: string, email: string, authProvider: AuthProvider, accessToken: string): Promise<User> {
-    const user = { _id: new ObjectId(), name, email, authProvider, accessToken, quizzes: [], createdAt: new Date() };
-    await users.insertOne(user);
-    return user;
-}
+export const getUserProfile: RequestHandler = (req, res) => {
+    const { name, email } = req.user!;
 
-export async function findByOAuth(authProvider: AuthProvider, accessToken: string): Promise<User | null> {
-    return await users.findOne({ authProvider, accessToken });
-}
+    res.status(200).json({ name, email });
+};
 
-export async function deleteUser({ _id }: User): Promise<DeleteResult> {
-    return await users.deleteOne({ _id });
-}
+export const deleteUser: RequestHandler = async (req, res) => {
+    try {
+        await deleteUserById(req.user!._id);
+        res.status(204).end();
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error!' });
+    } 
+};

@@ -8,6 +8,7 @@ export interface User {
     email: string;
     authProvider: AuthProvider;
     accessToken: string;
+    authId: string;
     quizzes: (Quiz | UnansweredQuiz)[];
     createdAt: Date;
 }

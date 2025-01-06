@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
+import { findByAccessToken } from 'utils/user';
 
-import { findByOAuth } from 'controllers/user-controller';
 import { verify } from 'utils/verify';
 
 
@@ -12,8 +12,9 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
 
     try {
         const token = req.headers.authorization.split(' ')[1];
+        console.log(await verify(token));
         const { provider, accessToken } = await verify(token) as any;
-        const user = await findByOAuth(provider, accessToken);
+        const user = await findByAccessToken(provider, accessToken);
 
         if (!user) {
             res.status(404).json({ message: 'User not found.' });

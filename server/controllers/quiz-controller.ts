@@ -1,89 +1,60 @@
-import type { Quiz, UnansweredQuestion, UnansweredQuiz, User } from 'database';
-
-import { ChatOpenAI } from '@langchain/openai';
-import { users } from 'database';
-import { ObjectId } from 'mongodb';
-import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import type { RequestHandler } from 'express';
+import { deleteQuizById, generateUnansweredQuiz, getQuizById, recordUnansweredQuiz, submitAndGetAnswers } from 'utils/quiz';
 
 
-const model = new ChatOpenAI({ model: 'gpt-4o-mini' });
+export const getQuizzes: RequestHandler = (req, res) => {
+    const quizzes = req.user!.quizzes.map(({ _id, name, category, difficulty, multipleAnswers, answered, createdAt }) =>
+                                          ({ id: _id, name, category, difficulty, multipleAnswers, answered, createdAt }));
+    
+    res.status(200).json(quizzes);
+};
 
-export function getQuiz(user: User, quizId: string): Quiz | UnansweredQuiz | undefined {
-    return user.quizzes.find(({ _id }) => _id.toString() == quizId);
-}
+export const getQuizDetails: RequestHandler = (req, res) => {
+    const quiz = getQuizById(req.user!, req.params.quizId);
 
-export async function generateUnansweredQuiz(name: string, category: string, difficulty: string, option: number, question: number, multipleAnswers: boolean, remarks: string): Promise<UnansweredQuiz> {
-    const systemMessage = formatSystemMessage(option, question, multipleAnswers);
-    const humanMessage = formatHumanMessage(name, category, difficulty, remarks);
-    const aiMessage = await model.invoke([systemMessage, humanMessage]);
-
-    return {
-        _id: new ObjectId(),
-        name,
-        category,
-        difficulty,
-        multipleAnswers,
-        answered: false,
-        questions: JSON.parse(aiMessage.content.toString()) as UnansweredQuestion[],
-        createdAt: new Date(),
-    };
-}
-
-function formatSystemMessage(option: number, question: number, multipleAnswers: boolean): SystemMessage {
-    return new SystemMessage(
-`You are a quiz generator.
- You will generate ${question} questions in total, and each question will have ${option} options. 
- Every question is a ${multipleAnswers ? 'single' : 'multiple'}-choice question.
- You will return an array of objects in JSON format, each object correspond to a question.
- The question object will look like:
- \`\`\`json{
-    "text": "the text of the question",
-    "options": ["text of option 0", "text of option 1", ..., "text of option n"],
-    "answer": [numbers of the correct options]
- }\`\`\`
-Return the JSON string without line breaks and code block.`
-    );
-}
-
-function formatHumanMessage(name: string, category: string, difficulty: string, remarks: string): HumanMessage {
-    return new HumanMessage(
-`Title of the quiz: ${name}.
-Category of the quiz: ${category}.
-Difficulty of the quiz: ${difficulty}.
-Remarks: "${remarks}"`
-    );
-}
-
-export async function recordUnansweredQuiz({ _id }: User, quiz: UnansweredQuiz): Promise<void> {
-    await users.updateOne(
-        { _id },
-        { $push: { quizzes: quiz } }
-    );
-}
-
-export async function submitAndGetAnswers(quiz: Quiz | UnansweredQuiz, responses: number[][]):
-        Promise<{ index: number; answer: number[]; response: number[] }[]> {
-    quiz.answered = true;
-    quiz.questions = quiz.questions.map(({ text, options, answer }, i) =>
-                                        ({ text, options, answer, response: responses[i] }));
-
-    await users.updateOne(
-        { 'quizzes._id': new ObjectId(quiz._id) },
-        { $set: { 'quizzes.$': quiz } }
-    );
-
-    const answers = quiz.questions.map(question => question.answer);
-    const incorrectProblems = [];
-    for (let i = 0; i < answers.length; i++) {
-        if (responses[i].some((x, j) => answers[i][j] != x))
-            incorrectProblems.push({ index: i, answer: answers[i], response: responses[i] });
+    if (!quiz) {
+        res.status(404).json({ message: 'Quiz not found.' });
+        return;
     }
-    return incorrectProblems;
+
+    const { _id: id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt } = quiz;
+    res.status(200).json({ id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt });
+};
+
+export const generateQuiz: RequestHandler = async (req, res) => {
+    try {
+        const { name, category, difficulty, option, question, multipleAnswers, remarks } = req.body;
+        const unansweredQuiz = await generateUnansweredQuiz(name, category, difficulty, option, question, multipleAnswers, remarks ?? '');
+        await recordUnansweredQuiz(req.user!, unansweredQuiz);
+
+        const questions = unansweredQuiz.questions.map(({ text, options }) => ({ text, options }));
+        res.status(200).json({ id: unansweredQuiz._id, questions });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error!' });
+    }
+};
+
+export const submitQuiz: RequestHandler = async (req, res) => {
+    try {
+        const quiz = getQuizById(req.user!, req.params.quizId);
+        if (!quiz) {
+            res.status(404).json({ message: 'Quiz not found.' });
+            return;
+        }
+        res.status(200).json(await submitAndGetAnswers(quiz, req.body));
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error!' });
+    }
 }
 
-export async function deleteQuiz(user: User, quizId: string): Promise<void> {
-    await users.updateOne(
-        { _id: user._id },
-        { $pull: { quizzes: { _id: new ObjectId(quizId) } } }
-    );
+export const deleteQuiz: RequestHandler = async (req, res) => {
+    try {
+        await deleteQuizById(req.user!, req.params.quizId);
+        res.status(204).end();
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error!' });
+    }
 }

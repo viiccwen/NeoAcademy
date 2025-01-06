@@ -7,7 +7,8 @@ import { Router } from 'express';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { getUserEmails } from 'utils/github';
-import { createOAuthUser, findByOAuth } from 'controllers/user-controller';
+import { handleOAuthCallback } from 'controllers/auth-controller';
+import { createOAuthUser, findByOAuthId } from 'utils/user';
 
 
 passport.use(
@@ -21,8 +22,8 @@ passport.use(
             try {
                 const emails = await getUserEmails(accessToken);
                 const email = emails.find(email => email.primary)?.email!;
-                const user = await findByOAuth('GITHUB', accessToken)
-                          || await createOAuthUser(profile.displayName, email, 'GITHUB', accessToken);
+                const user = await findByOAuthId('GITHUB', profile.id)
+                          || await createOAuthUser(profile.displayName, email, 'GITHUB', accessToken, profile.id);
 
                 done(null, user);
             } catch (e) {
@@ -42,8 +43,8 @@ passport.use(
         (async (accessToken: string, _: string, profile: GoogleProfile, done: VerifyCallback) => {
             const email = profile.emails![0].value;
             try {
-                const user = await findByOAuth('GOOGLE', accessToken)
-                          || await createOAuthUser(profile.displayName, email, 'GOOGLE', accessToken);
+                const user = await findByOAuthId('GOOGLE', profile.id)
+                          || await createOAuthUser(profile.displayName, email, 'GOOGLE', accessToken, profile.id);
 
                 done(null, user);
             } catch (e) {
@@ -63,7 +64,7 @@ authRouter.get(
 authRouter.get(
     '/auth/callback/github',
     passport.authenticate('github', { session: false }),
-    (_, res) => res.redirect(process.env.AUTH_REDIRECT_URL!),
+    handleOAuthCallback,
 );
 
 authRouter.get(
@@ -74,7 +75,8 @@ authRouter.get(
 authRouter.get(
     '/auth/callback/google',
     passport.authenticate('google', { session: false }),
-    (_, res) => res.redirect(process.env.AUTH_REDIRECT_URL!),
+    handleOAuthCallback,
 );
+
 
 export default authRouter;
