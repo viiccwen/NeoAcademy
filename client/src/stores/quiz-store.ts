@@ -92,6 +92,8 @@ export const useQuizStore = create<QuizStoreInterface>()(
       resetQuiz: () => {
         set(() => ({
           questions: [],
+          quizId: "",
+          amount: 0,
           currentQuestionId: "",
           currentQuestionIndex: -1,
           userAnswers: [],
