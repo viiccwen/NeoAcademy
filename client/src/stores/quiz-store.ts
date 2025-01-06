@@ -37,7 +37,7 @@ export const useQuizStore = create<QuizStoreInterface>()(
       // Load a quiz into the store
       loadQuiz: (quiz) => {
         const quizId: string = quiz.id;
-        const questions: QuestionType[] = quiz.problems;
+        const questions: QuestionType[] = quiz.questions;
 
         set(() => ({
           quizId,

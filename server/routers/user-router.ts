@@ -1,12 +1,13 @@
 import authMiddleware from 'middlewares/auth-middleware';
 import { Router } from 'express';
 import { deleteUser } from 'controllers/user-controller';
+import type { User } from 'database';
 
 
 const userRouter = Router();
 
 userRouter.get('/user', authMiddleware, (req, res) => {
-    const { name, email } = req.user!;
+    const { name, email } = req.user! as User;
 
     res.status(200).json({ name, email });
 });

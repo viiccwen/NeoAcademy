@@ -10,16 +10,24 @@ import {
   submitQuiz,
   updateQuiz,
 } from "@/actions/quiz-actions";
-import { GetAllQuizType, GetQuizType, QuizReturnType } from "@/lib/type";
+import {
+  CreateQuizType,
+  GetAllQuizType,
+  GetQuizType,
+  QuizReturnType,
+} from "@/lib/type";
 import { useQuizStore } from "@/stores/quiz-store";
 import { useUserStore } from "@/stores/user-store";
+import { useNavigate } from "react-router-dom";
 
 export const useCreateQuiz = () => {
+  const { token } = useUserStore();
   const { loadQuiz } = useQuizStore();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationKey: ["quiz", "create"],
-    mutationFn: createQuiz,
+    mutationFn: (formdata: CreateQuizType) => createQuiz(token!, formdata),
     onMutate: () => {
       toast.loading("Generating Quiz...");
     },
@@ -40,7 +48,7 @@ export const useCreateQuiz = () => {
       await DelayFunc({
         isError: false,
         delay: 2000,
-        func: () => (window.location.href = `/quiz/${data.id}/1`),
+        func: () => navigate(`/quiz/${data.id}/1`),
       });
     },
   });
@@ -143,7 +151,7 @@ export const useGetAllQuiz = () => {
 
   return useMutation({
     mutationKey: ["quiz", "get-all", token],
-    mutationFn: getAllQuiz,
+    mutationFn: () => getAllQuiz(token!),
     onMutate: () => {
       toast.loading("Get Quiz...");
     },
@@ -167,4 +175,4 @@ export const useGetAllQuizDetails = () => {
     queryKey: ["quiz", "get-all-details", token],
     queryFn: getDetailsAllQuiz,
   });
-}
+};
