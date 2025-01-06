@@ -13,9 +13,9 @@ import { Router } from "express";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { getUserEmails } from "utils/github";
-import { createOAuthUser, findByOAuth } from "controllers/user-controller";
 import { githubAuthCallback } from "controllers/auth-controller";
 import type { AuthProvider } from "database";
+import { createUser, findByOAuthId } from "utils/user";
 
 passport.use(
   new GitHubStrategy(
@@ -34,17 +34,19 @@ passport.use(
         const emails = await getUserEmails(accessToken);
         const email = emails.find((email) => email.primary)?.email!;
         const user =
-          (await findByOAuth("GITHUB", accessToken)) ||
-          (await createOAuthUser(
+          (await findByOAuthId("GITHUB", profile.id)) ||
+          (await createUser(
             profile.displayName,
             email,
             "GITHUB" as AuthProvider,
+            profile.id,
             accessToken
           ));
 
         done(null, user);
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
+        done(error);
       }
     }) satisfies VerifyFunction
   )
@@ -63,14 +65,15 @@ passport.use(
       profile: GoogleProfile,
       done: VerifyCallback
     ) => {
-      const email = profile.emails![0].value;
       try {
+        const email = profile.emails![0].value;
         const user =
-          (await findByOAuth("GOOGLE", accessToken)) ||
-          (await createOAuthUser(
+          (await findByOAuthId("GOOGLE", profile.id)) ||
+          (await createUser(
             profile.displayName,
             email,
-            "GOOGLE",
+            "GOOGLE" as AuthProvider,
+            profile.id,
             accessToken
           ));
 

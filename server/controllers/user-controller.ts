@@ -1,20 +1,31 @@
-import type { AuthProvider, User } from 'database';
-import type { DeleteResult } from 'mongodb';
+import type { RequestHandler } from "express";
+import type { Request, Response } from "express";
+import { deleteUserById } from "utils/user";
 
-import { users } from 'database';
-import { ObjectId } from 'mongodb';
+export const getUser: RequestHandler = async (req: Request, res: Response) => {
+  try {
+    const { name, email } = req.user!;
 
+    res.status(200).json({ name, email });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "發生未知錯誤！" });
+  }
+};
 
-export async function createOAuthUser(name: string, email: string, authProvider: AuthProvider, accessToken: string): Promise<User> {
-    const user = { _id: new ObjectId(), name, email, authProvider, accessToken, quizzes: [], createdAt: new Date() };
-    await users.insertOne(user);
-    return user;
-}
+export const deleteUser: RequestHandler = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { _id } = req.user!;
+    const result = await deleteUserById(_id);
 
-export async function findByOAuth(authProvider: AuthProvider, accessToken: string): Promise<User | null> {
-    return await users.findOne({ authProvider, accessToken });
-}
+    if (!result.deletedCount) throw new Error("找不到使用者！");
 
-export async function deleteUser({ _id }: User): Promise<DeleteResult> {
-    return await users.deleteOne({ _id });
-}
+    res.sendStatus(200);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "發生未知錯誤！" });
+  }
+};
