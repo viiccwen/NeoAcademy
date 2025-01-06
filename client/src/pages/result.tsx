@@ -14,7 +14,7 @@ export default function Result() {
   const { isAuth } = useAuth();
   const navigate = useNavigate();
 
-  const _quiz = useGetQuiz();
+  const _quiz = useGetQuiz(quizId!);
   const quiz = _quiz.data;
 
   // Redirect to login if user is not authenticated
@@ -22,14 +22,17 @@ export default function Result() {
     if (!isAuth) navigate("/login");
   }, [isAuth]);
 
+  // Redirect to 404 if quizId is not provided
+  useEffect(() => {
+    if (!quizId) {
+      navigate("/notfound");
+    }
+  }, [quizId]);
+
   if (!quizId) {
     navigate("/notfound");
     return;
   }
-
-  useEffect(() => {
-    _quiz.mutate(quizId);
-  }, [quizId]);
 
   if (_quiz.isPending) {
     return (

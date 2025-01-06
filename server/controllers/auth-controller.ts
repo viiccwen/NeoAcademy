@@ -1,4 +1,3 @@
-import type { User } from "database";
 import type { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
 import type { payloadType } from "utils/type";
@@ -9,7 +8,7 @@ export const githubAuthCallback = (req: Request, res: Response) => {
 
     const payload: payloadType = {
       provider: user.authProvider,
-      accessToken: user.accessToken,
+      authId: user.authId,
     }
     
     const token = sign({ payload }, process.env.JWT_SECRET!, {
