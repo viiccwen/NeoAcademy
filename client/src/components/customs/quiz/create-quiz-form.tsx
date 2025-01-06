@@ -6,7 +6,7 @@ import { SelectionItem } from "./selection-item";
 import { MultipleCheckbox } from "./multiple-checkbox";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { categories, difficulties, options, problems } from "@/lib/type";
+import { categories, difficulties, options, questions } from "@/lib/type";
 import { createQuizSchema, CreateQuizType } from "@/lib/type";
 import { useCreateQuiz } from "@/hooks/quiz";
 
@@ -86,8 +86,8 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
           {/* Number of Problems & Options */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SelectionItem
-              name="problem"
-              choice={problems}
+              name="question"
+              choice={questions}
               register={register}
               control={control}
               isNumber={true}

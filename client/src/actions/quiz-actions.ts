@@ -8,33 +8,14 @@ import {
   SubmitQuizReturnType,
   SubmitQuizType,
 } from "@/lib/type";
-import { DelayFunc } from "@/lib/utils";
-import {
-  mock_get_all_quiz_1,
-  mock_get_quiz_1,
-  mock_question_1,
-  mock_wrong_question_1,
-} from "@test/mock-quiz";
-import { generateQuiz } from "@/lib/mock";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const createQuiz = async (
+  token: string,
   formdata: CreateQuizType
 ): Promise<QuizReturnType> => {
   try {
-    // todo: test
-    // return DelayFunc({
-    //   isError: false,
-    //   delay: 2000,
-    //   func: () => mock_question_1,
-    // });
-
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
     const response: AxiosResponse<QuizReturnType, any> = await axios.post(
       `${API_URL}/quiz`,
       formdata,

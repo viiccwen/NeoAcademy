@@ -7,7 +7,7 @@ import {
 
 export const mock_question_1: QuizReturnType = {
   id: "67718a5e3211088baed0aa40",
-  problems: [
+  questions: [
     {
       text: "Which sentence is grammatically correct?",
       options: [
@@ -93,7 +93,7 @@ export const mock_question_1: QuizReturnType = {
 
 export const mock_question_2: QuizReturnType = {
   id: "67718a5e3211088baed0aa41",
-  problems: [
+  questions: [
     {
       text: "Let ( M ) be a smooth manifold and ( X, Y in Gamma(TM) ) be two vector fields on ( M ). What is the Lie bracket ( [X, Y] ) of these two vector fields?",
       options: [

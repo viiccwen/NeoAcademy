@@ -10,3 +10,12 @@ export type jwtType = {
   iat: number;
   exp: number;
 };
+
+export type getAllQuizType = {
+  id: string;
+  name: string;
+  category: string;
+  difficulty: string;
+  multipleAnswers: boolean;
+  createdAt: Date;
+}[];

@@ -9,7 +9,7 @@ export const categories: string[] = [
   "History",
 ];
 export const difficulties: string[] = ["Easy", "Medium", "Hard"];
-export const problems: number[] = [5, 10, 15, 20, 25];
+export const questions: number[] = [5, 10, 15, 20, 25];
 export const options: number[] = [2, 3, 4, 5];
 
 // create quiz type
@@ -17,7 +17,7 @@ export const createQuizSchema = z.object({
   name: z.string().nonempty(),
   category: z.string().nonempty(),
   difficulty: z.string().nonempty(),
-  problem: z.number().positive(),
+  question: z.number().positive(),
   option: z.number().positive(),
   multipleAnswers: z.boolean(),
   remarks: z.string().max(100, "Remarks should be less than 100 characters!"),
@@ -32,7 +32,7 @@ export type QuestionType = {
 
 export type QuizReturnType = {
   id: string;
-  problems: QuestionType[];
+  questions: QuestionType[];
 };
 
 export type SubmitQuizType = {

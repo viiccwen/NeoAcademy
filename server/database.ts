@@ -16,14 +16,7 @@ export type UnansweredQuiz = Omit<Quiz, "questions" | "answered"> & {
   answered: false;
 };
 
-export type getAllQuizType = {
-  id: string;
-  name: string;
-  category: string;
-  difficulty: string;
-  multipleAnswers: boolean;
-  createdAt: Date;
-}[];
+
 
 export interface Quiz {
   _id: ObjectId;

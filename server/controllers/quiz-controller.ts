@@ -1,20 +1,13 @@
 import type { Request, Response } from "express";
-import { ChatOpenAI } from "@langchain/openai";
 
-import type {
-  getAllQuizType,
-  Quiz,
-  UnansweredQuestion,
-  UnansweredQuiz,
-  User,
-} from "database";
+import type { Quiz, UnansweredQuestion, UnansweredQuiz, User } from "database";
 
 import { users } from "database";
 import { ObjectId } from "mongodb";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { getQuiz } from "utils/quiz";
-
-const model = new ChatOpenAI({ model: "gpt-4o-mini" });
+import { generateQuiz, getQuiz, recordQuiz } from "utils/quiz";
+import { unknown, type z } from "zod";
+import type { createQuizSchema } from "schemas/quiz";
+import type { getAllQuizType } from "utils/type";
 
 export const getAllQuiz = async (req: Request, res: Response) => {
   try {
@@ -44,71 +37,83 @@ export const getQuizById = async (req: Request, res: Response) => {
   }
 };
 
-export async function generateUnansweredQuiz(
-  name: string,
-  category: string,
-  difficulty: string,
-  option: number,
-  question: number,
-  multipleAnswers: boolean,
-  remarks: string
-): Promise<UnansweredQuiz> {
-  const systemMessage = formatSystemMessage(option, question, multipleAnswers);
-  const humanMessage = formatHumanMessage(name, category, difficulty, remarks);
-  const aiMessage = await model.invoke([systemMessage, humanMessage]);
+export const createQuiz = async (req: Request, res: Response) => {
+  try {
+    const {
+      name,
+      category,
+      difficulty,
+      option,
+      question,
+      multipleAnswers,
+      remarks,
+    } = req.body as z.infer<typeof createQuizSchema>;
+    const { _id } = req.user!;
 
-  return {
-    _id: new ObjectId(),
-    name,
-    category,
-    difficulty,
-    multipleAnswers,
-    answered: false,
-    questions: JSON.parse(aiMessage.content.toString()) as UnansweredQuestion[],
-    createdAt: new Date(),
-  };
-}
+    // genearate quiz
+    const quiz = {
+      _id: new ObjectId(),
+      name,
+      category,
+      difficulty,
+      questions: [
+        {
+          text: "What is the formula for water?",
+          options: ["H2O", "CO2", "O2", "H2SO4"],
+          answer: [0, 2, 3],
+        },
+        {
+          text: "Who discovered gravity?",
+          options: ["Einstein", "Newton", "Galileo", "Tesla"],
+          answer: [1],
+        },
+        {
+          text: "What is the closest planet to the sun?",
+          options: ["Earth", "Mars", "Mercury", "Venus"],
+          answer: [2],
+        },
+        {
+          text: "What is the largest mammal?",
+          options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+          answer: [1],
+        },
+        {
+          text: "What is the powerhouse of the cell?",
+          options: ["Nucleus", "Mitochondria", "Ribosome", "Lysosome"],
+          answer: [1],
+        },
+      ],
+      multipleAnswers,
+      remarks: remarks ?? "",
+      answered: false as false,
+      createdAt: new Date(),
+    };
 
-function formatSystemMessage(
-  option: number,
-  question: number,
-  multipleAnswers: boolean
-): SystemMessage {
-  return new SystemMessage(
-    `You are a quiz generator.
- You will generate ${question} questions in total, and each question will have ${option} options. 
- Every question is a ${multipleAnswers ? "single" : "multiple"}-choice question.
- You will return an array of objects in JSON format, each object correspond to a question.
- The question object will look like:
- \`\`\`json{
-    "text": "the text of the question",
-    "options": ["text of option 0", "text of option 1", ..., "text of option n"],
-    "answer": [numbers of the correct options]
- }\`\`\`
-Return the JSON string without line breaks and code block.`
-  );
-}
+    // todo: already tested, remove this at last
+    // const quiz = await generateQuiz(
+    //   name,
+    //   category,
+    //   difficulty,
+    //   option,
+    //   question,
+    //   multipleAnswers,
+    //   remarks ?? ""
+    // );
 
-function formatHumanMessage(
-  name: string,
-  category: string,
-  difficulty: string,
-  remarks: string
-): HumanMessage {
-  return new HumanMessage(
-    `Title of the quiz: ${name}.
-Category of the quiz: ${category}.
-Difficulty of the quiz: ${difficulty}.
-Remarks: "${remarks}"`
-  );
-}
+    // record quiz
+    await recordQuiz<UnansweredQuiz>(_id, quiz);
 
-export async function recordUnansweredQuiz(
-  { _id }: User,
-  quiz: UnansweredQuiz
-): Promise<void> {
-  await users.updateOne({ _id }, { $push: { quizzes: quiz } });
-}
+    const questions = quiz.questions.map(({ text, options }) => ({
+      text,
+      options,
+    }));
+
+    res.status(200).json({ id: quiz._id, questions });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "發生錯誤！" });
+  }
+};
 
 export async function submitAndGetAnswers(
   quiz: Quiz | UnansweredQuiz,
