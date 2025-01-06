@@ -1,42 +1,32 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GetAllQuizType } from "@/lib/type";
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { MoreHorizontal } from "lucide-react";
+
+import { useDeleteQuiz } from "@/hooks/quiz";
+import { GetAllQuizType } from "@/lib/type";
 
 interface QuizCardProps {
-  quiz: GetAllQuizType[0];
+  quiz: GetAllQuizType[number];
 }
 
 export const QuizCard = ({ quiz }: QuizCardProps) => {
   const navigate = useNavigate();
+  const deleteQuiz = useDeleteQuiz();
 
-  // Mock Delete Quiz API Call (Replace with actual API integration)
-  const deleteQuiz = useMutation({
-    mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // 模擬 API 延遲
-      return quiz.id;
-    },
-    onSuccess: () => {
-      toast.success("Quiz deleted successfully!");
-      // 這裡可以添加刷新 quiz 列表的邏輯
-    },
-    onError: () => {
-      toast.error("Failed to delete quiz.");
-    },
-  });
+  const handleDeleteQuiz = () => {
+    deleteQuiz.mutate(quiz.id);
+  };
 
   return (
     <Card className="bg-gray-800 border-gray-700 hover:shadow-lg transition duration-300 relative">
-      {/* 右上角的三點選單 */}
+      {/* menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="absolute top-2 p-3 right-2 text-gray-400 hover:text-white">
@@ -60,7 +50,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
             View Results
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => deleteQuiz.mutate()}
+            onClick={handleDeleteQuiz}
             className="hover:cursor-pointer text-red-500 hover:text-red-500"
           >
             <p className="hover:text-red-500 w-full h-full">Delete Quiz</p>
@@ -68,7 +58,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* 卡片標題 */}
+      {/* card title */}
       <CardHeader>
         <CardTitle className="text-lg font-semibold">{quiz.name}</CardTitle>
         <div className="flex items-center gap-2 mt-2">
@@ -90,7 +80,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
         </div>
       </CardHeader>
 
-      {/* 卡片內容 */}
+      {/* card content */}
       <CardContent className="p-4">
         <p className="text-sm text-gray-300 mb-4">
           Category: <span className="font-medium">{quiz.category}</span>

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { DelayFunc } from "@/lib/utils";
 import {
@@ -12,9 +12,9 @@ import {
 } from "@/actions/quiz-actions";
 import {
   CreateQuizType,
-  GetAllQuizType,
   GetQuizType,
   QuizReturnType,
+  SubmitQuizType,
 } from "@/lib/type";
 import { useQuizStore } from "@/stores/quiz-store";
 import { useUserStore } from "@/stores/user-store";
@@ -55,11 +55,13 @@ export const useCreateQuiz = () => {
 };
 
 export const useSubmitQuiz = () => {
+  const { token } = useUserStore();
   const { quizId, resetQuiz } = useQuizStore();
 
   return useMutation({
     mutationKey: ["quiz", "submit"],
-    mutationFn: submitQuiz,
+    mutationFn: ({ quizId, answers }: SubmitQuizType) =>
+      submitQuiz({ token: token!, quizId, answers }),
     onMutate: () => {
       toast.loading("Submitting Quiz...");
     },
@@ -86,23 +88,13 @@ export const useSubmitQuiz = () => {
   });
 };
 
-export const useGetQuiz = () => {
-  return useMutation({
-    mutationKey: ["quiz", "get"],
-    mutationFn: getQuiz,
-    onMutate: () => {
-      toast.loading("Fetching Quiz...");
-    },
-    onError: (error: any) => {
-      // close loading toast
-      toast.dismiss();
-      toast.error(error.message || "Error Occurred!");
-    },
-    onSuccess: async (data: GetQuizType) => {
-      // close loading toast
-      toast.dismiss();
-      return data;
-    },
+export const useGetQuiz = (quizId: string) => {
+  const { token } = useUserStore();
+
+  return useQuery({
+    queryKey: ["quiz", "get"],
+    queryFn: () => getQuiz(quizId, token!),
+    enabled: !!quizId,
   });
 };
 
@@ -127,9 +119,12 @@ export const useUpdateQuiz = () => {
 };
 
 export const useDeleteQuiz = () => {
+  const queryClient = useQueryClient();
+  const { token } = useUserStore();
+
   return useMutation({
     mutationKey: ["quiz", "delete"],
-    mutationFn: deleteQuiz,
+    mutationFn: (id: string) => deleteQuiz(id, token!),
     onMutate: () => {
       toast.loading("Deleting Quiz...");
     },
@@ -142,6 +137,9 @@ export const useDeleteQuiz = () => {
       // close loading toast
       toast.dismiss();
       toast.success("Quiz Deleted Successfully!");
+
+      // refresh ["quiz"] cache
+      queryClient.invalidateQueries({ queryKey: ["quiz", "get-all"] });
     },
   });
 };
@@ -149,22 +147,9 @@ export const useDeleteQuiz = () => {
 export const useGetAllQuiz = () => {
   const { token } = useUserStore();
 
-  return useMutation({
-    mutationKey: ["quiz", "get-all", token],
-    mutationFn: () => getAllQuiz(token!),
-    onMutate: () => {
-      toast.loading("Get Quiz...");
-    },
-    onError: (error: any) => {
-      // close loading toast
-      toast.dismiss();
-      toast.error(error.message || "Error Occurred!");
-    },
-    onSuccess: async (data: GetAllQuizType) => {
-      // close loading toast
-      toast.dismiss();
-      return data;
-    },
+  return useQuery({
+    queryKey: ["quiz", "get-all"],
+    queryFn: () => getAllQuiz(token!),
   });
 };
 

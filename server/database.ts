@@ -1,11 +1,13 @@
 import { MongoClient, ObjectId } from "mongodb";
 
 export type AuthProvider = "GITHUB" | "GOOGLE";
+
 export interface User {
   _id: ObjectId;
   name: string;
   email: string;
   authProvider: AuthProvider;
+  authId: string;
   accessToken: string;
   quizzes: (Quiz | UnansweredQuiz)[];
   createdAt: Date;
@@ -15,8 +17,6 @@ export type UnansweredQuiz = Omit<Quiz, "questions" | "answered"> & {
   questions: UnansweredQuestion[];
   answered: false;
 };
-
-
 
 export interface Quiz {
   _id: ObjectId;

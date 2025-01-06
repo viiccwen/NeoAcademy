@@ -2,7 +2,7 @@ import type { AuthProvider } from "database";
 
 export type payloadType = {
   provider: AuthProvider;
-  accessToken: string;
+  authId: string;
 }
 
 export type jwtType = {

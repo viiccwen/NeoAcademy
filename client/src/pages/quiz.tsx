@@ -1,6 +1,6 @@
 import { QuestionCard } from "@/components/customs/quiz/question-card";
 import { Button } from "@/components/ui/button";
-import { useSubmitQuiz } from "@/hooks/quiz";
+import { useGetQuiz, useSubmitQuiz } from "@/hooks/quiz";
 import { parseQuestionIndex } from "@/lib/utils";
 import { useQuizStore } from "@/stores/quiz-store";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
@@ -11,12 +11,14 @@ import { Progress } from "@/components/ui/progress";
 import { ConfirmDialog } from "@/components/customs/quiz/confirm-dialog";
 import { useAuth } from "@/hooks/user";
 import { Metadata } from "@/components/customs/metadata";
+import { useQuestion } from "@/hooks/question";
 
 export default function Quiz() {
+  const { quizId: currentQuizId, index: questionIndex } = useParams();
   const { isAuth } = useAuth();
+  const { prevQuestion, nextQuestion } = useQuestion();
   const navigate = useNavigate();
   const submit = useSubmitQuiz();
-  const { quizId: currentQuizId, index: questionIndex } = useParams();
 
   const {
     quizId,
@@ -25,42 +27,28 @@ export default function Quiz() {
     amount,
     userAnswers,
     setCurrentQuestionIndex,
+    loadQuiz,
   } = useQuizStore();
 
+  const getQuiz = useGetQuiz(currentQuizId!);
+
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+
+  const isQuizCompleted = userAnswers.every((answer) => answer.length > 0);
 
   // Redirect to login if user is not authenticated
   useEffect(() => {
     if (!isAuth) navigate("/login");
   }, [isAuth]);
 
-  // check quizId is valid
+  // check quiz is loading
   useEffect(() => {
-    if (quizId !== currentQuizId) {
-      console.log(quizId, currentQuizId);
-      navigate("/notfound");
+    if ((questions === null || quizId != currentQuizId) && getQuiz.isSuccess) {
+      loadQuiz(getQuiz.data);
+    } else if (questions === null && getQuiz.isError) {
+      navigate("/dashboard");
     }
-  }, [quizId, currentQuizId]);
-
-  // ensure questions are loaded
-  useEffect(() => {
-    if (!questions) {
-      console.log(questions);
-      navigate("/notfound");
-    }
-  }, [questions]);
-
-  const prevQuestion = () => {
-    if (currentQuestionIndex > 1) {
-      navigate(`/quiz/${quizId}/${currentQuestionIndex - 1}`);
-    }
-  };
-
-  const nextQuestion = () => {
-    if (currentQuestionIndex < amount) {
-      navigate(`/quiz/${quizId}/${currentQuestionIndex + 1}`);
-    }
-  };
+  }, [getQuiz.isSuccess, getQuiz.data, getQuiz.isError, questions]);
 
   const handleSubmitQuiz = () => {
     setShowSubmitDialog(true);
@@ -74,13 +62,12 @@ export default function Quiz() {
   useEffect(() => {
     const validIndex = parseQuestionIndex(questionIndex, amount);
 
-    if (!validIndex) {
+    if (!validIndex && questions) {
       console.log(validIndex);
       navigate("/notfound");
       return;
     }
-
-    setCurrentQuestionIndex(validIndex);
+    if (validIndex) setCurrentQuestionIndex(validIndex);
   }, [questionIndex, setCurrentQuestionIndex]);
 
   return (
@@ -129,6 +116,7 @@ export default function Quiz() {
             <Button
               className="flex-1 p-3 text-white bg-blue-600 hover:bg-blue-700 transition-all"
               onClick={handleSubmitQuiz}
+              disabled={!isQuizCompleted}
             >
               Submit
             </Button>

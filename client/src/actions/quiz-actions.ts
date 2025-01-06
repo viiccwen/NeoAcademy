@@ -37,29 +37,18 @@ export const createQuiz = async (
 };
 
 export const submitQuiz = async ({
+  token,
   quizId,
   answers,
-}: SubmitQuizType): Promise<SubmitQuizReturnType> => {
+}: SubmitQuizType & { token: string }): Promise<SubmitQuizReturnType> => {
   try {
-    // todo: test
-    // return DelayFunc({
-    //   isError: false,
-    //   delay: 2000,
-    //   func: () => mock_wrong_question_1,
-    // });
-
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
     const response: AxiosResponse<SubmitQuizReturnType, any> = await axios.put(
       `${API_URL}/quiz/${quizId}`,
+      answers,
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        answers,
       }
     );
 
@@ -73,20 +62,8 @@ export const submitQuiz = async ({
   }
 };
 
-export const getQuiz = async (quizId: string): Promise<GetQuizType> => {
+export const getQuiz = async (quizId: string, token: string): Promise<GetQuizType> => {
   try {
-    // todo: test
-    // return DelayFunc({
-    //   isError: false,
-    //   delay: 2000,
-    //   func: () => mock_get_quiz_1,
-    // });
-
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
     const response: AxiosResponse<GetQuizType, any> = await axios.get(
       `${API_URL}/quiz/${quizId}`,
       {
@@ -139,24 +116,16 @@ export const updateQuiz = async ({ type, text }: UpdateQuizType) => {
   }
 };
 
-export const deleteQuiz = async (id: string) => {
+export const deleteQuiz = async (id: string, token: string) => {
   try {
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
-    const response = await axios.delete(`${API_URL}/quiz`, {
-      params: {
-        id,
-      },
+    const response = await axios.delete(`${API_URL}/quiz/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (response.status === 200) {
-      return response.data;
+      return;
     } else {
       throw new Error("刪除測驗資料錯誤！");
     }

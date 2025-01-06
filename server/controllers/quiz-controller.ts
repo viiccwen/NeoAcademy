@@ -1,12 +1,11 @@
 import type { Request, Response } from "express";
-
-import type { Quiz, UnansweredQuestion, UnansweredQuiz, User } from "database";
-
-import { users } from "database";
 import { ObjectId } from "mongodb";
-import { generateQuiz, getQuiz, recordQuiz } from "utils/quiz";
-import { unknown, type z } from "zod";
+import type { Quiz, UnansweredQuiz, User } from "database";
+import { users } from "database";
+import z from "zod";
+
 import type { createQuizSchema } from "schemas/quiz";
+import { generateQuiz, getQuiz, recordQuiz, submitAnswer } from "utils/quiz";
 import type { getAllQuizType } from "utils/type";
 
 export const getAllQuiz = async (req: Request, res: Response) => {
@@ -115,39 +114,36 @@ export const createQuiz = async (req: Request, res: Response) => {
   }
 };
 
-export async function submitAndGetAnswers(
-  quiz: Quiz | UnansweredQuiz,
-  responses: number[][]
-): Promise<{ index: number; answer: number[]; response: number[] }[]> {
-  quiz.answered = true;
-  quiz.questions = quiz.questions.map(({ text, options, answer }, i) => ({
-    text,
-    options,
-    answer,
-    response: responses[i],
-  }));
+export const submitQuiz = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const responses = req.body as number[][];
+    const { quizId } = req.params;
 
-  await users.updateOne(
-    { "quizzes._id": new ObjectId(quiz._id) },
-    { $set: { "quizzes.$": quiz } }
-  );
+    (await submitAnswer(user, quizId, responses)) as Quiz;
 
-  const answers = quiz.questions.map((question) => question.answer);
-  const incorrectProblems = [];
-  for (let i = 0; i < answers.length; i++) {
-    if (responses[i].some((x, j) => answers[i][j] != x))
-      incorrectProblems.push({
-        index: i,
-        answer: answers[i],
-        response: responses[i],
-      });
+    res.sendStatus(200);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "發生錯誤！" });
   }
-  return incorrectProblems;
-}
+};
 
-export async function deleteQuiz(user: User, quizId: string): Promise<void> {
-  await users.updateOne(
-    { _id: user._id },
-    { $pull: { quizzes: { _id: new ObjectId(quizId) } } }
-  );
+export async function deleteQuiz(req: Request, res: Response) {
+  try {
+    const user = req.user!;
+    const { quizId } = req.params;
+
+    const updated_user = await users.updateOne(
+      { _id: user._id },
+      { $pull: { quizzes: { _id: new ObjectId(quizId) } } }
+    );
+
+    if(!updated_user) throw new Error("刪除測驗失敗！");
+
+    res.sendStatus(200);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "發生未知錯誤！" });
+  }
 }

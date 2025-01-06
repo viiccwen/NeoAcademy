@@ -24,7 +24,7 @@ export const ConfirmDialog = ({
         <DialogHeader>
           <DialogTitle>Confirm Submission</DialogTitle>
         </DialogHeader>
-        <p className="text-gray-700">
+        <p className="text-gray-300">
           Are you sure you want to submit the quiz? You cannot change your
           answers after submission.
         </p>
