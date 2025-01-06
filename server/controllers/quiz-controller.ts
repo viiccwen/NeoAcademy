@@ -38,7 +38,7 @@ function formatSystemMessage(option: number, question: number, multipleAnswers: 
  The question object will look like:
  \`\`\`json{
     "text": "the text of the question",
-    "options": ["text of option 0", "text of option 1", "text of option 2", "text of option 3"],
+    "options": ["text of option 0", "text of option 1", ..., "text of option n"],
     "answer": [numbers of the correct options]
  }\`\`\`
 Return the JSON string without line breaks and code block.`
