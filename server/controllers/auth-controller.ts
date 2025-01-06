@@ -18,7 +18,7 @@ export const githubAuthCallback = (req: Request, res: Response) => {
     res.redirect(`${process.env.AUTH_REDIRECT_URL!}/${token}`);
   } catch (e: any) {
     console.error(e);
-    res.status(500).json({ message: e?.message });
+    res.status(500).json({ message: e.message });
   }
 };
 
@@ -38,6 +38,6 @@ export const googleAuthCallback = (req: Request, res: Response) => {
     res.redirect(`${process.env.AUTH_REDIRECT_URL!}/${token}`);
   } catch (e: any) {
     console.error(e);
-    res.status(500).json({ message: e?.message });
+    res.status(500).json({ message: e.message });
   }
 };

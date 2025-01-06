@@ -18,8 +18,8 @@ export const deleteUser: RequestHandler = async (
   res: Response
 ) => {
   try {
-    const { id } = req.user!;
-    const result = await deleteUserById(id);
+    const { _id } = req.user!;
+    const result = await deleteUserById(_id);
 
     if (!result.deletedCount) throw new Error("找不到使用者！");
 
