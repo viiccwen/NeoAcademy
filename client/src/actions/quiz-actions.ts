@@ -184,20 +184,8 @@ export const deleteQuiz = async (id: string) => {
   }
 };
 
-export const getAllQuiz = async (): Promise<GetAllQuizType> => {
+export const getAllQuiz = async (token: string): Promise<GetAllQuizType> => {
   try {
-    // todo: test
-    // return DelayFunc({
-    //   isError: false,
-    //   delay: 2000,
-    //   func: () => mock_get_all_quiz_1,
-    // });
-
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
     const response: AxiosResponse<GetAllQuizType, any> = await axios.get(
       `${API_URL}/quiz`,
       {

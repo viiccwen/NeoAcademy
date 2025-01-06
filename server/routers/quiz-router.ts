@@ -1,29 +1,24 @@
 import authMiddleware from 'middlewares/auth-middleware';
 import { Router } from 'express';
-import { deleteQuiz, generateUnansweredQuiz, getQuiz, recordUnansweredQuiz, submitAndGetAnswers } from 'controllers/quiz-controller';
+import { deleteQuiz, generateUnansweredQuiz, getAllQuiz, recordUnansweredQuiz, submitAndGetAnswers } from 'controllers/quiz-controller';
 import validateBodyMiddleware from 'middlewares/validate-body-middleware';
 import { createQuizSchema, submitQuizSchema } from 'schemas/quiz';
 
 
 const quizRouter = Router();
 
-quizRouter.get('/quiz', authMiddleware, (req, res) => {
-    const quizzes = req.user!.quizzes.map(({ _id, name, category, difficulty, multipleAnswers, answered, createdAt }) =>
-                                          ({ id: _id, name, category, difficulty, multipleAnswers, answered, createdAt }));
-    
-    res.status(200).json(quizzes);
-});
+quizRouter.get('/quiz', authMiddleware, getAllQuiz);
 
 quizRouter.get('/quiz/:quizId', authMiddleware, (req, res) => {
-    const quiz = getQuiz(req.user!, req.params.quizId);
+    // const quiz = getQuiz(req.user!, req.params.quizId);
 
-    if (!quiz) {
-        res.status(404).json({ message: 'Quiz not found.' });
-        return;
-    }
+    // if (!quiz) {
+    //     res.status(404).json({ message: 'Quiz not found.' });
+    //     return;
+    // }
 
-    const { _id: id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt } = quiz;
-    res.status(200).json({ id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt });
+    // const { _id: id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt } = quiz;
+    // res.status(200).json({ id, name, category, difficulty, multipleAnswers, answered, questions, remarks, createdAt });
 });
 
 quizRouter.post('/quiz', authMiddleware, validateBodyMiddleware(createQuizSchema), async (req, res) => {
@@ -41,17 +36,17 @@ quizRouter.post('/quiz', authMiddleware, validateBodyMiddleware(createQuizSchema
 });
 
 quizRouter.put('/quiz/:quizId', authMiddleware, validateBodyMiddleware(submitQuizSchema), async (req, res) => {
-    try {
-        const quiz = getQuiz(req.user!, req.params.quizId);
-        if (!quiz) {
-            res.status(404).json({ message: 'Quiz not found.' });
-            return;
-        }
-        res.status(200).json(await submitAndGetAnswers(quiz, req.body));
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ message: 'Error!' });
-    }
+    // try {
+    //     const quiz = getQuiz(req.user!, req.params.quizId);
+    //     if (!quiz) {
+    //         res.status(404).json({ message: 'Quiz not found.' });
+    //         return;
+    //     }
+    //     res.status(200).json(await submitAndGetAnswers(quiz, req.body));
+    // } catch (e) {
+    //     console.error(e);
+    //     res.status(500).json({ message: 'Error!' });
+    // }
 });
 
 quizRouter.delete('/quiz/:quizId', authMiddleware, async (req, res) => {

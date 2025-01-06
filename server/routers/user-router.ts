@@ -7,7 +7,6 @@ import type { User } from 'database';
 const userRouter = Router();
 
 userRouter.get('/user', authMiddleware, (req, res) => {
-    console.log('req.user:', req.user);
     const { name, email } = req.user! as User;
 
     res.status(200).json({ name, email });

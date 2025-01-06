@@ -143,7 +143,7 @@ export const useGetAllQuiz = () => {
 
   return useMutation({
     mutationKey: ["quiz", "get-all", token],
-    mutationFn: getAllQuiz,
+    mutationFn: () => getAllQuiz(token!),
     onMutate: () => {
       toast.loading("Get Quiz...");
     },

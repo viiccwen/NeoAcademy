@@ -1,41 +1,52 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient, ObjectId } from "mongodb";
 
-
-export type AuthProvider = 'GITHUB' | 'GOOGLE';
+export type AuthProvider = "GITHUB" | "GOOGLE";
 export interface User {
-    _id: ObjectId;
-    name: string;
-    email: string;
-    authProvider: AuthProvider;
-    accessToken: string;
-    quizzes: (Quiz | UnansweredQuiz)[];
-    createdAt: Date;
+  _id: ObjectId;
+  name: string;
+  email: string;
+  authProvider: AuthProvider;
+  accessToken: string;
+  quizzes: (Quiz | UnansweredQuiz)[];
+  createdAt: Date;
 }
 
-export type UnansweredQuiz = Omit<Quiz, 'questions' | 'answered'> &
-    { questions: UnansweredQuestion[]; answered: false; };
+export type UnansweredQuiz = Omit<Quiz, "questions" | "answered"> & {
+  questions: UnansweredQuestion[];
+  answered: false;
+};
+
+export type getAllQuizType = {
+  id: string;
+  name: string;
+  category: string;
+  difficulty: string;
+  multipleAnswers: boolean;
+  createdAt: Date;
+}[];
+
 export interface Quiz {
-    _id: ObjectId;
-    name: string;
-    category: string;
-    difficulty: string;
-    questions: Question[];
-    multipleAnswers: boolean;
-    remarks?: string;
-    answered: true;
-    createdAt: Date;
+  _id: ObjectId;
+  name: string;
+  category: string;
+  difficulty: string;
+  questions: Question[];
+  multipleAnswers: boolean;
+  remarks?: string;
+  answered: true;
+  createdAt: Date;
 }
 
-export type UnansweredQuestion = Omit<Question, 'response'>; 
+export type UnansweredQuestion = Omit<Question, "response">;
 export interface Question {
-    text: string;
-    options: string[];
-    answer: number[];
-    response: number[];
+  text: string;
+  options: string[];
+  answer: number[];
+  response: number[];
 }
 
 export const client = new MongoClient(process.env.DATABASE_URL!);
-export const database = client.db('neo_academy');
-export const users = database.collection<User>('users');
+export const database = client.db("neo_academy");
+export const users = database.collection<User>("users");
 
 await client.connect();
