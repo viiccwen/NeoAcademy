@@ -1,9 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { GetQuizType } from "@/lib/type";
+import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
 
 interface QuestionProps {
-  quiz: GetQuizType;
+  quiz: GetQuizType<AnsweredQuestionType>;
 }
 
 export const Question = ({ quiz }: QuestionProps) => {
