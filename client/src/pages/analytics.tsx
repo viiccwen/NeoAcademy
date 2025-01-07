@@ -24,6 +24,7 @@ import {
   BarElement,
 } from "chart.js";
 import { Metadata } from "@/components/customs/metadata";
+import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -78,9 +79,13 @@ export default function Analytics() {
       if (categoryCount[q.category] !== undefined) categoryCount[q.category]++;
     });
 
+    const completedQuizzes: GetQuizType<AnsweredQuestionType>[] = quiz.filter(
+      (q) => q.answered
+    ) as GetQuizType<AnsweredQuestionType>[];
     const totalQuizzes = quiz.length;
     const totalQuestions = quiz.reduce((sum, q) => sum + q.questions.length, 0);
-    const totalCorrectAnswers = quiz.reduce(
+
+    const totalCorrectAnswers = completedQuizzes.reduce(
       (sum, q) =>
         sum +
         q.questions.reduce(
@@ -96,7 +101,7 @@ export default function Analytics() {
 
     const correctRate = (totalCorrectAnswers / totalQuestions) * 100;
     const highestScore = Math.max(
-      ...quiz.map(
+      ...completedQuizzes.map(
         (q) =>
           q.questions.filter((qItem) =>
             qItem.response.every((r) => qItem.answer.includes(r))
@@ -104,7 +109,7 @@ export default function Analytics() {
       )
     );
     const lowestScore = Math.min(
-      ...quiz.map(
+      ...completedQuizzes.map(
         (q) =>
           q.questions.filter((qItem) =>
             qItem.response.every((r) => qItem.answer.includes(r))
@@ -115,6 +120,7 @@ export default function Analytics() {
 
     return {
       totalQuizzes,
+      completedQuizzes,
       totalQuestions,
       correctRate,
       highestScore,
@@ -250,13 +256,14 @@ export default function Analytics() {
                         <TableCell>{q.category}</TableCell>
                         <TableCell>{q.difficulty}</TableCell>
                         <TableCell>
-                          {
-                            q.questions.filter((qItem) =>
-                              qItem.response.every((r) =>
-                                qItem.answer.includes(r)
-                              )
-                            ).length
-                          }
+                          {q.answered
+                            ? (q.questions as AnsweredQuestionType[]).filter(
+                                (qItem) =>
+                                  qItem.response.every((r) =>
+                                    qItem.answer.includes(r)
+                                  )
+                              ).length
+                            : "N/A"}
                         </TableCell>
                       </TableRow>
                     ))}

@@ -1,9 +1,11 @@
 import Cookies from "js-cookie";
 import axios, { AxiosResponse } from "axios";
 import {
+  AnsweredQuestionType,
   CreateQuizType,
   GetAllQuizType,
   GetQuizType,
+  QuestionType,
   QuizReturnType,
   SubmitQuizReturnType,
   SubmitQuizType,
@@ -62,10 +64,10 @@ export const submitQuiz = async ({
   }
 };
 
-export const getQuiz = async (quizId: string, token: string): Promise<GetQuizType> => {
+export const getQuiz = async (quizId: string, token: string): Promise<GetQuizType<QuestionType>> => {
   try {
-    const response: AxiosResponse<GetQuizType, any> = await axios.get(
-      `${API_URL}/quiz/${quizId}`,
+    const response: AxiosResponse<GetQuizType<QuestionType>, any> = await axios.get(
+      `${API_URL}/quiz/${quizId}?type=take-quiz`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -137,7 +139,7 @@ export const deleteQuiz = async (id: string, token: string) => {
 export const getAllQuiz = async (token: string): Promise<GetAllQuizType> => {
   try {
     const response: AxiosResponse<GetAllQuizType, any> = await axios.get(
-      `${API_URL}/quiz`,
+      `${API_URL}/quiz?type=take-quiz`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -155,10 +157,10 @@ export const getAllQuiz = async (token: string): Promise<GetAllQuizType> => {
   }
 };
 
-export const getDetailsAllQuiz = async (token: string): Promise<GetQuizType[]> => {
+export const getDetailsAllQuiz = async (token: string): Promise<GetQuizType<QuestionType | AnsweredQuestionType>[]> => {
   try {
-    const response: AxiosResponse<GetQuizType[], any> = await axios.get(
-      `${API_URL}/quiz`,
+    const response: AxiosResponse<GetQuizType<QuestionType | AnsweredQuestionType>[], any> = await axios.get(
+      `${API_URL}/quiz?type=details`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

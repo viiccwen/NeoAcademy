@@ -30,6 +30,11 @@ export type QuestionType = {
   options: string[];
 };
 
+export type AnsweredQuestionType = QuestionType & {
+  answer: number[];
+  response: number[];
+}
+
 export type QuizReturnType = {
   id: string;
   questions: QuestionType[];
@@ -46,19 +51,15 @@ export type SubmitQuizReturnType = {
   response: number[];
 }[];
 
-export type GetQuizType = {
+export type GetQuizType<T extends QuestionType | AnsweredQuestionType> = {
   id: string;
   name: string;
   category: string;
   difficulty: string;
-  questions: {
-    text: string;
-    options: string[];
-    answer: number[];
-    response: number[];
-  }[];
+  questions: T[];
   multipleAnswers: boolean;
   createdAt: Date;
+  answered: boolean;
   remarks?: string;
 };
 
