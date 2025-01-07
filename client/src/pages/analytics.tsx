@@ -1,6 +1,5 @@
 import { NavBar } from "@/components/customs/dashboard/navbar";
-import { useGetAllQuizDetails } from "@/hooks/quiz";
-import { useAuth } from "@/hooks/user";
+import Markdown from "react-markdown";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +24,11 @@ import {
 } from "chart.js";
 import { Metadata } from "@/components/customs/metadata";
 import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
+import { useGetAllQuizDetails } from "@/hooks/quiz";
+import { useAnalyze, useAuth } from "@/hooks/user";
+import { RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "sonner";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -36,6 +40,7 @@ ChartJS.register(
 
 export default function Analytics() {
   const navigate = useNavigate();
+  const { analyze, content, isLoading } = useAnalyze();
   const { isAuth } = useAuth();
   const _quiz = useGetAllQuizDetails();
   const quiz = _quiz.data;
@@ -43,6 +48,10 @@ export default function Analytics() {
   useEffect(() => {
     if (!isAuth) navigate("/login");
   }, [isAuth]);
+
+  const onAnalyze = () => {
+    analyze();
+  };
 
   if (_quiz.isPending) {
     return (
@@ -71,6 +80,7 @@ export default function Analytics() {
       Science: 0,
       History: 0,
       Language: 0,
+      Programming: 0,
     };
 
     quiz.forEach((q) => {
@@ -139,6 +149,7 @@ export default function Analytics() {
     const QuizStats = quizStats();
     return (
       <>
+        <Toaster richColors />
         <Metadata
           title="Analysis"
           description="Track your learning progress with AI-driven analytics and personalized insights."
@@ -207,28 +218,24 @@ export default function Analytics() {
               {/* AI 評語區塊 */}
               <Card className="bg-gray-800">
                 <CardHeader>
-                  <CardTitle>AI Insights & Recommendations</CardTitle>
+                  <CardTitle className="flex items-center gap-3">
+                    AI Insights & Recommendations{" "}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="hover:bg-blue-500 duration-300"
+                      onClick={onAnalyze}
+                      disabled={isLoading}
+                    >
+                      <RotateCcw className="w4" />{" "}
+                    </Button>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-gray-300">
-                  {QuizStats && QuizStats.correctRate >= 80 ? (
-                    <p>
-                      ✅ 您的學習表現非常優秀！
-                      <br />
-                      繼續保持，建議您可以挑戰更高難度的測驗，或者考慮參加競賽。
-                    </p>
-                  ) : QuizStats && QuizStats?.correctRate >= 50 ? (
-                    <p>
-                      ⚠ 您有很大的進步空間！
-                      <br />
-                      建議查看錯題分析，並專注於弱點知識點的學習，透過反覆練習來提升成績。
-                    </p>
+                  {QuizStats && content ? (
+                    <Markdown>{content}</Markdown>
                   ) : (
-                    <p>
-                      ❌ 學習效果較低，需要加強！
-                      <br />
-                      目前的測驗結果顯示您可能需要更多練習，建議使用互動式學習工具，如
-                      AI 教學或影片輔助學習。
-                    </p>
+                    "按下按鈕以獲取 AI 分析"
                   )}
                 </CardContent>
               </Card>
@@ -280,7 +287,13 @@ export default function Analytics() {
               <CardContent>
                 <Bar
                   data={{
-                    labels: ["Math", "Science", "History", "Language"],
+                    labels: [
+                      "Math",
+                      "Science",
+                      "History",
+                      "Language",
+                      "Programming",
+                    ],
                     datasets: [
                       {
                         label: "Math",
@@ -301,6 +314,17 @@ export default function Analytics() {
                         label: "Language",
                         data: [0, 0, 0, QuizStats?.categoryCount.Language],
                         backgroundColor: "#ec4899", // 粉色
+                      },
+                      {
+                        label: "Programming",
+                        data: [
+                          0,
+                          0,
+                          0,
+                          0,
+                          QuizStats?.categoryCount.Programming,
+                        ],
+                        backgroundColor: "#f87171", // 紅色
                       },
                     ],
                   }}

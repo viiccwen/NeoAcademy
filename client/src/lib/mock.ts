@@ -76,5 +76,5 @@ export const generateQuiz = () => {
     multipleAnswers,
     createdAt,
     remarks,
-  } as GetQuizType;
+  } as GetQuizType<QuestionType>;
 };

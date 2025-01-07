@@ -11,7 +11,9 @@ import {
   updateQuiz,
 } from "@/actions/quiz-actions";
 import {
+  AnsweredQuestionType,
   CreateQuizType,
+  QuestionType,
   QuizReturnType,
   SubmitQuizType,
 } from "@/lib/type";
@@ -87,12 +89,12 @@ export const useSubmitQuiz = () => {
   });
 };
 
-export const useGetQuiz = (quizId: string) => {
+export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(quizId: string) => {
   const { token } = useUserStore();
 
   return useQuery({
     queryKey: ["quiz", "get"],
-    queryFn: () => getQuiz(quizId, token!),
+    queryFn: () => getQuiz<T>(quizId, token!),
     enabled: !!quizId,
   });
 };

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 // GET /user: get user
@@ -37,6 +37,24 @@ export const deleteUser = async (token: string | null) => {
       return true;
     } else {
       throw new Error("刪除使用者資料錯誤！");
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "未知錯誤發生！");
+  }
+};
+
+export const AnalyzeUser = async (token: string | null) => {
+  try {
+    const response:AxiosResponse<string, any> = await axios.get(`${API_URL}/user/analyze`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("分析使用者資料錯誤！");
     }
   } catch (error: any) {
     throw new Error(error.message || "未知錯誤發生！");

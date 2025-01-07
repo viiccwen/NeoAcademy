@@ -1,10 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { GetQuizType } from "@/lib/type";
+import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
 
 interface SummaryProps {
-  quiz: GetQuizType;
+  quiz: GetQuizType<AnsweredQuestionType>;
   totalQuestions: number;
   correctAnswers: number;
   scorePercentage: number;
