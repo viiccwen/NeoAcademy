@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 
 interface OAuthButtonProps {
-  text: String;
+  text: string;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
