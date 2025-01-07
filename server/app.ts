@@ -3,10 +3,13 @@ import cors from 'cors';
 import userRouter from 'routers/user-router';
 import authRouter from 'routers/auth-router';
 import quizRouter from 'routers/quiz-router';
+import { ChatOpenAI } from '@langchain/openai';
 
 
 const API_PORT = process.env.API_PORT ?? 3000;
 const app = express();
+export const model = new ChatOpenAI({ model: "gpt-4o-mini" });
+
 
 app.use(cors());
 app.use(express.json());

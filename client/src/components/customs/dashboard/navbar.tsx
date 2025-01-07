@@ -75,11 +75,11 @@ export const NavBar = (props: NavBarProps) => {
       <div className="hidden md:flex items-center space-x-4">
         <Button
           LinkTo="/create"
-          className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
+          className="px-8 py-3 bg-transparent hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
         >
           New Quiz
         </Button>
-        <Button onClick={Logout} className="bg-red-600 hover:bg-red-700">
+        <Button onClick={Logout} className="bg-transparent hover:bg-red-700">
           <LogOut className="w-5 text-white" />
         </Button>
       </div>

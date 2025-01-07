@@ -1,4 +1,5 @@
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import type { Quiz } from "database";
 
 export const formatSystemMessage = (
   option: number,
@@ -31,5 +32,23 @@ export const formatHumanMessage = (
     Category of the quiz: ${category}.
     Difficulty of the quiz: ${difficulty}.
     Remarks: "${remarks}"`
+  );
+};
+
+export const formatAnalysisSystemMessage = (): SystemMessage => {
+  return new SystemMessage(
+    `你是一位專業的學習分析師。以下是使用者的測驗結果，請根據測驗資料分析使用者的學習狀況，找出他的優勢與弱點，並根據他的錯誤模式提供學習建議。  
+      請根據他的測驗記錄，僅需回傳兩項： 
+      1. 找出他的強項科目與弱項科目  
+      2. 提供學習建議：
+        - 強項：適合挑戰的進階內容
+        - 弱項：應該加強的學習領域，以及推薦的學習方式`
+  );
+};
+
+export const formatAnalysisHumanMessage = (quizzes: Quiz[]) => {
+  return new HumanMessage(
+    `以下是使用者的測驗記錄：
+      ${JSON.stringify(quizzes)}`
   );
 };

@@ -7,10 +7,9 @@ import {
   SystemMessage,
 } from "@langchain/core/messages";
 import { formatHumanMessage, formatSystemMessage } from "utils/message";
-import { ChatOpenAI } from "@langchain/openai";
 import { ObjectId } from "mongodb";
+import { model } from "app";
 
-const model = new ChatOpenAI({ model: "gpt-4o-mini" });
 
 
 export function getQuiz(user: User, quizId: string) {
