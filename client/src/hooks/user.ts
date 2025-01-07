@@ -2,7 +2,7 @@ import { AnalyzeUser, deleteUser, getUser } from "@/actions/user-actions";
 import { DelayFunc } from "@/lib/utils";
 import { UserType, useUserStore } from "@/stores/user-store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 

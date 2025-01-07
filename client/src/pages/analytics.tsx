@@ -26,7 +26,7 @@ import { Metadata } from "@/components/customs/metadata";
 import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
 import { useGetAllQuizDetails } from "@/hooks/quiz";
 import { useAnalyze, useAuth } from "@/hooks/user";
-import { Recycle, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "sonner";
 ChartJS.register(

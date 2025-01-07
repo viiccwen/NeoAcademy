@@ -8,13 +8,14 @@ import { Summary } from "@/components/customs/result/summary";
 import { useGetQuiz } from "@/hooks/quiz";
 import { useAuth } from "@/hooks/user";
 import { Metadata } from "@/components/customs/metadata";
+import { AnsweredQuestionType } from "@/lib/type";
 
 export default function Result() {
   const { quizId } = useParams();
   const { isAuth } = useAuth();
   const navigate = useNavigate();
 
-  const _quiz = useGetQuiz(quizId!);
+  const _quiz = useGetQuiz<AnsweredQuestionType>(quizId!);
   const quiz = _quiz.data;
 
   // Redirect to login if user is not authenticated

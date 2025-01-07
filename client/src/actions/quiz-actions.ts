@@ -64,9 +64,12 @@ export const submitQuiz = async ({
   }
 };
 
-export const getQuiz = async (quizId: string, token: string): Promise<GetQuizType<QuestionType>> => {
+export const getQuiz = async <T extends QuestionType | AnsweredQuestionType>(
+  quizId: string,
+  token: string
+): Promise<GetQuizType<T>> => {
   try {
-    const response: AxiosResponse<GetQuizType<QuestionType>, any> = await axios.get(
+    const response: AxiosResponse<GetQuizType<T>, any> = await axios.get(
       `${API_URL}/quiz/${quizId}?type=take-quiz`,
       {
         headers: {
@@ -157,16 +160,18 @@ export const getAllQuiz = async (token: string): Promise<GetAllQuizType> => {
   }
 };
 
-export const getDetailsAllQuiz = async (token: string): Promise<GetQuizType<QuestionType | AnsweredQuestionType>[]> => {
+export const getDetailsAllQuiz = async (
+  token: string
+): Promise<GetQuizType<QuestionType | AnsweredQuestionType>[]> => {
   try {
-    const response: AxiosResponse<GetQuizType<QuestionType | AnsweredQuestionType>[], any> = await axios.get(
-      `${API_URL}/quiz?type=details`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response: AxiosResponse<
+      GetQuizType<QuestionType | AnsweredQuestionType>[],
+      any
+    > = await axios.get(`${API_URL}/quiz?type=details`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (response.status === 200) {
       return response.data;
