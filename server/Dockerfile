@@ -1,12 +1,10 @@
 FROM oven/bun:latest
 
-WORKDIR /app
+WORKDIR /
 
 COPY package.json bun.lockb ./
 
-RUN bun install --production && \
-    bun pm cache rm && \
-    rm -rf node_modules
+RUN bun install --production
 
 COPY . .
 
