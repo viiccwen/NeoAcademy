@@ -15,7 +15,7 @@ export default function Result() {
   const { isAuth } = useAuth();
   const navigate = useNavigate();
 
-  const _quiz = useGetQuiz<AnsweredQuestionType>(quizId!);
+  const _quiz = useGetQuiz<AnsweredQuestionType>(quizId!, true);
   const quiz = _quiz.data;
 
   // Redirect to login if user is not authenticated

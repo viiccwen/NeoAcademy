@@ -30,7 +30,7 @@ export default function Quiz() {
     loadQuiz,
   } = useQuizStore();
 
-  const getQuiz = useGetQuiz(currentQuizId!);
+  const getQuiz = useGetQuiz(currentQuizId!, false);
 
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
 

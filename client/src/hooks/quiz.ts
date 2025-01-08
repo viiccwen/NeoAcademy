@@ -89,12 +89,12 @@ export const useSubmitQuiz = () => {
   });
 };
 
-export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(quizId: string) => {
+export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(quizId: string, isAnswered: boolean) => {
   const { token } = useUserStore();
 
   return useQuery({
     queryKey: ["quiz", "get"],
-    queryFn: () => getQuiz<T>(quizId, token!),
+    queryFn: () => getQuiz<T>(quizId, token!, isAnswered),
     enabled: !!quizId,
   });
 };

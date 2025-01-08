@@ -66,11 +66,13 @@ export const submitQuiz = async ({
 
 export const getQuiz = async <T extends QuestionType | AnsweredQuestionType>(
   quizId: string,
-  token: string
+  token: string,
+  isAnswered: boolean
 ): Promise<GetQuizType<T>> => {
+  const type = isAnswered ? "details" : "take-quiz";
   try {
     const response: AxiosResponse<GetQuizType<T>, any> = await axios.get(
-      `${API_URL}/quiz/${quizId}?type=take-quiz`,
+      `${API_URL}/quiz/${quizId}?type=${type}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
