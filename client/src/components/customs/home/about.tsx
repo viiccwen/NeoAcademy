@@ -14,7 +14,6 @@ type FeatureItem = {
   image: string;
 };
 
-// todo: replace with actual photos
 const features: FeatureItem[] = [
   {
     title: "AI-Powered Quiz Creation",

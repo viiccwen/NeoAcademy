@@ -5,7 +5,7 @@ import { users } from "database";
 import z from "zod";
 
 import type { createQuizSchema } from "schemas/quiz";
-import { getQuiz, recordQuiz, submitAnswer } from "utils/quiz";
+import { generateQuiz, getQuiz, recordQuiz, submitAnswer } from "utils/quiz";
 
 export const getAllQuiz = async (req: Request, res: Response) => {
   try {
@@ -126,54 +126,54 @@ export const createQuiz = async (req: Request, res: Response) => {
     } = req.body as z.infer<typeof createQuizSchema>;
 
     // genearate quiz
-    const quiz = {
-      id: new ObjectId(),
-      name,
-      category,
-      difficulty,
-      questions: [
-        {
-          text: "What is the formula for water?",
-          options: ["H2O", "CO2", "O2", "H2SO4"],
-          answer: [0, 2, 3],
-        },
-        {
-          text: "Who discovered gravity?",
-          options: ["Einstein", "Newton", "Galileo", "Tesla"],
-          answer: [1],
-        },
-        {
-          text: "What is the closest planet to the sun?",
-          options: ["Earth", "Mars", "Mercury", "Venus"],
-          answer: [2],
-        },
-        {
-          text: "What is the largest mammal?",
-          options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-          answer: [1],
-        },
-        {
-          text: "What is the powerhouse of the cell?",
-          options: ["Nucleus", "Mitochondria", "Ribosome", "Lysosome"],
-          answer: [1],
-        },
-      ],
-      multipleAnswers,
-      remarks: remarks ?? "",
-      answered: false as false,
-      createdAt: new Date(),
-    };
-
-    // todo: already tested, remove this at last
-    // const quiz = await generateQuiz(
+    // const quiz = {
+    //   id: new ObjectId(),
     //   name,
     //   category,
     //   difficulty,
-    //   option,
-    //   question,
+    //   questions: [
+    //     {
+    //       text: "What is the formula for water?",
+    //       options: ["H2O", "CO2", "O2", "H2SO4"],
+    //       answer: [0, 2, 3],
+    //     },
+    //     {
+    //       text: "Who discovered gravity?",
+    //       options: ["Einstein", "Newton", "Galileo", "Tesla"],
+    //       answer: [1],
+    //     },
+    //     {
+    //       text: "What is the closest planet to the sun?",
+    //       options: ["Earth", "Mars", "Mercury", "Venus"],
+    //       answer: [2],
+    //     },
+    //     {
+    //       text: "What is the largest mammal?",
+    //       options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+    //       answer: [1],
+    //     },
+    //     {
+    //       text: "What is the powerhouse of the cell?",
+    //       options: ["Nucleus", "Mitochondria", "Ribosome", "Lysosome"],
+    //       answer: [1],
+    //     },
+    //   ],
     //   multipleAnswers,
-    //   remarks ?? ""
-    // );
+    //   remarks: remarks ?? "",
+    //   answered: false as false,
+    //   createdAt: new Date(),
+    // };
+
+    // todo: already tested, remove this at last
+    const quiz = await generateQuiz(
+      name,
+      category,
+      difficulty,
+      option,
+      question,
+      multipleAnswers,
+      remarks ?? ""
+    );
 
     // record quiz
     await recordQuiz(req.user!, quiz);
