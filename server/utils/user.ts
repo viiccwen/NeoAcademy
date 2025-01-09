@@ -47,5 +47,5 @@ export async function updateAccessToken(
     userId: ObjectId,
     accessToken: string
 ): Promise<void> {
-    await users.updateOne({ id: userId }, { accessToken });
+    await users.updateOne({ _id: userId }, { accessToken });
 }
