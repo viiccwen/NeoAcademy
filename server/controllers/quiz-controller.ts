@@ -211,7 +211,7 @@ export async function deleteQuiz(req: Request, res: Response) {
     const { quizId } = req.params;
 
     const updated_user = await users.updateOne(
-      { id: user._id },
+      { _id: user._id },
       { $pull: { quizzes: { id: new ObjectId(quizId) } } }
     );
 
