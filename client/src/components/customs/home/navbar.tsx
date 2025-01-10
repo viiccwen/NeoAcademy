@@ -1,41 +1,12 @@
-"use client";
 import { cn } from "@/lib/utils";
 import Logo from "@/assets/logo.png";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
 import { forwardRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/hooks/user";
 import { Home, LogOut } from "lucide-react";
 import { useUserStore } from "@/stores/user-store";
-
-type compType = {
-  title: string;
-  href: string;
-  protected?: boolean;
-};
-
-const components: compType[] = [
-  {
-    title: "Home",
-    href: "/#",
-  },
-  {
-    title: "Features",
-    href: "#features",
-  },
-  {
-    title: "About",
-    href: "#about",
-  },
-];
-
 interface NavBarProps {
   className?: string;
 }
@@ -58,29 +29,8 @@ export const NavBar = (props: NavBarProps) => {
         </Link>
       </div>
 
-      {/* Navbar - Centered, hidden on small screens */}
-      <div className="hidden md:transform md:-translate-x-1/2 md:block md:absolute md:left-1/2 md:z-50">
-        <NavigationMenu>
-          <NavigationMenuList>
-            {components.map((comp, index) => (
-              <NavigationMenuItem key={index}>
-                <HashLink to={comp.href}>
-                  <NavigationMenuLink
-                    className={cn(
-                      "text-md font-medium text-gray-200 duration-300 rounded-md p-3 hover:text-white hover:bg-slate-800"
-                    )}
-                  >
-                    {comp.title}
-                  </NavigationMenuLink>
-                </HashLink>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-        </NavigationMenu>
-      </div>
-
       {/* Login */}
-      <div className="hidden md:flex items-center space-x-4 animate-fade animate-delay-500">
+      <div className="flex items-center space-x-4 animate-fade animate-delay-500">
         {isAuth ? (
           <>
             <Button
@@ -106,14 +56,6 @@ export const NavBar = (props: NavBarProps) => {
             <Link to="/login">Login</Link>
           </Button>
         )}
-      </div>
-
-      {/* Sidebar - Hidden on large screens */}
-      <div className="md:hidden">
-        <button className="p-2 text-white bg-gray-800 rounded-md">
-          {/* Sidebar toggle button */}
-          Sidebar
-        </button>
       </div>
     </div>
   );

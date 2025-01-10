@@ -16,42 +16,43 @@ type FeatureItem = {
 
 const features: FeatureItem[] = [
   {
-    title: "AI-Powered Quiz Creation",
+    title: "AI 智能測驗生成",
     description:
-      "Generate quizzes tailored to your needs with AI. Simply provide a topic or learning objective, and let the model craft engaging questions for you.",
+      "透過 AI 量身打造測驗內容。只需提供主題、學習目標、備註，系統即能自動產生有趣且具挑戰性的題目。",
     image: CreateImg,
   },
   {
-    title: "Smart Performance Analytics",
+    title: "智慧學習分析",
     description:
-      "Track your quiz results and learning progress with in-depth analytics. Get personalized AI-generated feedback to improve your understanding.",
+      "透過深入的數據分析追蹤測驗結果與學習進度，並獲取 AI 生成的個人化回饋，幫助你精進理解。",
     image: AnalyticsImg,
   },
   {
-    title: "Adaptive Quiz Experience",
+    title: "適應式測驗體驗",
     description:
-      "Enjoy a dynamic quiz-taking experience with adaptive questions. Challenge yourself with questions that adjust to your skill level.",
+      "享受動態測驗體驗，根據你過往答題表現自動調整題目難度，挑戰自我、穩步提升。",
     image: QuizImg,
   },
   {
-    title: "Detailed Result Insights",
+    title: "詳細測驗結果解析",
     description:
-      "Receive an in-depth breakdown of your answers. Identify mistakes, review explanations, and get AI-driven suggestions for improvement.",
+      "提供完整的答題解析，找出錯誤原因、檢視解釋，並獲得 AI 提供的學習建議，助你精準進步。",
     image: ResultImg,
   },
   {
-    title: "Comprehensive Learning Dashboard",
+    title: "全方位學習儀表板",
     description:
-      "Manage all your quizzes and progress in one place. Access past attempts, monitor improvements, and plan your learning path efficiently.",
+      "統整所有測驗與學習進度，一站式管理歷史測驗、追蹤成長曲線，規劃最適合自己的學習策略。",
     image: DashboardImg,
   },
   {
-    title: "Data-Driven Learning Strategies",
+    title: "數據驅動的學習策略",
     description:
-      "Visualize your learning trends with interactive charts. Use AI-recommended strategies to focus on areas that need improvement.",
+      "透過互動式圖表視覺化學習趨勢，聚焦提升弱項，讓學習更具效率。",
     image: ResultBarImg,
   },
 ];
+
 
 export const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -79,7 +80,7 @@ export const About = () => {
     <section ref={sectionRef} id="about" className="py-20 bg-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-extrabold text-center text-white mb-12">
-          About Our Platform
+          關於我們
         </h2>
         <div className=" grid grid-cols-1 lg:grid-cols-2 gap-8">
           {features.map((feature, index) => (

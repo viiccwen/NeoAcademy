@@ -19,19 +19,19 @@ export const HeroSection = () => {
         <p className="mt-3 max-w-md mx-auto text-md font-medium italic text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl animate-fade-up animate-delay-300">
           "Personalized Learning, Powered by AI"
         </p>
-        <p className="mt-3 max-w-md mx-auto text-sm font-medium text-gray-400 sm:text-sm md:mt-5 md:text-lg md:max-w-xl animate-fade-up animate-delay-300">
-          Provides personalized learning experience to students using
+        <div className="flex flex-col md:flex-row gap-2 mt-3 max-w-md mx-auto text-sm font-medium text-gray-400 sm:text-sm md:mt-5 md:text-lg md:max-w-xl animate-fade-up animate-delay-300">
+          提供人們一個客製化學習路徑，結合
           <p className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-            Large Language Models.
+            AI, Large Language Models.
           </p>
-        </p>
+        </div>
         <div className="mt-10 animate-fade animate-delay-500">
           <Button
             asChild
             className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
           >
             <Link to="/login">
-              Getting Start <LogIn className="w-5" />
+              開始使用 <LogIn className="w-5" />
             </Link>
           </Button>
         </div>

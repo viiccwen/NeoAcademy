@@ -41,19 +41,19 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
             onClick={() => navigate(`/quiz/${quiz.id}/1`)}
             className=" hover:cursor-pointer hover:bg-slate-500"
           >
-            Start Quiz
+            開始測驗
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => navigate(`/result/${quiz.id}`)}
             className=" hover:cursor-pointer"
           >
-            View Results
+            查看結果
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={handleDeleteQuiz}
             className="hover:cursor-pointer text-red-500 hover:text-red-500"
           >
-            <p className="hover:text-red-500 w-full h-full">Delete Quiz</p>
+            <p className="hover:text-red-500 w-full h-full">刪除測驗</p>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -72,7 +72,13 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                 : "bg-red-500"
             } text-white`}
           >
-            {quiz.difficulty}
+            {
+              quiz.difficulty === "Easy"
+                ? "簡單"
+                : quiz.difficulty === "Medium"
+                ? "中等"
+                : "困難"
+            }
           </Badge>
           <span className="text-sm text-gray-400">
             {new Date(quiz.createdAt).toLocaleDateString()}
@@ -83,12 +89,12 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
       {/* card content */}
       <CardContent className="p-4">
         <p className="text-sm text-gray-300 mb-4">
-          Category: <span className="font-medium">{quiz.category}</span>
+          種類: <span className="font-medium">{quiz.category}</span>
         </p>
         <p className="text-sm text-gray-300">
-          Multiple Answers:{" "}
+          選擇:{" "}
           <span className="font-medium">
-            {quiz.multipleAnswers ? "Yes" : "No"}
+            {quiz.multipleAnswers ? "複選題" : "單選題"}
           </span>
         </p>
       </CardContent>

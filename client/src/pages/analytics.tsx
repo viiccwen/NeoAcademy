@@ -29,6 +29,7 @@ import { useAnalyze, useAuth } from "@/hooks/user";
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "sonner";
+import { translateCategory, translateDifficulty } from "@/lib/utils";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -37,6 +38,8 @@ ChartJS.register(
   LinearScale,
   BarElement
 );
+
+
 
 export default function Analytics() {
   const navigate = useNavigate();
@@ -141,31 +144,27 @@ export default function Analytics() {
     };
   };
 
-  if (_quiz.isSuccess) {
-    console.log(quiz);
-  }
-
   if (_quiz.isSuccess && quiz && quizStats) {
     const QuizStats = quizStats();
     return (
       <>
         <Toaster richColors />
         <Metadata
-          title="Analysis"
+          title="分析"
           description="Track your learning progress with AI-driven analytics and personalized insights."
         />
         <div className="min-h-screen bg-gray-900 py-4 px-4 text-white">
           <NavBar />
           <div className="max-w-5xl w-1/2 mx-auto pt-20">
             <h1 className="text-4xl font-extrabold text-center mb-8">
-              Quiz Analysis
+              測驗分析
             </h1>
 
             {/* 測驗總覽數據 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Total Quizzes</CardTitle>
+                  <CardTitle>測驗總計</CardTitle>
                 </CardHeader>
                 <CardContent className="text-2xl font-bold text-center">
                   {QuizStats?.totalQuizzes}
@@ -174,7 +173,7 @@ export default function Analytics() {
 
               <Card className="bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Average Score</CardTitle>
+                  <CardTitle>平均分數</CardTitle>
                 </CardHeader>
                 <CardContent className="text-2xl font-bold text-center">
                   {QuizStats?.averageScore.toFixed(2)}
@@ -183,7 +182,7 @@ export default function Analytics() {
 
               <Card className="bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Correct Rate</CardTitle>
+                  <CardTitle>正確率</CardTitle>
                 </CardHeader>
                 <CardContent className="text-2xl font-bold text-center">
                   {QuizStats?.correctRate.toFixed(2)}%
@@ -196,12 +195,12 @@ export default function Analytics() {
               {/* 測驗難度分析 */}
               <Card className="bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Quiz Difficulty Distribution</CardTitle>
+                  <CardTitle className="flex items-center h-[36px]">測驗難度統計</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Pie
                     data={{
-                      labels: ["Easy", "Medium", "Hard"],
+                      labels: ["簡單", "中等", "困難"],
                       datasets: [
                         {
                           data: QuizStats
@@ -219,7 +218,7 @@ export default function Analytics() {
               <Card className="bg-gray-800">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    AI Insights & Recommendations{" "}
+                    AI 分析 & 建議{" "}
                     <Button
                       variant="ghost"
                       size="icon"
@@ -244,24 +243,24 @@ export default function Analytics() {
             {/* 測驗結果統計表格 */}
             <Card className="bg-gray-800 mt-10">
               <CardHeader>
-                <CardTitle>Quiz Results</CardTitle>
+                <CardTitle>測驗結果</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Quiz Name</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Difficulty</TableHead>
-                      <TableHead>Score</TableHead>
+                      <TableHead>名稱</TableHead>
+                      <TableHead>種類</TableHead>
+                      <TableHead>難度</TableHead>
+                      <TableHead>分數</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {quiz.map((q, _) => (
                       <TableRow key={q.id}>
                         <TableCell>{q.name}</TableCell>
-                        <TableCell>{q.category}</TableCell>
-                        <TableCell>{q.difficulty}</TableCell>
+                        <TableCell>{translateCategory(q.category)}</TableCell>
+                        <TableCell>{translateDifficulty(q.difficulty)}</TableCell>
                         <TableCell>
                           {q.answered
                             ? (q.questions as AnsweredQuestionType[]).filter(
@@ -282,41 +281,41 @@ export default function Analytics() {
             {/* 科目類別分析 */}
             <Card className="bg-gray-800 mt-10">
               <CardHeader>
-                <CardTitle>Quiz Category Distribution</CardTitle>
+                <CardTitle>測驗類別統計</CardTitle>
               </CardHeader>
               <CardContent>
                 <Bar
                   data={{
                     labels: [
-                      "Math",
-                      "Science",
-                      "History",
-                      "Language",
-                      "Programming",
+                      "數學",
+                      "自然",
+                      "歷史",
+                      "語言",
+                      "程式語言",
                     ],
                     datasets: [
                       {
-                        label: "Math",
+                        label: "數學",
                         data: [QuizStats?.categoryCount.Math, 0, 0, 0],
                         backgroundColor: "#3b82f6", // 藍色
                       },
                       {
-                        label: "Science",
+                        label: "自然",
                         data: [0, QuizStats?.categoryCount.Science, 0, 0],
                         backgroundColor: "#22c55e", // 綠色
                       },
                       {
-                        label: "History",
+                        label: "歷史",
                         data: [0, 0, QuizStats?.categoryCount.History, 0],
                         backgroundColor: "#f59e0b", // 黃色
                       },
                       {
-                        label: "Language",
+                        label: "語言",
                         data: [0, 0, 0, QuizStats?.categoryCount.Language],
                         backgroundColor: "#ec4899", // 粉色
                       },
                       {
-                        label: "Programming",
+                        label: "程式語言",
                         data: [
                           0,
                           0,

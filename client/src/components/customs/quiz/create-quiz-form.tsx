@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { categories, difficulties, options, questions } from "@/lib/type";
 import { createQuizSchema, CreateQuizType } from "@/lib/type";
 import { useCreateQuiz } from "@/hooks/quiz";
+import { translateCategory, translateDifficulty } from "@/lib/utils";
 
 interface CreateQuizFormProps {
   className?: string;
@@ -41,7 +42,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
         <CardTitle>
           <h1 className="text-3xl font-bold">New Quiz</h1>
           <h2 className="text-sm text-gray-500">
-            NeoAcademy - quiz generaing by LLM
+            NeoAcademy - AI 驅動的線上測驗平台
           </h2>
         </CardTitle>
       </CardHeader>
@@ -53,11 +54,11 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
               htmlFor="name"
               className="block text-sm font-medium text-gray-300"
             >
-              Quiz Name <span className="text-red-500">*</span>
+              名稱 <span className="text-red-500">*</span>
             </label>
             <Input
               type="text"
-              placeholder="Enter quiz name"
+              placeholder="輸入..."
               className={`mt-1 ${errors.name ? "border-red-500" : ""}`}
               {...register("name", { required: true })}
               aria-invalid={errors.name ? "true" : "false"}
@@ -70,22 +71,27 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
           {/* Category & Difficulty */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SelectionItem
+            label="種類"
               name="category"
               choice={categories}
               register={register}
               control={control}
+              translate={translateCategory}
             />
             <SelectionItem
+              label="難度"
               name="difficulty"
               choice={difficulties}
               register={register}
               control={control}
+              translate={translateDifficulty}
             />
           </div>
 
           {/* Number of Problems & Options */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SelectionItem
+            label="題數"
               name="question"
               choice={questions}
               register={register}
@@ -93,6 +99,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
               isNumber={true}
             />
             <SelectionItem
+            label="選項"
               name="option"
               choice={options}
               register={register}
@@ -105,7 +112,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
           <div className="flex items-center space-x-2">
             <MultipleCheckbox
               id="mul_answer"
-              label="Allow Multiple Correct Answers"
+              label="允許複選題"
               register={register}
               control={control}
             />
@@ -117,9 +124,9 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
               htmlFor="remarks"
               className="block text-sm font-medium text-gray-300"
             >
-              Additional Remarks
+              額外附註
             </label>
-            <Textarea className="h-[100px]" {...register("remarks")} />
+            <Textarea className="h-[100px] mt-1" {...register("remarks")} />
             {errors.remarks && (
               <p className="text-sm text-red-500 mt-1">
                 {errors.remarks.message}
@@ -133,7 +140,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
             disabled={!isValid || mutation.isPending}
           >
-            {mutation.isPending ? "Generating Quiz..." : "Create Quiz"}
+            {mutation.isPending ? "產生測驗中..." : "建立測驗"}
           </Button>
         </form>
       </CardContent>

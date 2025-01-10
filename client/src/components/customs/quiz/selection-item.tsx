@@ -6,17 +6,15 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { CreateQuizType } from "@/lib/type";
-import {
-  UseFormRegister,
-  Controller,
-  Control,
-} from "react-hook-form";
+import { UseFormRegister, Controller, Control } from "react-hook-form";
 
 interface SelectItemProps {
+  label: string;
   name: keyof CreateQuizType;
   choice: string[] | number[];
   register: UseFormRegister<CreateQuizType>;
   control: Control<CreateQuizType, any>;
+  translate?: (value: string) => string;
   isNumber?: boolean;
 }
 
@@ -25,9 +23,10 @@ export const SelectionItem = (props: SelectItemProps) => {
     <div>
       <label
         htmlFor={props.name}
-        className="block text-sm font-medium text-gray-700"
+        className="block text-sm font-medium text-gray-300"
       >
-        {props.name}
+        {props.label}
+        <span className="text-red-500 ml-1">*</span>
       </label>
       <Controller
         name={props.name}
@@ -35,7 +34,7 @@ export const SelectionItem = (props: SelectItemProps) => {
         render={({ field }) => (
           <Select
             onValueChange={(value) => {
-              if(props.isNumber) field.onChange(parseInt(value));
+              if (props.isNumber) field.onChange(parseInt(value));
               else field.onChange(value);
             }}
             value={field.value?.toString()}
@@ -46,7 +45,7 @@ export const SelectionItem = (props: SelectItemProps) => {
             <SelectContent>
               {props.choice.map((item, index) => (
                 <SelectItem key={index} value={item.toString()}>
-                  {item}
+                  {props.translate ? props.translate(item.toString()) : item}
                 </SelectItem>
               ))}
             </SelectContent>
