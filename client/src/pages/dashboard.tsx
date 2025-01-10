@@ -74,7 +74,7 @@ export default function Dashboard() {
 
           <div className="max-w-5xl mx-auto pt-20">
             <h1 className="text-4xl font-extrabold text-center mb-8">
-              Dashboard
+              測驗總覽
             </h1>
 
             {/* Filter and Sort Controls */}
