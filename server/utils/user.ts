@@ -40,12 +40,12 @@ export async function findByOAuthId(
 }
 
 export async function deleteUserById(userId: ObjectId): Promise<DeleteResult> {
-    return await users.deleteOne({ id: userId });
+    return await users.deleteOne({ _id: userId });
 }
 
 export async function updateAccessToken(
     userId: ObjectId,
     accessToken: string
 ): Promise<void> {
-    await users.updateOne({ id: userId }, { accessToken });
+    await users.updateOne({ _id: userId }, { accessToken });
 }
