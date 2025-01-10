@@ -28,6 +28,37 @@ export const DelayFunc = async <T>(props: DelayFuncProps<T>): Promise<T> => {
   });
 };
 
+
+export const translateCategory = (category: string) => {
+  switch (category) {
+    case "Math":
+      return "數學";
+    case "Science":
+      return "自然";
+    case "History":
+      return "歷史";
+    case "Language":
+      return "語言";
+    case "Programming":
+      return "程式語言";
+    default:
+      return "N/A";
+  }
+}
+
+export const translateDifficulty = (difficulty: string) => {
+  switch (difficulty) {
+    case "Easy":
+      return "簡單";
+    case "Medium":
+      return "中等";
+    case "Hard":
+      return "困難";
+    default:
+      return "N/A";
+  }
+}
+
 export const parseQuestionIndex = (
   questionIndex: string | undefined,
   amount: number

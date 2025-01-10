@@ -61,14 +61,14 @@ export default function Result() {
     return (
       <>
         <Metadata
-          title="Results"
+          title="結果"
           description="Review your quiz performance with AI-driven insights and personalized feedback."
         />
         <div className="min-h-screen bg-gray-900 py-8 px-4">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
             <h1 className="text-4xl font-extrabold text-white text-center mb-8">
-              Quiz Results
+              測驗結果
             </h1>
 
             {/* Summary Section */}
@@ -84,8 +84,8 @@ export default function Result() {
 
             {/* Actions Section */}
             <div className="flex justify-center gap-4 mt-8">
-              <Button LinkTo={`/quiz/${quizId}/1`}>Retake Quiz</Button>
-              <Button LinkTo="/dashboard">Back to Dashboard</Button>
+              <Button LinkTo={`/quiz/${quizId}/1`}>重新測驗</Button>
+              <Button LinkTo="/dashboard">返回</Button>
             </div>
           </div>
         </div>

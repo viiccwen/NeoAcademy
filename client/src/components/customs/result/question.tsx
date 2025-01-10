@@ -47,7 +47,7 @@ export const Question = ({ quiz }: QuestionProps) => {
                   isCorrect ? "bg-green-500" : "bg-red-500"
                 } text-white`}
               >
-                {isCorrect ? "Correct" : "Incorrect"}
+                {isCorrect ? "正確" : "錯誤"}
               </Badge>
             </CardContent>
           </Card>

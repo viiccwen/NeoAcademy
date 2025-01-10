@@ -74,7 +74,7 @@ export default function Dashboard() {
 
           <div className="max-w-5xl mx-auto pt-20">
             <h1 className="text-4xl font-extrabold text-center mb-8">
-              Dashboard
+              測驗總覽
             </h1>
 
             {/* Filter and Sort Controls */}
@@ -84,14 +84,15 @@ export default function Dashboard() {
                 onValueChange={(value) => setFilterCategory(value || null)}
               >
                 <SelectTrigger className="w-full md:w-1/3">
-                  <SelectValue placeholder="Filter by Category" />
+                  <SelectValue placeholder="種類" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="All">All Categories</SelectItem>
-                  <SelectItem value="Math">Math</SelectItem>
-                  <SelectItem value="Science">Science</SelectItem>
-                  <SelectItem value="History">History</SelectItem>
-                  <SelectItem value="Language">Language</SelectItem>
+                  <SelectItem value="All">所有</SelectItem>
+                  <SelectItem value="Math">數學</SelectItem>
+                  <SelectItem value="Science">自然</SelectItem>
+                  <SelectItem value="History">歷史</SelectItem>
+                  <SelectItem value="Language">語言</SelectItem>
+                  <SelectItem value="Programming">程式語言</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -100,13 +101,13 @@ export default function Dashboard() {
                 onValueChange={(value) => setFilterDifficulty(value || null)}
               >
                 <SelectTrigger className="w-full md:w-1/3">
-                  <SelectValue placeholder="Filter by Difficulty" />
+                  <SelectValue placeholder="難度" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="All">All Difficulties</SelectItem>
-                  <SelectItem value="Easy">Easy</SelectItem>
-                  <SelectItem value="Medium">Medium</SelectItem>
-                  <SelectItem value="Hard">Hard</SelectItem>
+                  <SelectItem value="All">所有</SelectItem>
+                  <SelectItem value="Easy">簡單</SelectItem>
+                  <SelectItem value="Medium">中等</SelectItem>
+                  <SelectItem value="Hard">困難</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -119,12 +120,12 @@ export default function Dashboard() {
                 }
               >
                 <SelectTrigger className="w-full md:w-1/3">
-                  <SelectValue placeholder="Sort By" />
+                  <SelectValue placeholder="排序" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="date">Date</SelectItem>
-                  <SelectItem value="difficulty">Difficulty</SelectItem>
-                  <SelectItem value="category">Category</SelectItem>
+                  <SelectItem value="date">日期</SelectItem>
+                  <SelectItem value="difficulty">難度</SelectItem>
+                  <SelectItem value="category">種類</SelectItem>
                 </SelectContent>
               </Select>
             </div>

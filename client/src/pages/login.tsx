@@ -21,7 +21,7 @@ export default function Login() {
 
   return (
     <>
-      <Metadata title="Login" description="Login to NeoAcademy" />
+      <Metadata title="登入" description="Login to NeoAcademy" />
       <div className="flex w-full justify-center items-center h-screen">
         <Card className="w-[400px] shadow-md">
           <CardHeader>
@@ -29,11 +29,11 @@ export default function Login() {
               <h1 className="text-3xl">Login</h1>
               <h2
                 className={cn(
-                  "text-sm text-gray-500",
+                  "text-sm text-gray-500 mt-2",
                   "animate-fade-up animate-delay-0"
                 )}
               >
-                Discover, Learn, Excel – The Neo Way.
+                發現, 學習, 精進 – The Neo Way.
               </h2>
             </CardTitle>
           </CardHeader>
