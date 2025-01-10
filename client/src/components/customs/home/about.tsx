@@ -48,7 +48,7 @@ const features: FeatureItem[] = [
   {
     title: "數據驅動的學習策略",
     description:
-      "透過互動式圖表視覺化學習趨勢，聚焦提升弱項，讓學習更具效率。",
+      "透過互動式圖表視覺化學習趨勢，系統會根據你的學習狀況提供個性化的學習建議，聚焦提升弱項，讓學習更具效率。",
     image: ResultBarImg,
   },
 ];

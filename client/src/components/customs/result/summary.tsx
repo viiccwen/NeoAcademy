@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
+import { translateCategory, translateDifficulty } from "@/lib/utils";
 
 interface SummaryProps {
   quiz: GetQuizType<AnsweredQuestionType>;
@@ -21,10 +22,13 @@ export const Summary = ({
       <CardContent className="p-6">
         <h2 className="text-2xl font-bold mb-4">{quiz.name}</h2>
         <p className="text-gray-400 mb-2">
-          Category: <span className="font-medium">{quiz.category}</span>
+          種類:{" "}
+          <span className="font-medium">
+            {translateCategory(quiz.category)}
+          </span>
         </p>
         <p className="text-gray-400 mb-2">
-          Difficulty:{" "}
+          難度:{" "}
           <Badge
             variant="outline"
             className={`${
@@ -35,11 +39,11 @@ export const Summary = ({
                 : "bg-red-500"
             } text-white`}
           >
-            {quiz.difficulty}
+            {translateDifficulty(quiz.difficulty)}
           </Badge>
         </p>
         <p className="text-gray-400">
-          Score: <span className="font-medium">{correctAnswers}</span>/
+          分數: <span className="font-medium">{correctAnswers}</span>/
           {totalQuestions} ({scorePercentage}%)
         </p>
         <Progress value={scorePercentage} className="mt-4 bg-gray-700" />
