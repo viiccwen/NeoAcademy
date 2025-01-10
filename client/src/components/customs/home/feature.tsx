@@ -3,28 +3,28 @@ import { Zap, Bot, Shapes, User } from "lucide-react";
 
 const features = [
   {
-    icon: Zap,
-    title: "Optimized Learning Paths",
-    description:
-      "Save time with AI-driven learning pathways that adapt to your goals and optimize your success.",
-  },
-  {
     icon: Bot,
-    title: "AI-Powered Personalization",
+    title: "AI 驅動客製化學習",
     description:
-      "Harness the power of AI to deliver tailored content and recommendations for a truly individualized learning experience.",
+      "運用 LLM 技術，提供量身打造的學習內容，讓學習更加符合你的需求。",
   },
   {
-    icon: Shapes,
-    title: "Dynamic Knowledge Adaptation",
+    icon: Zap,
+    title: "最佳化學習路徑",
     description:
-      "Seamlessly adjust to your skill level and pace, ensuring a smooth and effective learning journey.",
+      "透過 AI 智能學習規劃，根據你的目標自動調整，幫助你高效達成學習成果。",
   },
   {
     icon: User,
-    title: "Customizable Learning Experience",
+    title: "錯誤回饋及補救",
     description:
-      "Empower yourself with tools to personalize courses, track progress, and connect with a global community of learners.",
+    "即時回饋學習錯誤，並提供補救方案，讓你能夠快速修正並持續進步。",
+  },
+  {
+    icon: Shapes,
+    title: "強弱項分析及建議",
+    description:
+      "根據你的能力與學習狀況，提供數據化分析及文字建議，確保學習順暢且高效。",
   },
 ];
 
@@ -54,7 +54,7 @@ export const Features = () => {
     <section id="features" ref={sectionRef} className="py-20 bg-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-extrabold text-center text-white mb-12">
-          Our Features
+          我們的特色
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((f, index) => (

@@ -61,7 +61,7 @@ export default function Result() {
     return (
       <>
         <Metadata
-          title="Results"
+          title="結果"
           description="Review your quiz performance with AI-driven insights and personalized feedback."
         />
         <div className="min-h-screen bg-gray-900 py-8 px-4">

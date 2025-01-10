@@ -16,7 +16,7 @@ export default function Create() {
 
   return (
     <>
-      <Metadata title="Create Quiz" description="Create a new quiz using NeoAcademy's quiz generator." />
+      <Metadata title="建立" description="Create a new quiz using NeoAcademy's quiz generator." />
       <div className="w-full min-h-screen flex justify-center items-center bg-gray-900">
         <Toaster richColors />
         <CreateQuizForm className="w-[400px]" />

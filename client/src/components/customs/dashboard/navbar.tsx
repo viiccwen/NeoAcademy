@@ -77,19 +77,11 @@ export const NavBar = (props: NavBarProps) => {
           LinkTo="/create"
           className="px-8 py-3 bg-transparent hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
         >
-          New Quiz
+          建立
         </Button>
         <Button onClick={Logout} className="bg-transparent hover:bg-red-700">
           <LogOut className="w-5 text-white" />
         </Button>
-      </div>
-
-      {/* Sidebar - Hidden on large screens */}
-      <div className="md:hidden">
-        <button className="p-2 text-white bg-gray-800 rounded-md">
-          {/* Sidebar toggle button */}
-          Sidebar
-        </button>
       </div>
     </div>
   );
