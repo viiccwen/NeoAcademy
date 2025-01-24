@@ -2,6 +2,7 @@ import type { RequestHandler } from 'express';
 import { verify } from 'utils/verify';
 import type { jwtType } from 'utils/type';
 import { findByOAuthId } from 'utils/user';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 
 const authMiddleware: RequestHandler = async (req, res, next) => {
@@ -12,7 +13,7 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
 
     try {
         const token = req.headers.authorization.split(' ')[1];
-        const { payload, iat, exp } = await verify(token) as jwtType;
+        const { payload } = await verify(token) as jwtType;
 
         const user = await findByOAuthId(payload.provider, payload.authId);
 
@@ -24,8 +25,12 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
         req.user = user;
         next();
     } catch (e) {
-        console.error(e);
-        res.status(500).json({ message: 'Error!' });
+        if (e instanceof TokenExpiredError) {
+            res.status(401).json({ message: 'Unauthorized.' });
+        } else {
+            console.error(e);
+            res.status(500).json({ message: 'Error!' });
+        }
     }
 };
 
