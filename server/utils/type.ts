@@ -1,17 +1,16 @@
 import type { AuthProvider } from "database";
 
-export type payloadType = {
+export type PayloadType = {
   provider: AuthProvider;
   authId: string;
-}
+};
 
-export type jwtType = {
-  payload: payloadType;
+export type JwtType = PayloadType & {
   iat: number;
   exp: number;
 };
 
-export type getAllQuizType = {
+export type GetAllQuizType = {
   id: string;
   name: string;
   category: string;

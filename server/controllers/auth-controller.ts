@@ -1,17 +1,17 @@
 import type { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
-import type { payloadType } from "utils/type";
+import type { PayloadType } from "utils/type";
 
 export const githubAuthCallback = (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
-    const payload: payloadType = {
+    const payload: PayloadType = {
       provider: user.authProvider,
       authId: user.authId,
-    }
-    
-    const token = sign({ payload }, process.env.JWT_SECRET!, {
+    };
+
+    const token = sign(payload, process.env.JWT_SECRET!, {
       expiresIn: "12h",
     });
 
@@ -26,12 +26,12 @@ export const googleAuthCallback = (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
-    const payload: payloadType = {
+    const payload: PayloadType = {
       provider: user.authProvider,
       authId: user.authId,
-    }
-    
-    const token = sign({ payload }, process.env.JWT_SECRET!, {
+    };
+
+    const token = sign(payload, process.env.JWT_SECRET!, {
       expiresIn: "12h",
     });
 
