@@ -2,7 +2,7 @@ import type { RequestHandler } from 'express';
 import { verify } from 'utils/verify';
 import type { jwtType } from 'utils/type';
 import { findByOAuthId } from 'utils/user';
-import { TokenExpiredError } from 'jsonwebtoken';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 
 const authMiddleware: RequestHandler = async (req, res, next) => {
@@ -25,7 +25,7 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
         req.user = user;
         next();
     } catch (e) {
-        if (e instanceof TokenExpiredError) {
+        if (e instanceof JsonWebTokenError) {
             res.status(401).json({ message: 'Unauthorized.' });
         } else {
             console.error(e);
