@@ -13,7 +13,7 @@ import { Router } from "express";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { getUserEmails } from "utils/github";
-import { githubAuthCallback, googleAuthCallback } from "controllers/auth-controller";
+import { authCallback, githubAuthCallback, googleAuthCallback } from "controllers/auth-controller";
 import { createUser, findByOAuthId } from "utils/user";
 
 passport.use(
@@ -94,7 +94,7 @@ authRouter.get(
 authRouter.get(
   "/auth/callback/github",
   passport.authenticate("github", { session: false }),
-  githubAuthCallback
+  authCallback, 
 );
 
 authRouter.get(
@@ -105,7 +105,7 @@ authRouter.get(
 authRouter.get(
   "/auth/callback/google",
   passport.authenticate("google", { session: false }),
-  googleAuthCallback
+  authCallback, 
 );
 
 export default authRouter;

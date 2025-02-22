@@ -5,14 +5,17 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const Auth = () => {
-  const { token } = useParams();
-  const { setToken } = useUserStore();
+  const { token, expiry } = useParams();
+  const { setToken, setExpiry } = useUserStore();
   const { isAuth, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
       setToken(token);
+    }
+    if (expiry) {
+      setExpiry(+expiry);
     }
     if (!isLoading && !isAuth) {
         navigate("/login");
