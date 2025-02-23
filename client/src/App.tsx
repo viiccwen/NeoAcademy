@@ -11,6 +11,7 @@ import Result from "./pages/result";
 import Dashboard from "./pages/dashboard";
 import Analytics from "./pages/analytics";
 import { Auth } from "./pages/auth";
+import ProtectedRoute from "./lib/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -22,12 +23,16 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/create" element={<Create />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/quiz/:quizId/:index" element={<Quiz />} />
-            <Route path="/result/:quizId" element={<Result />} />
-            <Route path="/auth/:token" element={<Auth />} />
+            <Route path="/auth/:token/:expiry" element={<Auth />} />
+
+            <Route element={<ProtectedRoute />}>
+                <Route path="/create" element={<Create />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/quiz/:quizId/:index" element={<Quiz />} />
+                <Route path="/result/:quizId" element={<Result />} />
+            </Route>
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
