@@ -25,7 +25,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
   };
 
   return (
-    <Card className="bg-gray-800 border-gray-700 hover:shadow-lg transition duration-300 relative">
+    <Card className="border-gray-800 hover:shadow-lg transition duration-300 relative">
       {/* menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

@@ -25,6 +25,10 @@ const components: compType[] = [
     href: "/dashboard",
   },
   {
+    title: "路徑",
+    href: "/roadmap",
+  },
+  {
     title: "分析",
     href: "/analytics",
   },
@@ -48,7 +52,7 @@ export const NavBar = (props: NavBarProps) => {
       {/* Logo - Always visible */}
       <div className="flex-shrink-0 flex">
         <Link to="/">
-        <img src={Logo} alt="Logo" width={150} />
+          <img src={Logo} alt="Logo" width={150} />
         </Link>
       </div>
 
@@ -75,10 +79,10 @@ export const NavBar = (props: NavBarProps) => {
 
       {/* Login */}
       <div className="hidden md:flex items-center space-x-4">
-        <AIButton 
+        <AIButton
           type="button"
           text="建立"
-          onClick={() => navigate('/create')}
+          onClick={() => navigate("/create")}
         />
         <Button onClick={Logout} className="bg-transparent hover:bg-red-700">
           <LogOut className="w-5 text-white" />

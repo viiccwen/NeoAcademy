@@ -64,7 +64,7 @@ export default function Result() {
           title="結果"
           description="Review your quiz performance with AI-driven insights and personalized feedback."
         />
-        <div className="min-h-screen bg-gray-900 py-8 px-4">
+        <div className="min-h-screen py-8 px-4">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
             <h1 className="text-4xl font-extrabold text-white text-center mb-8">

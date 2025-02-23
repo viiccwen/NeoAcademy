@@ -89,7 +89,10 @@ export const useSubmitQuiz = () => {
   });
 };
 
-export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(quizId: string, isAnswered: boolean) => {
+export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(
+  quizId: string,
+  isAnswered: boolean
+) => {
   const { token } = useUserStore();
 
   return useQuery({
@@ -151,6 +154,7 @@ export const useGetAllQuiz = () => {
   return useQuery({
     queryKey: ["quiz", "get-all"],
     queryFn: () => getAllQuiz(token!),
+    retry: 1,
   });
 };
 
@@ -160,5 +164,6 @@ export const useGetAllQuizDetails = () => {
   return useQuery({
     queryKey: ["quiz", "get-all-details", token],
     queryFn: () => getDetailsAllQuiz(token!),
+    retry: 1,
   });
 };
