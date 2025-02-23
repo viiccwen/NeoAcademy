@@ -1,6 +1,5 @@
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import Markdown from "react-markdown";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pie, Bar } from "react-chartjs-2";
@@ -25,7 +24,7 @@ import {
 import { Metadata } from "@/components/customs/metadata";
 import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
 import { useGetAllQuizDetails } from "@/hooks/quiz";
-import { useAnalyze, useAuth } from "@/hooks/user";
+import { useAnalyze } from "@/hooks/user";
 import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "sonner";
@@ -44,13 +43,8 @@ ChartJS.register(
 export default function Analytics() {
   const navigate = useNavigate();
   const { analyze, content, isLoading } = useAnalyze();
-  const { isAuth } = useAuth();
   const _quiz = useGetAllQuizDetails();
   const quiz = _quiz.data;
-
-  useEffect(() => {
-    if (!isAuth) navigate("/login");
-  }, [isAuth]);
 
   const onAnalyze = () => {
     analyze();

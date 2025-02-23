@@ -10,8 +10,6 @@ import { Metadata } from "@/components/customs/metadata";
 
 export default function Login() {
   const { isLoading } = useAuth();
-
-
   return (
     <>
       <Metadata title="登入" description="Login to NeoAcademy" />

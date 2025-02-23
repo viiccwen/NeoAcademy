@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 export const useAuth = () => {
   const navigate = useNavigate();
-  const { token, isAuth, setIsAuth, setUser, setToken } = useUserStore();
+  const { token, isAuth, setIsAuth, setUser, reset } = useUserStore();
 
   const {
     data: user,
@@ -17,15 +17,12 @@ export const useAuth = () => {
   } = useQuery<UserType>({
     queryKey: ["user", "details"],
     queryFn: () => getUser(token),
-    enabled: !!token,
     retry: 1,
   });
 
   useEffect(() => {
     if (isError) {
-      setIsAuth(false);
-      setUser(null);
-      setToken(null);
+      reset();
       navigate("/login");
     }
     if (user && !isAuth) {

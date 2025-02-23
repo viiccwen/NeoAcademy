@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import {
@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { QuizCard } from "@/components/customs/dashboard/quiz-card";
-import { useAuth } from "@/hooks/user";
 
 import { useGetAllQuiz } from "@/hooks/quiz";
 import { FilterHelper, SortHelper } from "@/lib/utils";
@@ -17,7 +16,6 @@ import { Metadata } from "@/components/customs/metadata";
 import { Toaster } from "sonner";
 
 export default function Dashboard() {
-  const { isAuth } = useAuth();
   const _quiz = useGetAllQuiz();
   const navigate = useNavigate();
   const quiz = _quiz.data;
@@ -27,12 +25,6 @@ export default function Dashboard() {
   const [sortOrder, setSortOrder] = useState<
     "name" | "date" | "difficulty" | "category"
   >("name"); // Default sort by name
-
-  useEffect(() => {
-    if (!isAuth) {
-      navigate("/login");
-    }
-  }, [isAuth]);
 
   if (_quiz.isPending) {
     return (
