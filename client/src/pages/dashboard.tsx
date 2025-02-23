@@ -28,7 +28,7 @@ export default function Dashboard() {
 
   if (_quiz.isPending) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-900 text-white">
+      <div className="min-h-screen flex justify-center items-center  text-white">
         Loading...
       </div>
     );
@@ -60,11 +60,11 @@ export default function Dashboard() {
           description="View all available quizzes and start learning!"
         />
 
-        <div className="min-h-screen bg-gray-900 py-4 px-4 text-white">
+        <div className="min-h-screen p-4 text-white">
           {/* Navbar */}
           <NavBar />
 
-          <div className="max-w-5xl mx-auto pt-20">
+          <div className="max-w-5xl mx-auto mt-10">
             <h1 className="text-4xl font-extrabold text-center mb-8">
               測驗總覽
             </h1>

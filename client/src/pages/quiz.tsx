@@ -74,7 +74,7 @@ export default function Quiz() {
     <>
       <Metadata title="測驗" description="Taking quiz!" />
       <Toaster richColors />
-      <div className="w-full min-h-screen flex flex-col justify-center items-center bg-gray-900 text-white p-6">
+      <div className="w-full min-h-screen flex flex-col justify-center items-center text-white p-6">
         {/* progress bar */}
         <div className="w-full max-w-xl mb-4">
           <Progress value={(currentQuestionIndex / amount) * 100} />

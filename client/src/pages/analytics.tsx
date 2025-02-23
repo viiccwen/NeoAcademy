@@ -49,7 +49,7 @@ export default function Analytics() {
 
   if (_quiz.isPending) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-900 text-white">
+      <div className="min-h-screen flex justify-center items-center text-white">
         Loading...
       </div>
     );
@@ -144,7 +144,7 @@ export default function Analytics() {
           title="分析"
           description="Track your learning progress with AI-driven analytics and personalized insights."
         />
-        <div className="min-h-screen bg-gray-900 py-4 px-4 text-white">
+        <div className="min-h-screen py-4 px-4 text-white">
           <NavBar />
           <div className="max-w-5xl w-1/2 mx-auto pt-20">
             <h1 className="text-4xl font-extrabold text-center mb-8">
@@ -153,7 +153,7 @@ export default function Analytics() {
 
             {/* 測驗總覽數據 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle>測驗總計</CardTitle>
                 </CardHeader>
@@ -162,7 +162,7 @@ export default function Analytics() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle>平均分數</CardTitle>
                 </CardHeader>
@@ -171,7 +171,7 @@ export default function Analytics() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle>正確率</CardTitle>
                 </CardHeader>
@@ -184,7 +184,7 @@ export default function Analytics() {
             {/* 圖表區域 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
               {/* 測驗難度分析 */}
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center h-[36px]">
                     測驗難度統計
@@ -208,7 +208,7 @@ export default function Analytics() {
               </Card>
 
               {/* AI 評語區塊 */}
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     AI 分析 & 建議{" "}
@@ -226,7 +226,7 @@ export default function Analytics() {
             </div>
 
             {/* 測驗結果統計表格 */}
-            <Card className="bg-gray-800 mt-10">
+            <Card className=" mt-10">
               <CardHeader>
                 <CardTitle>測驗結果</CardTitle>
               </CardHeader>
@@ -266,7 +266,7 @@ export default function Analytics() {
             </Card>
 
             {/* 科目類別分析 */}
-            <Card className="bg-gray-800 mt-10">
+            <Card className=" mt-10">
               <CardHeader>
                 <CardTitle>測驗類別統計</CardTitle>
               </CardHeader>
@@ -328,7 +328,7 @@ export default function Analytics() {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-900 text-white">
+    <div className="min-h-screen flex justify-center items-center text-white">
       Something went wrong...
     </div>
   );
