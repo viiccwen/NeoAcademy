@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, GraduationCap, LogIn } from "lucide-react";
+import { ArrowRight, Brain, GraduationCap, Sparkles } from "lucide-react";
 import { BackgroundEffect } from "./background-effect";
 import { motion } from "framer-motion";
 
@@ -26,16 +25,6 @@ export const HeroSection = () => {
             NeoAcademy
           </span>
         </motion.div>
-
-        {/* Tagline */}
-        <motion.h2
-          className="mb-4 text-xl font-medium text-white/90 md:text-2xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          "Personalized Learning, Powered by AI"
-        </motion.h2>
 
         {/* Description */}
         <motion.p
@@ -64,6 +53,23 @@ export const HeroSection = () => {
             <div className="absolute -inset-0.5 -z-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 opacity-0 blur transition-opacity group-hover:opacity-50" />
           </motion.button>
         </div>
+
+        {/* Feature highlights */}
+        <motion.div
+          className="mt-16 flex flex-wrap justify-center gap-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
+            <Sparkles className="h-5 w-5 text-purple-400" />
+            <span>個人化測驗產生</span>
+          </div>
+          <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
+            <Brain className="h-5 w-5 text-blue-400" />
+            <span>智能學習分析</span>
+          </div>
+        </motion.div>
       </div>
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-900 to-transparent"></div>
     </section>

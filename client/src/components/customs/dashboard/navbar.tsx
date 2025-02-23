@@ -7,11 +7,12 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { forwardRef } from "react";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useLogout } from "@/hooks/user";
+import { AIButton } from "../quiz/ai-button";
 
 type compType = {
   title: string;
@@ -34,6 +35,7 @@ interface NavBarProps {
 }
 
 export const NavBar = (props: NavBarProps) => {
+  const navigate = useNavigate();
   const Logout = useLogout();
 
   return (
@@ -73,12 +75,11 @@ export const NavBar = (props: NavBarProps) => {
 
       {/* Login */}
       <div className="hidden md:flex items-center space-x-4">
-        <Button
-          LinkTo="/create"
-          className="px-8 py-3 bg-transparent hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
-        >
-          建立
-        </Button>
+        <AIButton 
+          type="button"
+          text="建立"
+          onClick={() => navigate('/create')}
+        />
         <Button onClick={Logout} className="bg-transparent hover:bg-red-700">
           <LogOut className="w-5 text-white" />
         </Button>

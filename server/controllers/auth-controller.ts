@@ -13,7 +13,7 @@ export const authCallback = (req: Request, res: Response) => {
     };
 
     const token = sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
     res.redirect(`${process.env.AUTH_REDIRECT_URL!}/${token}`);

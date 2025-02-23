@@ -51,9 +51,9 @@ export const NavBar = (props: NavBarProps) => {
         ) : (
           <Button
             asChild
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
           >
-            <Link to="/login">Login</Link>
+            <Link to="/login">登入</Link>
           </Button>
         )}
       </div>

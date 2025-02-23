@@ -7,9 +7,19 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/user";
 import { Loader2 } from "lucide-react";
 import { Metadata } from "@/components/customs/metadata";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const { isLoading } = useAuth();
+  const navigate = useNavigate();
+  const { isAuth, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/dashboard");
+    }
+  }, [isAuth]);
+
   return (
     <>
       <Metadata title="登入" description="Login to NeoAcademy" />

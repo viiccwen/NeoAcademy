@@ -8,13 +8,14 @@ interface AIButtonProps {
   disabled?: boolean;
 }
 
-export const AIButton = ({ type, text, disabled }: AIButtonProps) => {
+export const AIButton = ({ type, text, disabled, onClick }: AIButtonProps) => {
   return (
     <Button
       type={type}
       variant="outline"
       className="group relative flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-full border-0 bg-gradient-to-r from-blue-500/80 via-purple-500/80 to-pink-500/80 px-6 text-white transition-all hover:scale-105 hover:shadow-lg active:scale-100"
       disabled={disabled}
+      onClick={onClick}
     >
       <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 transition-opacity group-hover:opacity-100" />
       <span className="animate-pulse">
