@@ -6,22 +6,15 @@ import { Question } from "@/components/customs/result/question";
 import { Summary } from "@/components/customs/result/summary";
 
 import { useGetQuiz } from "@/hooks/quiz";
-import { useAuth } from "@/hooks/user";
 import { Metadata } from "@/components/customs/metadata";
 import { AnsweredQuestionType } from "@/lib/type";
 
 export default function Result() {
   const { quizId } = useParams();
-  const { isAuth } = useAuth();
   const navigate = useNavigate();
 
-  const _quiz = useGetQuiz<AnsweredQuestionType>(quizId!, true);
-  const quiz = _quiz.data;
-
-  // Redirect to login if user is not authenticated
-  useEffect(() => {
-    if (!isAuth) navigate("/login");
-  }, [isAuth]);
+  const { quiz, isPending, isError, isSuccess } =
+    useGetQuiz<AnsweredQuestionType>(quizId!, true);
 
   // Redirect to 404 if quizId is not provided
   useEffect(() => {
@@ -30,12 +23,7 @@ export default function Result() {
     }
   }, [quizId]);
 
-  if (!quizId) {
-    navigate("/notfound");
-    return;
-  }
-
-  if (_quiz.isPending) {
+  if (isPending) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p>Loading...</p>
@@ -43,12 +31,12 @@ export default function Result() {
     );
   }
 
-  if (_quiz.isError) {
+  if (isError) {
     navigate("/notfound");
     return;
   }
 
-  if (_quiz.isSuccess && quiz) {
+  if (isSuccess && quiz) {
     // Calculate stats
     const totalQuestions = quiz.questions.length;
     const correctAnswers = quiz.questions.filter(

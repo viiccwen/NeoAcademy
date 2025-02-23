@@ -1,21 +1,19 @@
-import { QuestionCard } from "@/components/customs/quiz/question-card";
-import { Button } from "@/components/ui/button";
-import { useGetQuiz, useSubmitQuiz } from "@/hooks/quiz";
-import { parseQuestionIndex } from "@/lib/utils";
-import { useQuizStore } from "@/stores/quiz-store";
-import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { Toaster } from "sonner";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { QuestionCard } from "@/components/customs/quiz/question-card";
 import { ConfirmDialog } from "@/components/customs/quiz/confirm-dialog";
-import { useAuth } from "@/hooks/user";
 import { Metadata } from "@/components/customs/metadata";
+import { parseQuestionIndex } from "@/lib/utils";
+import { useQuizStore } from "@/stores/quiz-store";
 import { useQuestion } from "@/hooks/question";
+import { useGetQuiz, useSubmitQuiz } from "@/hooks/quiz";
 
 export default function Quiz() {
   const { quizId: currentQuizId, index: questionIndex } = useParams();
-  const { isAuth } = useAuth();
   const { prevQuestion, nextQuestion } = useQuestion();
   const navigate = useNavigate();
   const submit = useSubmitQuiz();
@@ -30,25 +28,20 @@ export default function Quiz() {
     loadQuiz,
   } = useQuizStore();
 
-  const getQuiz = useGetQuiz(currentQuizId!, false);
+  const { quiz, isError, isSuccess } = useGetQuiz(currentQuizId!, false);
 
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
 
   const isQuizCompleted = userAnswers.every((answer) => answer.length > 0);
 
-  // Redirect to login if user is not authenticated
-  useEffect(() => {
-    if (!isAuth) navigate("/login");
-  }, [isAuth]);
-
   // check quiz is loading
   useEffect(() => {
-    if ((questions === null || quizId != currentQuizId) && getQuiz.isSuccess) {
-      loadQuiz(getQuiz.data);
-    } else if (questions === null && getQuiz.isError) {
+    if ((questions === null || quizId != currentQuizId) && isSuccess) {
+      loadQuiz(quiz!);
+    } else if (questions === null && isError) {
       navigate("/dashboard");
     }
-  }, [getQuiz.isSuccess, getQuiz.data, getQuiz.isError, questions]);
+  }, [isSuccess, quiz, isError, questions]);
 
   const handleSubmitQuiz = () => {
     setShowSubmitDialog(true);

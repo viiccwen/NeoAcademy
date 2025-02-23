@@ -16,9 +16,8 @@ import { Metadata } from "@/components/customs/metadata";
 import { Toaster } from "sonner";
 
 export default function Dashboard() {
-  const _quiz = useGetAllQuiz();
   const navigate = useNavigate();
-  const quiz = _quiz.data;
+  const { quiz, isPending, isError, isSuccess } = useGetAllQuiz();
 
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [filterDifficulty, setFilterDifficulty] = useState<string | null>(null);
@@ -26,7 +25,7 @@ export default function Dashboard() {
     "name" | "date" | "difficulty" | "category"
   >("name"); // Default sort by name
 
-  if (_quiz.isPending) {
+  if (isPending) {
     return (
       <div className="min-h-screen flex justify-center items-center  text-white">
         Loading...
@@ -34,12 +33,12 @@ export default function Dashboard() {
     );
   }
 
-  if (_quiz.isError) {
+  if (isError) {
     navigate("/notfound");
     return null;
   }
 
-  if (_quiz.isSuccess && quiz) {
+  if (isSuccess && quiz) {
     // Filter Logic
     let filteredQuiz = FilterHelper(
       quiz,

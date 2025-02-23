@@ -40,14 +40,13 @@ ChartJS.register(
 export default function Analytics() {
   const navigate = useNavigate();
   const { analyze, content, isLoading } = useAnalyze();
-  const _quiz = useGetAllQuizDetails();
-  const quiz = _quiz.data;
+  const { quiz, isPending, isError, isSuccess } = useGetAllQuizDetails();
 
   const onAnalyze = () => {
     analyze();
   };
 
-  if (_quiz.isPending) {
+  if (isPending) {
     return (
       <div className="min-h-screen flex justify-center items-center text-white">
         Loading...
@@ -55,7 +54,7 @@ export default function Analytics() {
     );
   }
 
-  if (_quiz.isError) {
+  if (isError) {
     navigate("/notfound");
     return null;
   }
@@ -135,7 +134,7 @@ export default function Analytics() {
     };
   };
 
-  if (_quiz.isSuccess && quiz && quizStats) {
+  if (isSuccess && quiz && quizStats) {
     const QuizStats = quizStats();
     return (
       <>

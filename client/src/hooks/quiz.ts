@@ -30,7 +30,7 @@ export const useCreateQuiz = () => {
     mutationKey: ["quiz", "create"],
     mutationFn: (formdata: CreateQuizType) => createQuiz(token!, formdata),
     onMutate: () => {
-      toast.loading("Generating Quiz...");
+      toast.loading("創建測驗中...");
     },
     onError: (error: any) => {
       // close loading toast
@@ -40,7 +40,7 @@ export const useCreateQuiz = () => {
     onSuccess: async (data: QuizReturnType) => {
       // close loading toast
       toast.dismiss();
-      toast.success("Quiz Created Successfully!");
+      toast.success("成功創建測驗！");
 
       // load the quiz
       loadQuiz(data);
@@ -64,7 +64,7 @@ export const useSubmitQuiz = () => {
     mutationFn: ({ quizId, answers }: SubmitQuizType) =>
       submitQuiz({ token: token!, quizId, answers }),
     onMutate: () => {
-      toast.loading("Submitting Quiz...");
+      toast.loading("提交測驗中...");
     },
     onError: (error: any) => {
       // close loading toast
@@ -74,7 +74,7 @@ export const useSubmitQuiz = () => {
     onSuccess: async () => {
       // close loading toast
       toast.dismiss();
-      toast.success("Quiz Submitted Successfully!");
+      toast.success("成功提交測驗！");
 
       // redirect to result page
       await DelayFunc({
@@ -95,11 +95,18 @@ export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(
 ) => {
   const { token } = useUserStore();
 
-  return useQuery({
+  const response = useQuery({
     queryKey: ["quiz", "get"],
     queryFn: () => getQuiz<T>(quizId, token!, isAnswered),
     enabled: !!quizId,
   });
+
+  return {
+    quiz: response.data,
+    isSuccess: response.isSuccess,
+    isPending: response.isPending,
+    isError: response.isError,
+  }
 };
 
 export const useUpdateQuiz = () => {
@@ -107,7 +114,7 @@ export const useUpdateQuiz = () => {
     mutationKey: ["quiz", "update"],
     mutationFn: updateQuiz,
     onMutate: () => {
-      toast.loading("Updating Quiz...");
+      toast.loading("更新測驗中...");
     },
     onError: (error: any) => {
       // close loading toast
@@ -117,7 +124,7 @@ export const useUpdateQuiz = () => {
     onSuccess: async () => {
       // close loading toast
       toast.dismiss();
-      toast.success("Quiz Updated Successfully!");
+      toast.success("成功更新測驗！");
     },
   });
 };
@@ -130,7 +137,7 @@ export const useDeleteQuiz = () => {
     mutationKey: ["quiz", "delete"],
     mutationFn: (id: string) => deleteQuiz(id, token!),
     onMutate: () => {
-      toast.loading("Deleting Quiz...");
+      toast.loading("刪除測驗中...");
     },
     onError: (error: any) => {
       // close loading toast
@@ -140,7 +147,7 @@ export const useDeleteQuiz = () => {
     onSuccess: async () => {
       // close loading toast
       toast.dismiss();
-      toast.success("Quiz Deleted Successfully!");
+      toast.success("成功刪除測驗！");
 
       // refresh ["quiz"] cache
       queryClient.invalidateQueries({ queryKey: ["quiz", "get-all"] });
@@ -151,19 +158,33 @@ export const useDeleteQuiz = () => {
 export const useGetAllQuiz = () => {
   const { token } = useUserStore();
 
-  return useQuery({
+  const response = useQuery({
     queryKey: ["quiz", "get-all"],
     queryFn: () => getAllQuiz(token!),
     retry: 1,
   });
+
+  return {
+    quiz: response.data,
+    isSuccess: response.isSuccess,
+    isPending: response.isPending,
+    isError: response.isError,
+  };
 };
 
 export const useGetAllQuizDetails = () => {
   const { token } = useUserStore();
 
-  return useQuery({
+  const response = useQuery({
     queryKey: ["quiz", "get-all-details", token],
     queryFn: () => getDetailsAllQuiz(token!),
     retry: 1,
   });
+
+  return {
+    quiz: response.data,
+    isSuccess: response.isSuccess,
+    isPending: response.isPending,
+    isError: response.isError,
+  };
 };
