@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { SelectionItem } from "./selection-item";
 import { MultipleCheckbox } from "./multiple-checkbox";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -10,6 +9,7 @@ import { categories, difficulties, options, questions } from "@/lib/type";
 import { createQuizSchema, CreateQuizType } from "@/lib/type";
 import { useCreateQuiz } from "@/hooks/quiz";
 import { translateCategory, translateDifficulty } from "@/lib/utils";
+import { AIButton } from "./ai-button";
 
 interface CreateQuizFormProps {
   className?: string;
@@ -20,7 +20,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
     register,
     control,
     handleSubmit,
-    formState: { errors, isValid }
+    formState: { errors, isValid },
   } = useForm<CreateQuizType>({
     resolver: zodResolver(createQuizSchema),
     mode: "onChange",
@@ -71,7 +71,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
           {/* Category & Difficulty */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SelectionItem
-            label="種類"
+              label="種類"
               name="category"
               choice={categories}
               register={register}
@@ -91,7 +91,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
           {/* Number of Problems & Options */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SelectionItem
-            label="題數"
+              label="題數"
               name="question"
               choice={questions}
               register={register}
@@ -99,7 +99,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
               isNumber={true}
             />
             <SelectionItem
-            label="選項"
+              label="選項"
               name="option"
               choice={options}
               register={register}
@@ -135,13 +135,11 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
           </div>
 
           {/* Submit Button */}
-          <Button
+          <AIButton
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-300 transform hover:scale-105 hover:shadow-lg"
+            text={mutation.isPending ? "產生測驗中..." : "建立測驗"}
             disabled={!isValid || mutation.isPending}
-          >
-            {mutation.isPending ? "產生測驗中..." : "建立測驗"}
-          </Button>
+          />
         </form>
       </CardContent>
     </Card>

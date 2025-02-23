@@ -25,10 +25,9 @@ import { Metadata } from "@/components/customs/metadata";
 import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
 import { useGetAllQuizDetails } from "@/hooks/quiz";
 import { useAnalyze } from "@/hooks/user";
-import { RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Toaster } from "sonner";
 import { translateCategory, translateDifficulty } from "@/lib/utils";
+import { AISmallButton } from "@/components/customs/quiz/ai-button";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -37,8 +36,6 @@ ChartJS.register(
   LinearScale,
   BarElement
 );
-
-
 
 export default function Analytics() {
   const navigate = useNavigate();
@@ -189,7 +186,9 @@ export default function Analytics() {
               {/* 測驗難度分析 */}
               <Card className="bg-gray-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center h-[36px]">測驗難度統計</CardTitle>
+                  <CardTitle className="flex items-center h-[36px]">
+                    測驗難度統計
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Pie
@@ -213,15 +212,7 @@ export default function Analytics() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     AI 分析 & 建議{" "}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="hover:bg-blue-500 duration-300"
-                      onClick={onAnalyze}
-                      disabled={isLoading}
-                    >
-                      <RotateCcw className="w4" />{" "}
-                    </Button>
+                    <AISmallButton onClick={onAnalyze} disabled={isLoading} />
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-gray-300">
@@ -254,7 +245,9 @@ export default function Analytics() {
                       <TableRow key={q.id}>
                         <TableCell>{q.name}</TableCell>
                         <TableCell>{translateCategory(q.category)}</TableCell>
-                        <TableCell>{translateDifficulty(q.difficulty)}</TableCell>
+                        <TableCell>
+                          {translateDifficulty(q.difficulty)}
+                        </TableCell>
                         <TableCell>
                           {q.answered
                             ? (q.questions as AnsweredQuestionType[]).filter(
@@ -280,13 +273,7 @@ export default function Analytics() {
               <CardContent>
                 <Bar
                   data={{
-                    labels: [
-                      "數學",
-                      "自然",
-                      "歷史",
-                      "語言",
-                      "程式語言",
-                    ],
+                    labels: ["數學", "自然", "歷史", "語言", "程式語言"],
                     datasets: [
                       {
                         label: "數學",
