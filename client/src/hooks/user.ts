@@ -7,29 +7,32 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export const useAuth = () => {
-  const { isAuth, setIsAuth, setUser, token } = useUserStore();
+  const navigate = useNavigate();
+  const { token, isAuth, setIsAuth, setUser, setToken } = useUserStore();
 
   const {
     data: user,
     isFetching,
     isError,
-    error,
   } = useQuery<UserType>({
     queryKey: ["user", "details"],
     queryFn: () => getUser(token),
     enabled: !!token,
+    retry: 1,
   });
 
-  if (isError) {
-    console.error(error);
-  }
-
   useEffect(() => {
+    if (isError) {
+      setIsAuth(false);
+      setUser(null);
+      setToken(null);
+      navigate("/login");
+    }
     if (user && !isAuth) {
       setIsAuth(true);
       setUser({ name: user.name, email: user.email });
     }
-  }, [user]);
+  }, [user, isError]);
 
   return { isAuth, isLoading: isFetching, user };
 };

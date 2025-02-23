@@ -24,7 +24,7 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
     next();
   } catch (e) {
     if (e instanceof TokenExpiredError) {
-      res.status(401).json({ message: "Unauthorized." });
+      res.status(401).json({ message: "Token Expired." });
     } else if (e instanceof JsonWebTokenError) {
       res.status(404).json({ message: "Invalid JWT." });
     } else {

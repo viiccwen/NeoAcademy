@@ -23,7 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/auth/:token/:expiry" element={<Auth />} />
+            <Route path="/auth/:token" element={<Auth />} />
 
             <Route element={<ProtectedRoute />}>
                 <Route path="/create" element={<Create />} />

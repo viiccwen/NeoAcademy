@@ -15,9 +15,8 @@ export const authCallback = (req: Request, res: Response) => {
     const token = sign(payload, process.env.JWT_SECRET!, {
       expiresIn: "10s",
     });
-    const expiry = (Date.now() + 12 * 60 * 60 * 1000).toString();
 
-    res.redirect(`${process.env.AUTH_REDIRECT_URL!}/${token}/${expiry}`);
+    res.redirect(`${process.env.AUTH_REDIRECT_URL!}/${token}`);
   } catch (e: any) {
     console.error(e);
     res.status(500).json({ message: e.message });

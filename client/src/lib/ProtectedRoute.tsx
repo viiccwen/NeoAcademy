@@ -1,10 +1,12 @@
+import { useAuth } from "@/hooks/user";
 import { useUserStore } from "@/stores/user-store";
 import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedRoute = () => {
-    const { expiry, setIsAuth } = useUserStore();
+    const { isAuth } = useAuth();
+    const { setIsAuth } = useUserStore();
 
-    if (expiry < Date.now()) {
+    if (isAuth === false) {
         setIsAuth(false);
         return <Navigate to="/login" />;
     }

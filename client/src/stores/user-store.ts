@@ -8,16 +8,14 @@ export type UserType = {
 
 interface UserStore {
   user: UserType | null;
-  expiry: number;
   token: string | null;
   isAuth: boolean;
   analysis: string | null;
 
-  setUser(user: UserType): void;
-  setExpiry(expiry: number): void;
-  setToken(token: string): void;
+  setUser(user: UserType | null): void;
+  setToken(token: string | null): void;
   setIsAuth(isAuth: boolean): void;
-  setAnalysis(analysis: string): void;
+  setAnalysis(analysis: string | null): void;
 
   logout: () => void;
 }
@@ -26,7 +24,6 @@ export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,
-      expiry: 0,
       token: null,
       isAuth: false,
       analysis: null,
@@ -35,11 +32,6 @@ export const useUserStore = create<UserStore>()(
         set(() => ({
           user,
           isAuth: true,
-        }));
-      },
-      setExpiry(expiry) {
-        set(() => ({
-            expiry
         }));
       },
       setToken(token) {

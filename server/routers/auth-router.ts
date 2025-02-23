@@ -13,7 +13,7 @@ import { Router } from "express";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { getUserEmails } from "utils/github";
-import { authCallback, githubAuthCallback, googleAuthCallback } from "controllers/auth-controller";
+import { authCallback } from "controllers/auth-controller";
 import { createUser, findByOAuthId } from "utils/user";
 
 passport.use(
