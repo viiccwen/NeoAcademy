@@ -1,21 +1,35 @@
 import { useState, useCallback, useEffect } from "react";
+import { Toaster } from "sonner";
+import { useParams } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { NavBar } from "@/components/customs/dashboard/navbar";
-import { Toaster } from "sonner";
 import { Metadata } from "@/components/customs/metadata";
-import { useGetRoadmap } from "@/hooks/roadmap";
-import { useParams } from "react-router-dom";
+import { useDeleteRoadmap, useGetRoadmap } from "@/hooks/roadmap";
 import { Roadmap } from "@/lib/type";
 
 export default function RoadMap() {
   const { id } = useParams();
   const { data: roadmap, isError, isPending } = useGetRoadmap(id || "");
+  const mutation = useDeleteRoadmap();
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [progress, setProgress] = useState<{ [key: string]: boolean }>({});
   const [overallProgress, setOverallProgress] = useState(0);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // 計算總進度
   const calculateProgress = useCallback(() => {
@@ -27,11 +41,6 @@ export default function RoadMap() {
     );
     const completedSubsections = Object.values(progress).filter(Boolean).length;
     return Math.round((completedSubsections / totalSubsections) * 100);
-  }, [progress]);
-
-  // 更新進度
-  useEffect(() => {
-    setOverallProgress(calculateProgress());
   }, [progress]);
 
   // 切換展開/收合
@@ -55,6 +64,16 @@ export default function RoadMap() {
   const isSectionCompleted = (section: Roadmap["sections"][number]) => {
     return section.subsections.every((sub) => progress[sub.id] || false);
   };
+
+  const onDelete = async () => {
+    if (!id) return;
+    await mutation.mutateAsync(id);
+  };
+
+  // 更新進度
+  useEffect(() => {
+    setOverallProgress(calculateProgress());
+  }, [progress]);
 
   if (isPending) {
     return (
@@ -91,7 +110,33 @@ export default function RoadMap() {
         <div className="mx-auto max-w-4xl mt-5">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="mb-2 text-3xl font-bold">{roadmap.name}</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="mb-2 text-3xl font-bold">{roadmap.name}</h1>
+              <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive" // 使用 destructive 样式以突出删除操作
+                    className="bg-red-500 text-white hover:bg-red-600 hover:text-white"
+                  >
+                    刪除
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>確認刪除</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      您確定要刪除此學習路線圖嗎？此操作無法撤銷。
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>取消</AlertDialogCancel>
+                    <AlertDialogAction onClick={onDelete}>
+                      確認刪除
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
             <p className="mb-4">{roadmap.description}</p>
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">

@@ -71,3 +71,24 @@ export const getRoadmaps = async (token: string) => {
     throw new Error(error.message || "未知錯誤發生！");
   }
 };
+
+export const deleteRoadmap = async (token: string, id: string) => {
+  try {
+    const response: AxiosResponse<any, any> = await axios.delete(
+      `${API_URL}/roadmap/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 204) {
+      return true;
+    } else {
+      throw new Error("刪除學習路徑錯誤！");
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "未知錯誤發生！");
+  }
+};

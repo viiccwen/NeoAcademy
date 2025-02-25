@@ -1,5 +1,6 @@
 import {
   createRoadmap,
+  deleteRoadmap,
   getRoadmap,
   getRoadmaps,
 } from "@/actions/roadmap-actions";
@@ -71,4 +72,34 @@ export const useGetRoadmap = (id: string) => {
     isError: response.isError,
     isPending: response.isPending,
   };
+};
+
+export const useDeleteRoadmap = () => {
+  const { token } = useUserStore();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationKey: ["roadmap", "delete"],
+    mutationFn: (id: string) => deleteRoadmap(token!, id),
+    onMutate: () => {
+      toast.loading("刪除路徑中...");
+    },
+    onError: (error: any) => {
+      // close loading toast
+      toast.dismiss();
+      toast.error(error.message || "Error Occurred!");
+    },
+    onSuccess: async () => {
+      // close loading toast
+      toast.dismiss();
+      toast.success("學習路徑刪除成功！");
+
+      // redirect to roadmap page
+      await DelayFunc({
+        isError: false,
+        delay: 2000,
+        func: () => navigate("/roadmap"),
+      });
+    },
+  });
 };
