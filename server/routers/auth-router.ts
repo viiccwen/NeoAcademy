@@ -8,15 +8,6 @@ import type {
     StrategyOptions as GoogleStrategyOptions,
 } from 'passport-google-oauth20';
 
-<<<<<<< HEAD
-import passport from "passport";
-import { Router } from "express";
-import { Strategy as GitHubStrategy } from "passport-github2";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { getUserEmails } from "utils/github";
-import { authCallback } from "controllers/auth-controller";
-import { createUser, findByOAuthId } from "utils/user";
-=======
 import passport from 'passport';
 import { Router } from 'express';
 import { Strategy as GitHubStrategy } from 'passport-github2';
@@ -24,7 +15,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { getUserEmails } from 'utils/github';
 import { authCallback } from 'controllers/auth-controller';
 import { createUser, findByOAuthId } from 'utils/user';
->>>>>>> 2f984ed (slight refactor)
+
 
 passport.use(
     new GitHubStrategy(

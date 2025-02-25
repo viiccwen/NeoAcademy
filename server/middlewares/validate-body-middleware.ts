@@ -1,5 +1,6 @@
 import type { RequestHandler } from 'express';
-import { ZodError, type ZodSchema } from 'zod';
+import type { ZodSchema } from 'zod';
+import { ZodError } from 'zod';
 
 
 function validateBodyMiddleware(schema: ZodSchema): RequestHandler {

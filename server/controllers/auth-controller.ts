@@ -12,26 +12,13 @@ export const authCallback = (req: Request, res: Response) => {
             authId: user.authId,
         };
 
-<<<<<<< HEAD
-    const token = sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "1d",
-    });
-
-    res.redirect(`${process.env.AUTH_REDIRECT_URL!}/${token}`);
-  } catch (e: any) {
-    console.error(e);
-    res.status(500).json({ message: e.message });
-  }
-=======
         const token = sign(payload, process.env.JWT_SECRET!, {
-            expiresIn: '10s',
+            expiresIn: '1d',
         });
-        const expiry = (Date.now() + 12 * 60 * 60 * 1000).toString();
 
-        res.redirect(`${process.env.AUTH_REDIRECT_URL!}/${token}/${expiry}`);
+        res.redirect(`${process.env.AUTH_REDIRECT_URL!}/${token}`);
     } catch (e: any) {
         console.error(e);
         res.status(500).json({ message: e.message });
     }
->>>>>>> 2f984ed (slight refactor)
 };

@@ -1,4 +1,4 @@
-import type { User as UserType } from 'database';
+import type { User as UserType } from 'types/User';
 
 
 declare global {

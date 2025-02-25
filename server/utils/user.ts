@@ -1,8 +1,8 @@
-import type { AuthProvider, User } from "database";
-import type { DeleteResult } from "mongodb";
+import type { AuthProvider, User } from 'types/User';
+import type { DeleteResult } from 'mongodb';
 
-import { users } from "database";
-import { ObjectId } from "mongodb";
+import { users } from 'database';
+import { ObjectId } from 'mongodb';
 
 export async function createUser(
     name: string,
@@ -41,11 +41,4 @@ export async function findByOAuthId(
 
 export async function deleteUserById(userId: ObjectId): Promise<DeleteResult> {
     return await users.deleteOne({ id: userId });
-}
-
-export async function updateAccessToken(
-    userId: ObjectId,
-    accessToken: string
-): Promise<void> {
-    await users.updateOne({ id: userId }, { accessToken });
 }

@@ -10,18 +10,6 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
         return;
     }
 
-<<<<<<< HEAD
-    req.user = user;
-    next();
-  } catch (e) {
-    if (e instanceof TokenExpiredError) {
-      res.status(401).json({ message: "Token Expired." });
-    } else if (e instanceof JsonWebTokenError) {
-      res.status(404).json({ message: "Invalid JWT." });
-    } else {
-      console.error(e);
-      res.status(500).json({ message: "Error!" });
-=======
     try {
         const token = req.headers.authorization.split(' ')[1];
         const payload = (await verify(token)) as JwtType;
@@ -43,7 +31,6 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
             console.error(e);
             res.status(500).json({ message: 'Error!' });
         }
->>>>>>> 2f984ed (slight refactor)
     }
 };
 

@@ -1,4 +1,5 @@
-import type { Question, Quiz, UnansweredQuestion, UnansweredQuiz, User } from 'database';
+import type { UnansweredQuestion, Quiz, UnansweredQuiz } from 'types/Quiz';
+import type { User } from 'types/User';
 
 import { users } from 'database';
 import {
@@ -6,23 +7,15 @@ import {
     HumanMessage,
     SystemMessage,
 } from '@langchain/core/messages';
-import { formatHumanMessage, formatSystemMessage } from 'utils/message';
+import { formatQuizHumanMessage, formatQuizSystemMessage } from 'utils/message';
 import { ObjectId } from 'mongodb';
 import { model } from 'app';
-import { pickProperties } from './objects';
 
 
 export function getQuiz(user: User, quizId: string): Quiz | UnansweredQuiz | undefined {
     return user.quizzes.find(({ id }) => id.toString() === quizId);
 }
 
-export function omitQuestionAnswers(quiz: Quiz): Omit<Quiz, 'questions'> & { questions: Pick<Question, 'text' | 'options'>[] } {
-    const trimmedQuiz: Omit<Quiz, 'questions'> & { questions: Pick<Question, 'text' | 'options'>[] } = Object.assign({}, quiz);
-
-    trimmedQuiz.questions = quiz.questions.map(question => pickProperties(question, 'text', 'options')) as Pick<Question, 'text' | 'options'>[];
-
-    return trimmedQuiz;
-}
 
 export async function generateQuiz(
     name: string,
@@ -33,12 +26,12 @@ export async function generateQuiz(
     multipleAnswers: boolean,
     remarks: string
 ): Promise<UnansweredQuiz> {
-    const systemMessage: SystemMessage = formatSystemMessage(
+    const systemMessage: SystemMessage = formatQuizSystemMessage(
         option,
         question,
         multipleAnswers
     );
-    const humanMessage: HumanMessage = formatHumanMessage(
+    const humanMessage: HumanMessage = formatQuizHumanMessage(
         name,
         category,
         difficulty,
