@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import { Metadata } from "@/components/customs/metadata";
+import { ChatBot } from "@/components/customs/roadmap/chatbot";
 import { useGetRoadmap } from "@/hooks/roadmap";
 import { Roadmap } from "@/lib/type";
 import { DeleteRoadmapDialog } from "@/components/customs/roadmap/delete-dialog";
@@ -18,7 +19,7 @@ export default function RoadMap() {
   const [progress, setProgress] = useState<{ [key: string]: boolean }>({});
   const [overallProgress, setOverallProgress] = useState(0);
 
-  // 計算總進度
+  // calculate progress
   const calculateProgress = useCallback(() => {
     if (!roadmap) return 0;
 
@@ -30,7 +31,7 @@ export default function RoadMap() {
     return Math.round((completedSubsections / totalSubsections) * 100);
   }, [progress]);
 
-  // 切換展開/收合
+  // toggle section
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) =>
       prev.includes(sectionId)
@@ -39,7 +40,7 @@ export default function RoadMap() {
     );
   };
 
-  // 更新勾選狀態
+  // update progress
   const toggleProgress = (id: string) => {
     setProgress((prev) => ({
       ...prev,
@@ -47,12 +48,12 @@ export default function RoadMap() {
     }));
   };
 
-  // 檢查章節是否全部完成
+  // check if all subsections in a section are completed
   const isSectionCompleted = (section: Roadmap["sections"][number]) => {
     return section.subsections.every((sub) => progress[sub.id] || false);
   };
 
-  // 更新進度
+  // update overall progress
   useEffect(() => {
     setOverallProgress(calculateProgress());
   }, [progress]);
@@ -116,7 +117,7 @@ export default function RoadMap() {
                     <Checkbox
                       checked={isSectionCompleted(section)}
                       onCheckedChange={() => {
-                        // 如果章節未完成，將所有小節標記為完成
+                        // if all subsections are completed, uncheck all
                         const newProgress = { ...progress };
                         section.subsections.forEach((sub) => {
                           newProgress[sub.id] = !isSectionCompleted(section);
@@ -178,6 +179,8 @@ export default function RoadMap() {
             ))}
           </div>
         </div>
+
+        <ChatBot initialMessages={["你好！需要幫助嗎？"]} />
       </div>
     </>
   );

@@ -114,3 +114,8 @@ export interface Subsection {
   title: string;
   description: string;
 }
+
+export interface ChatMessages {
+  previousMessages: string[];
+  currentMessage: string;
+}
