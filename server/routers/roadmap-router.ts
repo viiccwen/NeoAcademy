@@ -1,6 +1,6 @@
 import authMiddleware from 'middlewares/auth-middleware';
 import { Router } from 'express';
-import { createRoadmap, getRoadmap, getRoadmaps } from 'controllers/roadmap-controller';
+import { createRoadmap, deleteRoadmap, getRoadmap, getRoadmaps } from 'controllers/roadmap-controller';
 import validateBodyMiddleware from 'middlewares/validate-body-middleware';
 import { createRoadmapSchema } from 'schemas/roadmap';
 
