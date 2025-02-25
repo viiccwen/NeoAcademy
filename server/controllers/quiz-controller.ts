@@ -31,7 +31,7 @@ export const getAllQuiz = async (req: Request, res: Response) => {
         }
 
         if (!quizzes.length) {
-            res.status(400).json({ message: '找不到任何測驗！' });
+            res.status(404).json({ message: '找不到任何測驗！' });
             return;
         }
         res.status(200).json(quizzes);
@@ -126,7 +126,10 @@ export async function deleteQuiz(req: Request, res: Response) {
             { $pull: { quizzes: { id: new ObjectId(quizId) } } }
         );
 
-        if (!updated_user) throw new Error('刪除測驗失敗！');
+        if (!updated_user) {
+            res.status(404).json({ message: '沒有此 Quiz！' });
+            return;
+        }
 
         res.sendStatus(204);
     } catch (error: any) {
