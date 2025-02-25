@@ -59,7 +59,7 @@ export async function deleteRoadmap(req: Request, res: Response): Promise<void> 
 
         const result = await users.updateOne(
             { _id: req.user!._id },
-            { $pull: { quizzes: { id: new ObjectId(id) } } }
+            { $pull: { roadmaps: { id: new ObjectId(id) } } }
         );
 
         if (!result.modifiedCount) {
