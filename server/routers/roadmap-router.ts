@@ -20,4 +20,6 @@ roadmapRouter.get('/roadmap', authMiddleware, getRoadmaps);
 // get single roadmap
 roadmapRouter.get('/roadmap/:id', authMiddleware, getRoadmap);
 
+roadmapRouter.delete('/roadmap/:id', authMiddleware, deleteRoadmap);
+
 export default roadmapRouter;
