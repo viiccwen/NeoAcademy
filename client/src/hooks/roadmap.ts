@@ -1,5 +1,8 @@
-import { createRoadmap } from "@/actions/roadmap-actions";
-import { mockRoadmap, mockRoadmaps } from "@/lib/mock";
+import {
+  createRoadmap,
+  getRoadmap,
+  getRoadmaps,
+} from "@/actions/roadmap-actions";
 import { CreateRoadmapType, Roadmap } from "@/lib/type";
 import { DelayFunc } from "@/lib/utils";
 import { useUserStore } from "@/stores/user-store";
@@ -42,44 +45,30 @@ export const useCreateRoadmap = () => {
 export const useGetRoadmaps = () => {
   const { token } = useUserStore();
 
+  const response = useQuery({
+    queryKey: ["roadmap", "get-all"],
+    queryFn: () => getRoadmaps(token!),
+  });
+
   return {
-    data: mockRoadmaps,
-    isError: false,
-    isPending: false,
+    data: response.data,
+    isError: response.isError,
+    isPending: response.isPending,
   };
-
-  //   todo: remove mock data
-  //   const response = useQuery({
-  //     queryKey: ["roadmap", "get-all"],
-  //     queryFn: () => getRoadmaps(token!),
-  //   });
-
-  //   return {
-  //     data: response.data,
-  //     isError: response.isError,
-  //     isPending: response.isPending,
-  //   };
 };
 
 // get single roadmap
 export const useGetRoadmap = (id: string) => {
   const { token } = useUserStore();
 
+  const response = useQuery({
+    queryKey: ["roadmap", "get", id],
+    queryFn: () => getRoadmap(token!, id),
+  });
+
   return {
-    data: mockRoadmap,
-    isError: false,
-    isPending: false,
+    data: response.data,
+    isError: response.isError,
+    isPending: response.isPending,
   };
-
-  //   todo: remove mock data
-  //   const response = useQuery({
-  //     queryKey: ["roadmap", "get", id],
-  //     queryFn: () => getRoadmap(token!, id),
-  //   });
-
-  //   return {
-  //     data: response.data,
-  //     isError: response.isError,
-  //     isPending: response.isPending,
-  //   };
 };

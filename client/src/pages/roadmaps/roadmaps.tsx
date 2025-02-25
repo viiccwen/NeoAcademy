@@ -24,6 +24,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import { Metadata } from "@/components/customs/metadata";
 import { useGetRoadmaps } from "@/hooks/roadmap";
+import { Toaster } from "sonner";
 
 const topicIcons = {
   Programming: Code,
@@ -66,6 +67,7 @@ export default function RoadmapsPage() {
         title="學習路徑"
         description="View all available quizzes and start learning!"
       />
+      <Toaster richColors />
 
       <div className="min-h-screen p-4">
         <NavBar />

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useCallback, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
@@ -9,15 +7,20 @@ import { NavBar } from "@/components/customs/dashboard/navbar";
 import { Toaster } from "sonner";
 import { Metadata } from "@/components/customs/metadata";
 import { useGetRoadmap } from "@/hooks/roadmap";
+import { useParams } from "react-router-dom";
+import { Roadmap } from "@/lib/type";
 
 export default function RoadMap() {
-  const { data: roadmap, isError, isPending } = useGetRoadmap("1");
+  const { id } = useParams();
+  const { data: roadmap, isError, isPending } = useGetRoadmap(id || "");
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [progress, setProgress] = useState<{ [key: string]: boolean }>({});
   const [overallProgress, setOverallProgress] = useState(0);
 
   // 計算總進度
   const calculateProgress = useCallback(() => {
+    if (!roadmap) return 0;
+
     const totalSubsections = roadmap.sections.reduce(
       (acc, section) => acc + section.subsections.length,
       0
@@ -29,7 +32,7 @@ export default function RoadMap() {
   // 更新進度
   useEffect(() => {
     setOverallProgress(calculateProgress());
-  }, [calculateProgress]);
+  }, [progress]);
 
   // 切換展開/收合
   const toggleSection = (sectionId: string) => {
@@ -49,17 +52,38 @@ export default function RoadMap() {
   };
 
   // 檢查章節是否全部完成
-  const isSectionCompleted = (section: (typeof roadmap.sections)[0]) => {
-    return section.subsections.every((sub) => progress[sub.id]);
+  const isSectionCompleted = (section: Roadmap["sections"][number]) => {
+    return section.subsections.every((sub) => progress[sub.id] || false);
   };
+
+  if (isPending) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        Error occurred!
+      </div>
+    );
+  }
+
+  if (!roadmap) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        Roadmap not found!
+      </div>
+    );
+  }
 
   return (
     <>
       <Toaster richColors />
-      <Metadata
-        title="Roadmap" // todo: add title
-        description=""
-      />
+      <Metadata title={roadmap.name} description={roadmap.description} />
 
       <div className="min-h-screen py-4 px-4">
         <NavBar />
@@ -86,7 +110,6 @@ export default function RoadMap() {
                 <div className="border-b p-4">
                   <div className="flex items-center gap-4">
                     <Checkbox
-                      
                       checked={isSectionCompleted(section)}
                       onCheckedChange={() => {
                         // 如果章節未完成，將所有小節標記為完成
@@ -114,9 +137,7 @@ export default function RoadMap() {
                           >
                             {section.title}
                           </label>
-                          <p className="text-sm">
-                            {section.description}
-                          </p>
+                          <p className="text-sm">{section.description}</p>
                         </div>
                       </div>
                     </div>
@@ -143,9 +164,7 @@ export default function RoadMap() {
                           >
                             {subsection.title}
                           </label>
-                          <p className="text-sm">
-                            {subsection.description}
-                          </p>
+                          <p className="text-sm">{subsection.description}</p>
                         </div>
                       </div>
                     ))}
