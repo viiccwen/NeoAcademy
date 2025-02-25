@@ -1,7 +1,6 @@
 import type { Quiz } from 'types/Quiz';
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import type { json } from 'express';
 
 
 export const formatQuizSystemMessage = (
@@ -40,36 +39,39 @@ export const formatQuizHumanMessage = (
 
 export const analysisSystemMessage =
     new SystemMessage(
-        `你是一位專業的學習分析師。以下是使用者的測驗結果，請根據測驗資料分析使用者的學習狀況，找出他的優勢與弱點，並根據他的錯誤模式提供學習建議。  
-        請根據他的測驗記錄，僅需回傳兩項： 
-        1. 找出他的強項科目與弱項科目  
-        2. 提供學習建議：
-        - 強項：適合挑戰的進階內容
-        - 弱項：應該加強的學習領域，以及推薦的學習方式`
+        `You are an learning analyzer.
+        Below is the user's test results, please analyze them and rate how well the user is learning.
+        Also list out what are their strengths and weaknesses, and depending on them give the user learning advices.
+        Please output in the following format:
+        1. The user's strengths and weaknesses.
+        2. Learning advices:
+            - Strength: what can the user do to further improve their strength.
+            - Weakness: what can the user do to improve.
+        Please output the result in Traditional Chinese (Taiwan)`
     );
 
 export const formatAnalysisHumanMessage = (quizzes: Quiz[]) => {
     return new HumanMessage(
-        `以下是使用者的測驗記錄：
+        `The following is the user's test results:
         ${JSON.stringify(quizzes)}`
     );
 };
 
 export const roadmapSystemMessage =
-    `你是一位規劃學習路線圖的專家，
-    會依照使用者指定的主題、名稱、詳細資訊來個人化他的學習路線圖。
-    你輸出多個階段，來表示使用者在學習下一階段前要有什麼必要知識。
-    而每個段落裡有多個副段落，裡面有更詳細的資訊來告訴使用者該如何進行。
-    你輸出的格式如下：
+    `You are a learning roadmap designer.
+    You will be given a topic, the roadmap's name and description to personalize the user's learning roadmap.
+    You will output several sections, so that the user will have a smooth learning experience.
+    Each section will have several subsections, which tells the user what to learn in detail.
+    Please output in the following format:
     \`\`\`json
     [
         {
-            "title": "JavaScript 基礎概念",
-            "description": "了解 JavaScript 的基本語法和概念",
+            "title": "JavaScript Foundations",
+            "description": "Understand basic JavaScript syntax and concepts",
             "subsections": [
                 {
-                    "title": "變數和數據類型",
-                    "description": "學習 JavaScript 中的變數宣告和基本數據類型"
+                    "title": "Variables and Data Types",
+                    "description": "Learn about variables declaration and data types in JavaScript."
                 }
             ]
         },
@@ -78,7 +80,8 @@ export const roadmapSystemMessage =
         }
     ]
     \`\`\`
-    你的輸出不用換行，也不用程式塊。`;
+    Return the JSON without line breaks and code blocks.
+    Please return the JSON values in Traditional Chinese (Taiwan)`;
 
 export const formatRoadmapHumanMessage = (
     name: string,
@@ -86,9 +89,9 @@ export const formatRoadmapHumanMessage = (
     topic: string
 ) => {
     return new HumanMessage(
-        `我想要一個學習路線圖
-        他的主題是 ${topic}
-        名稱是 ${name}
-        詳細資訊是 ${description}`
+        `I want a learning roadmap.
+        Its topic is ${topic}.
+        Name is ${name}.
+        Description is ${description}.`
     );
 };
