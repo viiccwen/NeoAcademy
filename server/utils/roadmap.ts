@@ -2,6 +2,8 @@ import { model } from 'app';
 import { formatRoadmapHumanMessage, roadmapSystemMessage } from 'utils/message';
 import type { Roadmap, Section } from 'types/Roadmap';
 import { ObjectId } from 'mongodb';
+import type { User } from 'types/User';
+import { users } from 'database';
 
 
 export async function generateRoadmap(
@@ -26,7 +28,7 @@ export async function generateRoadmap(
     });
 
     return {
-        _id: new ObjectId(),
+        id: new ObjectId(),
         name,
         topic,
         description,
@@ -35,3 +37,7 @@ export async function generateRoadmap(
         createdAt: new Date(),
     };
 }
+
+export async function recordRoadmap({ authId }: User, roadmap: Roadmap): Promise<void> {
+    await users.updateOne({ authId }, { $push: { roadmaps: roadmap } });
+};

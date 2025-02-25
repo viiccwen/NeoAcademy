@@ -19,6 +19,7 @@ export async function createUser(
         authId,
         accessToken,
         quizzes: [],
+        roadmaps: [],
         createdAt: new Date(),
     };
     await users.insertOne(user);
