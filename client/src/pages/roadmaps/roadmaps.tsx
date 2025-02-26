@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,11 +19,11 @@ import {
   Clock,
   ChevronRight,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import { Metadata } from "@/components/customs/metadata";
-import { useGetRoadmaps } from "@/hooks/roadmap";
 import { Toaster } from "sonner";
+import { useRoadmaps } from "@/hooks/roadmaps";
 
 const topicIcons = {
   Programming: Code,
@@ -34,19 +33,8 @@ const topicIcons = {
 };
 
 export default function RoadmapsPage() {
-  const navigate = useNavigate();
-  const { data: roadmaps, isError, isPending } = useGetRoadmaps();
-  const [search, setSearch] = useState("");
-  const [topic, setTopic] = useState<string>("");
-
-  // filter roadmaps
-  const filteredRoadmaps = roadmaps?.filter((roadmap) => {
-    const matchesSearch =
-      roadmap.name.toLowerCase().includes(search.toLowerCase()) ||
-      roadmap.description.toLowerCase().includes(search.toLowerCase());
-    const matchesTopic = !topic || roadmap.topic === topic;
-    return matchesSearch && matchesTopic;
-  });
+  const { filteredRoadmaps, search, setSearch, topic, setTopic, isPending } =
+    useRoadmaps();
 
   if (isPending) {
     return (
@@ -54,11 +42,6 @@ export default function RoadmapsPage() {
         Loading...
       </div>
     );
-  }
-
-  if (isError) {
-    navigate("/notfound");
-    return null;
   }
 
   return (

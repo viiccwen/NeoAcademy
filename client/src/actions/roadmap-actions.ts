@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { CreateRoadmapType, Roadmap, Roadmaps } from "@/lib/type";
+import { CreateRoadmapType, Roadmap, Roadmaps, updateSubsectionType } from "@/lib/type";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -87,6 +87,32 @@ export const deleteRoadmap = async (token: string, id: string) => {
       return true;
     } else {
       throw new Error("刪除學習路徑錯誤！");
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "未知錯誤發生！");
+  }
+};
+
+export const updateRoadmap = async (
+  token: string,
+  roadmapId: string,
+  formdata: updateSubsectionType
+) => {
+  try {
+    const response: AxiosResponse<boolean, any> = await axios.put(
+      `${API_URL}/roadmap/${roadmapId}`,
+      formdata,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return true;
+    } else {
+      throw new Error("更新學習路徑錯誤！");
     }
   } catch (error: any) {
     throw new Error(error.message || "未知錯誤發生！");

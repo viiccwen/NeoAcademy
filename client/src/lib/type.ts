@@ -113,9 +113,15 @@ export interface Subsection {
   id: string;
   title: string;
   description: string;
+  checked: boolean;
 }
 
 export interface ChatMessages {
   previousMessages: string[];
   currentMessage: string;
+}
+
+export type updateSubsectionType = {
+  sectionId: string;
+  subsectionId: string;
 }

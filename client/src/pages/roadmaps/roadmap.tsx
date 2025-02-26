@@ -1,6 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
 import { Toaster } from "sonner";
-import { useParams } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
@@ -8,55 +6,22 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import { Metadata } from "@/components/customs/metadata";
 import { ChatBot } from "@/components/customs/roadmap/chatbot";
-import { useGetRoadmap } from "@/hooks/roadmap";
-import { Roadmap } from "@/lib/type";
+import { useRoadmap } from "@/hooks/roadmap";
 import { DeleteRoadmapDialog } from "@/components/customs/roadmap/delete-dialog";
 
 export default function RoadMap() {
-  const { id } = useParams();
-  const { data: roadmap, isError, isPending } = useGetRoadmap(id || "");
-  const [expandedSections, setExpandedSections] = useState<string[]>([]);
-  const [progress, setProgress] = useState<{ [key: string]: boolean }>({});
-  const [overallProgress, setOverallProgress] = useState(0);
-
-  // calculate progress
-  const calculateProgress = useCallback(() => {
-    if (!roadmap) return 0;
-
-    const totalSubsections = roadmap.sections.reduce(
-      (acc, section) => acc + section.subsections.length,
-      0
-    );
-    const completedSubsections = Object.values(progress).filter(Boolean).length;
-    return Math.round((completedSubsections / totalSubsections) * 100);
-  }, [progress]);
-
-  // toggle section
-  const toggleSection = (sectionId: string) => {
-    setExpandedSections((prev) =>
-      prev.includes(sectionId)
-        ? prev.filter((id) => id !== sectionId)
-        : [...prev, sectionId]
-    );
-  };
-
-  // update progress
-  const toggleProgress = (id: string) => {
-    setProgress((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  // check if all subsections in a section are completed
-  const isSectionCompleted = (section: Roadmap["sections"][number]) => {
-    return section.subsections.every((sub) => progress[sub.id] || false);
-  };
-
-  // update overall progress
-  useEffect(() => {
-    setOverallProgress(calculateProgress());
-  }, [progress]);
+  const {
+    roadmap,
+    isError,
+    isPending,
+    expandedSections,
+    progress,
+    setProgress,
+    toggleProgress,
+    overallProgress,
+    toggleSection,
+    isSectionCompleted,
+  } = useRoadmap();
 
   if (isPending) {
     return (
@@ -180,7 +145,7 @@ export default function RoadMap() {
           </div>
         </div>
 
-        <ChatBot initialMessages={["你好！需要幫助嗎？"]} />
+        <ChatBot />
       </div>
     </>
   );
