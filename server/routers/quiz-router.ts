@@ -14,7 +14,7 @@ const quizRouter = Router();
 
 quizRouter.get('/quiz', authMiddleware, getAllQuiz);
 
-quizRouter.get('/quiz/:id', authMiddleware, getQuizById);
+quizRouter.get('/quiz/:quizId', authMiddleware, getQuizById);
 
 quizRouter.post(
     '/quiz',
