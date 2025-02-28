@@ -17,7 +17,6 @@ export const createRoadmapSchema = z.object({
 
 
 export const checkSectionSchema = z.object({
-    roadmapId: z.string(),
     sectionId: z.string(),
     subsectionId: z.string().optional(),
     checked: z.boolean(),

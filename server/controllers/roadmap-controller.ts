@@ -39,8 +39,8 @@ export async function getRoadmaps(req: Request, res: Response): Promise<void> {
 
 export async function getRoadmap(req: Request, res: Response): Promise<void> {
     try {
-        const { id } = req.params;
-        const roadmap = req.user!.roadmaps?.find(roadmap => roadmap.id.toString() === id);
+        const { roadmapId } = req.params;
+        const roadmap = req.user!.roadmaps?.find(roadmap => roadmap.id.toString() === roadmapId);
 
         if (roadmap) {
             res.status(200).json(roadmap);
@@ -55,11 +55,11 @@ export async function getRoadmap(req: Request, res: Response): Promise<void> {
 
 export async function deleteRoadmap(req: Request, res: Response): Promise<void> {
     try {
-        const { id } = req.params;
+        const { roadmapId } = req.params;
 
         const result = await users.updateOne(
             { _id: req.user!._id },
-            { $pull: { roadmaps: { id: new ObjectId(id) } } }
+            { $pull: { roadmaps: { id: new ObjectId(roadmapId) } } }
         );
 
         if (!result.modifiedCount) {
@@ -76,18 +76,19 @@ export async function deleteRoadmap(req: Request, res: Response): Promise<void> 
 
 export async function checkSection(req: Request, res: Response): Promise<void> {
     try {
-        const { roadmapId, sectionId, subsectionId, checked } = req.body;
+        const { roadmapId } = req.params;
+        const { sectionId, subsectionId, checked } = req.body;
         
         if (!subsectionId) {
             await users.updateMany(
-                { _id: req.user!._id, 'roadmaps.id': roadmapId, 'roadmaps.sections.id': sectionId },
+                { _id: req.user!._id, 'roadmaps.id': new ObjectId(roadmapId), 'roadmaps.sections.id': new ObjectId(sectionId) },
                 { $set: { 'roadmaps.$[].sections.$[section].subsections.$[].checked': checked } },
-                { arrayFilters: [{ 'section.id': roadmapId }] },
+                { arrayFilters: [{ 'section.id': new ObjectId(sectionId) }] }
             );
         } else {
             await users.updateOne(
-                { _id: req.user!._id, 'roadmaps.id': roadmapId, 'roadmaps.sections.id': sectionId, 'roadmaps.sections.subsections.id': subsectionId },
-                { $set: { 'roadmaps.sections.subsections.checked': checked } },
+                { _id: req.user!._id, 'roadmaps.id': new ObjectId(roadmapId), 'roadmaps.sections.id': new ObjectId(sectionId), 'roadmaps.sections.subsections.id': new ObjectId(subsectionId) },
+                { $set: { 'roadmaps.$[].sections.$[].subsections.$[].checked': checked } },
             );
         }
 
