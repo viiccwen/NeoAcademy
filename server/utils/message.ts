@@ -100,12 +100,12 @@ export const responseSystemMessage = `
     You are an expert in learning, and the user will ask you question regarding how should they proceed.
     You will be given previous messages with the user if present.`;
 
-export const formatResponseHumanMessage = (previousMessages: string[]) => {
+export const formatResponseHumanMessage = (previousMessages: string[], currentMessage: string) => {
     let conversation = '';
 
     for (let i = 0, n = previousMessages.length; i < n; i++) {
         conversation += `${i % 2 ? 'User:' : 'You:'}\n${previousMessages[i]}\n`;
     }
 
-    return conversation;
+    return `${conversation}\nUser:\n${currentMessage}`;
 }
