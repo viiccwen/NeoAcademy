@@ -40,4 +40,4 @@ export async function generateRoadmap(
 
 export async function recordRoadmap({ authId }: User, roadmap: Roadmap): Promise<void> {
     await users.updateOne({ authId }, { $push: { roadmaps: roadmap } });
-};
+}

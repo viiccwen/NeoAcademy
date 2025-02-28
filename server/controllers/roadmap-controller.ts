@@ -73,3 +73,27 @@ export async function deleteRoadmap(req: Request, res: Response): Promise<void> 
         res.status(500).json({ message: error.message || '發生未知錯誤！' });
     }
 }
+
+export async function checkSection(req: Request, res: Response): Promise<void> {
+    try {
+        const { roadmapId, sectionId, subsectionId, checked } = req.body;
+        
+        if (!subsectionId) {
+            await users.updateMany(
+                { _id: req.user!._id, 'roadmaps.id': roadmapId, 'roadmaps.sections.id': sectionId },
+                { $set: { 'roadmaps.$[].sections.$[section].subsections.$[].checked': checked } },
+                { arrayFilters: [{ 'section.id': roadmapId }] },
+            );
+        } else {
+            await users.updateOne(
+                { _id: req.user!._id, 'roadmaps.id': roadmapId, 'roadmaps.sections.id': sectionId, 'roadmaps.sections.subsections.id': subsectionId },
+                { $set: { 'roadmaps.sections.subsections.checked': checked } },
+            );
+        }
+
+        res.sendStatus(204);
+    } catch (error: any) {
+        console.error(error);
+        res.status(500).json({ message: error.message || '發生未知錯誤！' });
+    }
+}

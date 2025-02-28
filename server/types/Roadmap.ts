@@ -22,4 +22,5 @@ export interface Subsection {
     id: ObjectId;
     title: string;
     description: string;
+    checked: boolean;
 }

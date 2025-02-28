@@ -14,3 +14,11 @@ export const createRoadmapSchema = z.object({
         .min(10, { message: '描述至少需要 10 個字元' })
         .max(500, { message: '描述不能超過 500 個字元' }),
 });
+
+
+export const checkSectionSchema = z.object({
+    roadmapId: z.string(),
+    sectionId: z.string(),
+    subsectionId: z.string().optional(),
+    checked: z.boolean(),
+});

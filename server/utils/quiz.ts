@@ -60,7 +60,7 @@ export async function generateQuiz(
 
 export async function recordQuiz({ authId }: User, quiz: Quiz | UnansweredQuiz): Promise<void> {
     await users.updateOne({ authId }, { $push: { quizzes: quiz } });
-};
+}
 
 export const submitAnswer = async (
     user: User,
