@@ -62,7 +62,6 @@ export const useQuiz = () => {
     const validIndex = parseQuestionIndex(questionIndex, amount);
 
     if (!validIndex && questions) {
-      console.log(validIndex);
       navigate("/notfound");
       return;
     }

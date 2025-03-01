@@ -54,7 +54,6 @@ export const useRoadmap = () => {
 
   // update progress
   const updateSubsection = (subsectionId: string) => {
-    console.log(subsectionId);
     setProgress((prev) => ({
       ...prev,
       [subsectionId]: !prev[subsectionId],
@@ -63,8 +62,6 @@ export const useRoadmap = () => {
     const sectionId = roadmap?.sections.find((section) =>
       section.subsections.find((sub) => sub.id === subsectionId)
     )?.id;
-
-    console.log(sectionId, subsectionId);
 
     if (!sectionId) {
       toast.error("找不到路徑章節！請重試！");
