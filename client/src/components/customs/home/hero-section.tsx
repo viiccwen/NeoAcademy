@@ -1,5 +1,13 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Brain, GraduationCap, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  BookMarked,
+  Bot,
+  Brain,
+  Database,
+  GraduationCap,
+  Sparkles,
+} from "lucide-react";
 import { BackgroundEffect } from "./background-effect";
 import { motion } from "framer-motion";
 
@@ -56,18 +64,34 @@ export const HeroSection = () => {
 
         {/* Feature highlights */}
         <motion.div
-          className="mt-16 flex flex-wrap justify-center gap-8"
+          className="mt-16 flex flex-col flex-wrap justify-center gap-3"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
         >
-          <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
-            <Sparkles className="h-5 w-5 text-purple-400" />
-            <span>個人化測驗產生</span>
+          <div className="flex gap-8">
+            <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
+              <Sparkles className="h-5 w-5 text-purple-400" />
+              <span>個人化測驗產生</span>
+            </div>
+            <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
+              <Brain className="h-5 w-5 text-blue-400" />
+              <span>智慧學習分析</span>
+            </div>
+            <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
+              <Bot className="h-5 w-5 text-blue-400" />
+              <span>智慧教學助理</span>
+            </div>
           </div>
-          <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
-            <Brain className="h-5 w-5 text-blue-400" />
-            <span>智能學習分析</span>
+          <div className="flex justify-center gap-8">
+            <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
+              <BookMarked className="h-5 w-5 text-purple-400" />
+              <span>豐富學習資源</span>
+            </div>
+            <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-white/70 backdrop-blur-sm">
+              <Database className="h-5 w-5 text-blue-400" />
+              <span>大數據分析</span>
+            </div>
           </div>
         </motion.div>
       </div>
