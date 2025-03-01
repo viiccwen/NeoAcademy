@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Toaster } from "sonner";
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import {
   Select,
@@ -9,15 +9,12 @@ import {
 } from "@/components/ui/select";
 import { QuizCard } from "@/components/customs/dashboard/quiz-card";
 import { Metadata } from "@/components/customs/metadata";
-import { Toaster } from "sonner";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { useDashboard } from "@/hooks/dashboard";
+import { AIButton } from "@/components/customs/quiz/ai-button";
 
 export default function Dashboard() {
-  const navigate = useNavigate();
   const {
     filteredQuizzes,
     search,
@@ -29,7 +26,7 @@ export default function Dashboard() {
     sortOrder,
     setSortOrder,
     isPending,
-    isError,
+    navigate,
   } = useDashboard();
 
   if (isPending) {
@@ -38,11 +35,6 @@ export default function Dashboard() {
         Loading...
       </div>
     );
-  }
-
-  if (isError) {
-    navigate("/notfound");
-    return null;
   }
 
   return (
@@ -61,14 +53,13 @@ export default function Dashboard() {
           <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <h1 className="text-3xl font-bold">學習路徑</h1>
-              <p className="text-gray-600">管理和創建您的學習路徑</p>
+              <p>管理和創建您的學習路徑</p>
             </div>
-            <Link to="/roadmap/create">
-              <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                <Plus className="h-4 w-4" />
-                創建測驗
-              </Button>
-            </Link>
+            <AIButton
+              type="button"
+              text="建立測驗"
+              onClick={() => navigate("/create")}
+            />
           </div>
 
           {/* Filter and Sort Controls */}

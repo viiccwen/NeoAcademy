@@ -73,7 +73,7 @@ export default function CreateRoadmap() {
             <form onSubmit={handleSubmit(onSubmit)}>
               <CardContent className="space-y-6">
                 {/* Basic Info Card */}
-                <Card className="border border-slate-800">
+                <Card>
                   <CardHeader>
                     <CardTitle className="text-base">基本訊息</CardTitle>
                     <CardDescription>
@@ -132,7 +132,7 @@ export default function CreateRoadmap() {
                 </Card>
 
                 {/* Description Card */}
-                <Card className="border border-slate-800">
+                <Card>
                   <CardHeader>
                     <CardTitle className="text-base">路徑描述</CardTitle>
                     <CardDescription>
@@ -158,6 +158,7 @@ export default function CreateRoadmap() {
 
               <CardFooter className="flex justify-end gap-4">
                 <AIButton
+                  className="w-full"
                   type="submit"
                   text={isSubmitting ? "創建中" : "創建路徑"}
                   disabled={isSubmitting}

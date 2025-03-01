@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,7 +9,6 @@ import {
 import { Card } from "@/components/ui/card";
 import {
   BookOpen,
-  Plus,
   Search,
   Code,
   Languages,
@@ -24,6 +22,7 @@ import { NavBar } from "@/components/customs/dashboard/navbar";
 import { Metadata } from "@/components/customs/metadata";
 import { Toaster } from "sonner";
 import { useRoadmaps } from "@/hooks/roadmaps";
+import { AIButton } from "@/components/customs/quiz/ai-button";
 
 const topicIcons = {
   Programming: Code,
@@ -33,8 +32,15 @@ const topicIcons = {
 };
 
 export default function RoadmapsPage() {
-  const { filteredRoadmaps, search, setSearch, topic, setTopic, isPending } =
-    useRoadmaps();
+  const {
+    filteredRoadmaps,
+    search,
+    setSearch,
+    topic,
+    setTopic,
+    isPending,
+    navigate,
+  } = useRoadmaps();
 
   if (isPending) {
     return (
@@ -62,12 +68,11 @@ export default function RoadmapsPage() {
               <h1 className="text-3xl font-bold">學習路徑</h1>
               <p>管理和創建您的學習路徑</p>
             </div>
-            <Link to="/roadmap/create">
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                創建路徑
-              </Button>
-            </Link>
+            <AIButton
+              text="創建路徑"
+              type="button"
+              onClick={() => navigate("/roadmap/create")}
+            />
           </div>
 
           {/* Filters */}

@@ -151,6 +151,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
 
             {/* Submit Button */}
             <AIButton
+              className="w-full"
               type="submit"
               text={mutation.isPending ? "產生測驗中..." : "建立測驗"}
               disabled={!isValid || mutation.isPending}

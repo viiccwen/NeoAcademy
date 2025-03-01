@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useGetAllQuiz } from "./quiz";
 import { FilterHelper, SortHelper } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 export const useDashboard = () => {
+  const navigate = useNavigate();
   const { quizzes, isPending, isError } = useGetAllQuiz();
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [filterDifficulty, setFilterDifficulty] = useState<string | null>(null);
@@ -26,6 +28,12 @@ export const useDashboard = () => {
     return SortHelper(result, sortOrder);
   }, [quizzes, search, filterCategory, filterDifficulty, sortOrder]);
 
+  useEffect(() => {
+    if (isError) {
+      navigate("/notfound");
+    }
+  }, [isError, navigate]);
+
   return {
     filteredQuizzes,
     search,
@@ -37,6 +45,6 @@ export const useDashboard = () => {
     sortOrder,
     setSortOrder,
     isPending,
-    isError,
+    navigate,
   };
 };

@@ -22,12 +22,12 @@ export const QuestionCard = (props: QuestionCardProps) => {
     <Card className="max-w-xl w-full bg-gray-800 text-white shadow-lg rounded-lg transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex flex-col w-full gap-6">
-          {/* 題目標題 */}
+          {/* question title */}
           <h1 className="text-xl font-semibold text-center">
             {currentQuestionIndex}. {questionText}
           </h1>
 
-          {/* 選項按鈕區塊 */}
+          {/* selection button block */}
           <div className="flex flex-col gap-3">
             {Object.keys(options).map((key) => {
               const optionId = parseInt(key);
