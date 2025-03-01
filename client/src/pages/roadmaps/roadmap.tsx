@@ -2,12 +2,14 @@ import { Toaster } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy } from "lucide-react";
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import { Metadata } from "@/components/customs/metadata";
 import { ChatBot } from "@/components/customs/roadmap/chatbot";
 import { useRoadmap } from "@/hooks/roadmap";
 import { DeleteRoadmapDialog } from "@/components/customs/roadmap/delete-dialog";
+import { useChatbot } from "@/hooks/chatbot";
+import { Button } from "@/components/ui/button";
 
 export default function RoadMap() {
   const {
@@ -22,6 +24,8 @@ export default function RoadMap() {
     toggleSection,
     isSectionCompleted,
   } = useRoadmap();
+
+  const { setInputFromExternal } = useChatbot();
 
   if (isPending) {
     return (
@@ -104,6 +108,20 @@ export default function RoadMap() {
                         </div>
                       </div>
                     </div>
+                    {/* 複製按鈕 */}
+                    <Button
+                      variant="ghost"
+                      type="button"
+                      size="sm"
+                      onClick={() =>
+                        setInputFromExternal(
+                          `請幫助我了解 ${section.title}: ${section.description || ""}`
+                        )
+                      }
+                      aria-label="Copy section to chatbot"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
 
@@ -118,7 +136,9 @@ export default function RoadMap() {
                         <Checkbox
                           id={subsection.id}
                           checked={progress[subsection.id] || false}
-                          onCheckedChange={() => updateSubsection(subsection.id)}
+                          onCheckedChange={() =>
+                            updateSubsection(subsection.id)
+                          }
                         />
                         <div className="flex-1">
                           <label
@@ -129,6 +149,20 @@ export default function RoadMap() {
                           </label>
                           <p className="text-sm">{subsection.description}</p>
                         </div>
+                        {/* 複製按鈕 */}
+                        <Button
+                          variant="ghost"
+                          type="button"
+                          size="sm"
+                          onClick={() =>
+                            setInputFromExternal(
+                              `請幫助我了解 ${subsection.title}: ${subsection.description || ""}`
+                            )
+                          }
+                          aria-label="Copy section to chatbot"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                   </div>

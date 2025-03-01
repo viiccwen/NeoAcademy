@@ -1,65 +1,93 @@
 import { sendMessage } from "@/actions/message-actions";
 import { ChatMessages } from "@/lib/type";
+import { useChatbotStore } from "@/stores/chatbot";
 import { useMessageStore } from "@/stores/message-store";
 import { useUserStore } from "@/stores/user-store";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 export const useChatbot = () => {
-  const { messages, setMessage, resetMessage } = useMessageStore();
+  const messageScrollRef = useRef<HTMLDivElement>(null);
   const mutation = useSendChatbotMessage();
-  const [isOpen, setIsOpen] = useState(false);
-  const [input, setInput] = useState("");
+  const { isSubmitting, messages, setMessage, resetMessage } =
+    useMessageStore();
+  const { isPanelOpen, userInput, setIsPanelOpen, setUserInput } =
+    useChatbotStore();
 
-  const sendMessage = () => {
-    if (input.trim()) {
-      setMessage(`You: ${input}`);
+  const setInputFromExternal = (text: string) => {
+    setUserInput(text);
+    setIsPanelOpen(true);
+  };
+
+  const sendMessage = async () => {
+    if (userInput.trim()) {
+      setMessage(`user: ${userInput}`);
 
       // add chatbot response
       mutation
         .mutateAsync({
           previousMessages: messages,
-          currentMessage: input,
+          currentMessage: userInput,
         })
         .then((response) => {
-          setMessage(`Bot: ${response}`);
+          // replace LaTeX syntax
+          // \(...\) -> $...$
+          // \[...\] -> $$...$$
+          const replacedResponse = response
+            .replace(/\\\(/g, "$")
+            .replace(/\\\)/g, "$")
+            .replace(/\\\[/g, "$$")
+            .replace(/\\\]/g, "$$");
+
+          setMessage(`bot: ${replacedResponse}`);
         })
         .catch((error) => {
-          console.error(error); // error handling
+          toast.error(error.message || "發生錯誤！");
         });
 
-      setInput("");
+      setUserInput("");
     }
   };
 
+  useEffect(() => {
+    if (messageScrollRef.current) {
+      messageScrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isSubmitting, isPanelOpen]);
+
   return {
-    isOpen,
-    setIsOpen,
+    isSubmitting,
+    isPanelOpen,
     messages,
-    setMessage,
+    messageScrollRef,
+    userInput,
     resetMessage,
-    input,
-    setInput,
+    setMessage,
+    setIsPanelOpen,
+    setUserInput,
+    setInputFromExternal,
     sendMessage,
   };
 };
 
 export const useSendChatbotMessage = () => {
   const { token } = useUserStore();
+  const { setIsSubmitting } = useMessageStore();
 
   return useMutation({
     mutationKey: ["chatbot", "send"],
     mutationFn: ({ previousMessages, currentMessage }: ChatMessages) =>
       sendMessage(token!, previousMessages, currentMessage) as Promise<string>,
     onMutate: () => {
-      toast.loading("傳送訊息中...");
+      setIsSubmitting(true);
     },
     onError: (error: any) => {
       toast.error(error.message || "發生錯誤！");
+      setIsSubmitting(false);
     },
     onSuccess: (response: string) => {
-      toast.dismiss();
+      setIsSubmitting(false);
       return response;
     },
   });
