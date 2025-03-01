@@ -3,6 +3,11 @@ import { useQuizStore } from "@/stores/quiz-store";
 import { QuestionType } from "@/lib/type";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Markdown from "react-markdown";
+import math from "remark-math";
+import RehypeKatex from "rehype-katex";
+
+import "katex/dist/katex.min.css";
 
 interface QuestionCardProps {
   questionIndex: number;
@@ -22,12 +27,15 @@ export const QuestionCard = (props: QuestionCardProps) => {
     <Card className="max-w-xl w-full bg-gray-800 text-white shadow-lg rounded-lg transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex flex-col w-full gap-6">
-          {/* 題目標題 */}
-          <h1 className="text-xl font-semibold text-center">
-            {currentQuestionIndex}. {questionText}
-          </h1>
+          {/* question title */}
+          <div className="flex gap-2 text-xl font-semibold text-center">
+            {currentQuestionIndex}.
+            <Markdown remarkPlugins={[math]} rehypePlugins={[RehypeKatex]}>
+              {questionText}
+            </Markdown>
+          </div>
 
-          {/* 選項按鈕區塊 */}
+          {/* selection button block */}
           <div className="flex flex-col gap-3">
             {Object.keys(options).map((key) => {
               const optionId = parseInt(key);
@@ -48,7 +56,12 @@ export const QuestionCard = (props: QuestionCardProps) => {
                   )}
                   key={key}
                 >
-                  {text}
+                  <Markdown
+                    remarkPlugins={[math]}
+                    rehypePlugins={[RehypeKatex]}
+                  >
+                    {text}
+                  </Markdown>
                 </Button>
               );
             })}

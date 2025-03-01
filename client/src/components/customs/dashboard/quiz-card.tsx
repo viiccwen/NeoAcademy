@@ -25,7 +25,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
   };
 
   return (
-    <Card className="bg-gray-800 border-gray-700 hover:shadow-lg transition duration-300 relative">
+    <Card className="hover:shadow-lg transition duration-300 relative">
       {/* menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -33,10 +33,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
             <MoreHorizontal className="w-5 h-5" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          className="bg-slate-700 border-slate-700"
-        >
+        <DropdownMenuContent align="end">
           <DropdownMenuItem
             onClick={() => navigate(`/quiz/${quiz.id}/1`)}
             className=" hover:cursor-pointer hover:bg-slate-500"
@@ -72,13 +69,11 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                 : "bg-red-500"
             } text-white`}
           >
-            {
-              quiz.difficulty === "Easy"
-                ? "簡單"
-                : quiz.difficulty === "Medium"
-                ? "中等"
-                : "困難"
-            }
+            {quiz.difficulty === "Easy"
+              ? "簡單"
+              : quiz.difficulty === "Medium"
+              ? "中等"
+              : "困難"}
           </Badge>
           <span className="text-sm text-gray-400">
             {new Date(quiz.createdAt).toLocaleDateString()}

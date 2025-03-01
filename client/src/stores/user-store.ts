@@ -12,10 +12,11 @@ interface UserStore {
   isAuth: boolean;
   analysis: string | null;
 
-  setUser(user: UserType): void;
-  setToken(token: string): void;
+  reset(): void;
+  setUser(user: UserType | null): void;
+  setToken(token: string | null): void;
   setIsAuth(isAuth: boolean): void;
-  setAnalysis(analysis: string): void;
+  setAnalysis(analysis: string | null): void;
 
   logout: () => void;
 }
@@ -28,6 +29,13 @@ export const useUserStore = create<UserStore>()(
       isAuth: false,
       analysis: null,
 
+      reset() {
+        set(() => ({
+          user: null,
+          token: null,
+          isAuth: false,
+        }));
+      },
       setUser(user) {
         set(() => ({
           user,
@@ -53,6 +61,7 @@ export const useUserStore = create<UserStore>()(
       logout: () => {
         set(() => ({
           user: null,
+          expiry: 0,
           token: null,
           isAuth: false,
         }));

@@ -1,6 +1,5 @@
 import { NavBar } from "@/components/customs/dashboard/navbar";
 import Markdown from "react-markdown";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pie, Bar } from "react-chartjs-2";
@@ -25,11 +24,10 @@ import {
 import { Metadata } from "@/components/customs/metadata";
 import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
 import { useGetAllQuizDetails } from "@/hooks/quiz";
-import { useAnalyze, useAuth } from "@/hooks/user";
-import { RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useAnalyze } from "@/hooks/user";
 import { Toaster } from "sonner";
 import { translateCategory, translateDifficulty } from "@/lib/utils";
+import { AISmallButton } from "@/components/customs/quiz/ai-button";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -39,32 +37,24 @@ ChartJS.register(
   BarElement
 );
 
-
-
 export default function Analytics() {
   const navigate = useNavigate();
   const { analyze, content, isLoading } = useAnalyze();
-  const { isAuth } = useAuth();
-  const _quiz = useGetAllQuizDetails();
-  const quiz = _quiz.data;
-
-  useEffect(() => {
-    if (!isAuth) navigate("/login");
-  }, [isAuth]);
+  const { quiz, isPending, isError, isSuccess } = useGetAllQuizDetails();
 
   const onAnalyze = () => {
     analyze();
   };
 
-  if (_quiz.isPending) {
+  if (isPending) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-900 text-white">
+      <div className="min-h-screen flex justify-center items-center text-white">
         Loading...
       </div>
     );
   }
 
-  if (_quiz.isError) {
+  if (isError) {
     navigate("/notfound");
     return null;
   }
@@ -144,7 +134,7 @@ export default function Analytics() {
     };
   };
 
-  if (_quiz.isSuccess && quiz && quizStats) {
+  if (isSuccess && quiz && quizStats) {
     const QuizStats = quizStats();
     return (
       <>
@@ -153,7 +143,7 @@ export default function Analytics() {
           title="分析"
           description="Track your learning progress with AI-driven analytics and personalized insights."
         />
-        <div className="min-h-screen bg-gray-900 py-4 px-4 text-white">
+        <div className="min-h-screen py-4 px-4 text-white">
           <NavBar />
           <div className="max-w-5xl w-1/2 mx-auto pt-20">
             <h1 className="text-4xl font-extrabold text-center mb-8">
@@ -162,7 +152,7 @@ export default function Analytics() {
 
             {/* 測驗總覽數據 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle>測驗總計</CardTitle>
                 </CardHeader>
@@ -171,7 +161,7 @@ export default function Analytics() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle>平均分數</CardTitle>
                 </CardHeader>
@@ -180,7 +170,7 @@ export default function Analytics() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle>正確率</CardTitle>
                 </CardHeader>
@@ -193,9 +183,11 @@ export default function Analytics() {
             {/* 圖表區域 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
               {/* 測驗難度分析 */}
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center h-[36px]">測驗難度統計</CardTitle>
+                  <CardTitle className="flex items-center h-[36px]">
+                    測驗難度統計
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Pie
@@ -215,19 +207,11 @@ export default function Analytics() {
               </Card>
 
               {/* AI 評語區塊 */}
-              <Card className="bg-gray-800">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     AI 分析 & 建議{" "}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="hover:bg-blue-500 duration-300"
-                      onClick={onAnalyze}
-                      disabled={isLoading}
-                    >
-                      <RotateCcw className="w4" />{" "}
-                    </Button>
+                    <AISmallButton onClick={onAnalyze} disabled={isLoading} />
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-gray-300">
@@ -241,7 +225,7 @@ export default function Analytics() {
             </div>
 
             {/* 測驗結果統計表格 */}
-            <Card className="bg-gray-800 mt-10">
+            <Card className=" mt-10">
               <CardHeader>
                 <CardTitle>測驗結果</CardTitle>
               </CardHeader>
@@ -260,7 +244,9 @@ export default function Analytics() {
                       <TableRow key={q.id}>
                         <TableCell>{q.name}</TableCell>
                         <TableCell>{translateCategory(q.category)}</TableCell>
-                        <TableCell>{translateDifficulty(q.difficulty)}</TableCell>
+                        <TableCell>
+                          {translateDifficulty(q.difficulty)}
+                        </TableCell>
                         <TableCell>
                           {q.answered
                             ? (q.questions as AnsweredQuestionType[]).filter(
@@ -279,20 +265,14 @@ export default function Analytics() {
             </Card>
 
             {/* 科目類別分析 */}
-            <Card className="bg-gray-800 mt-10">
+            <Card className=" mt-10">
               <CardHeader>
                 <CardTitle>測驗類別統計</CardTitle>
               </CardHeader>
               <CardContent>
                 <Bar
                   data={{
-                    labels: [
-                      "數學",
-                      "自然",
-                      "歷史",
-                      "語言",
-                      "程式語言",
-                    ],
+                    labels: ["數學", "自然", "歷史", "語言", "程式語言"],
                     datasets: [
                       {
                         label: "數學",
@@ -347,7 +327,7 @@ export default function Analytics() {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-900 text-white">
+    <div className="min-h-screen flex justify-center items-center text-white">
       Something went wrong...
     </div>
   );

@@ -6,17 +6,18 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/user";
 import { Loader2 } from "lucide-react";
+import { Metadata } from "@/components/customs/metadata";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Metadata } from "@/components/customs/metadata";
 
 export default function Login() {
   const navigate = useNavigate();
   const { isAuth, isLoading } = useAuth();
 
-  // Redirect to dashboard if user is already authenticated
   useEffect(() => {
-    if (isAuth) navigate("/dashboard");
+    if (isAuth) {
+      navigate("/dashboard");
+    }
   }, [isAuth]);
 
   return (

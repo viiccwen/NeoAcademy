@@ -43,7 +43,7 @@ export const BackgroundEffect = () => {
     <>
       <motion.div ref={ref} className="z-10 absolute w-40 h-40 bg-blue-500 opacity-30 rounded-full blur-3xl" style={{ x, y }} />;
 
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-blue-900 opacity-50"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-blue-800 opacity-50"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black pointer-events-none" />
 
       <div className="absolute inset-0">

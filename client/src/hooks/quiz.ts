@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { DelayFunc } from "@/lib/utils";
+import { convertKatex, DelayFunc, parseQuestionIndex } from "@/lib/utils";
 import {
   createQuiz,
   deleteQuiz,
@@ -8,7 +8,6 @@ import {
   getDetailsAllQuiz,
   getQuiz,
   submitQuiz,
-  updateQuiz,
 } from "@/actions/quiz-actions";
 import {
   AnsweredQuestionType,
@@ -19,7 +18,69 @@ import {
 } from "@/lib/type";
 import { useQuizStore } from "@/stores/quiz-store";
 import { useUserStore } from "@/stores/user-store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useQuestion } from "./question";
+
+export const useQuiz = () => {
+  const navigate = useNavigate();
+  const { quizId: currentQuizId, index: questionIndex } = useParams();
+  const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+  const { quiz, isSuccess, isError } = useGetQuiz(currentQuizId!, false);
+  const {
+    quizId,
+    questions,
+    currentQuestionIndex,
+    amount,
+    userAnswers,
+    setCurrentQuestionIndex,
+    loadQuiz,
+  } = useQuizStore();
+  const submit = useSubmitQuiz();
+  const { prevQuestion, nextQuestion } = useQuestion();
+  const isQuizCompleted = userAnswers.every((answer) => answer.length > 0);
+
+  const handleSubmitQuiz = () => {
+    setShowSubmitDialog(true);
+  };
+
+  const confirmSubmitQuiz = () => {
+    setShowSubmitDialog(false);
+    submit.mutate({ quizId, answers: userAnswers });
+  };
+
+  // check quiz is loading
+  useEffect(() => {
+    if ((questions === null || quizId != currentQuizId) && isSuccess) {
+      loadQuiz(quiz!);
+    } else if (questions === null && isError) {
+      navigate("/dashboard");
+    }
+  }, [isSuccess, quiz, isError, questions]);
+
+  useEffect(() => {
+    const validIndex = parseQuestionIndex(questionIndex, amount);
+
+    if (!validIndex && questions) {
+      navigate("/notfound");
+      return;
+    }
+    if (validIndex) setCurrentQuestionIndex(validIndex);
+  }, [questionIndex, setCurrentQuestionIndex]);
+
+  return {
+    prevQuestion,
+    nextQuestion,
+    showSubmitDialog,
+    setShowSubmitDialog,
+    isQuizCompleted,
+    handleSubmitQuiz,
+    confirmSubmitQuiz,
+    currentQuestionIndex,
+    amount,
+    questions,
+  };
+};
 
 export const useCreateQuiz = () => {
   const { token } = useUserStore();
@@ -30,19 +91,23 @@ export const useCreateQuiz = () => {
     mutationKey: ["quiz", "create"],
     mutationFn: (formdata: CreateQuizType) => createQuiz(token!, formdata),
     onMutate: () => {
-      toast.loading("Generating Quiz...");
+      toast.loading("創建測驗中...");
     },
-    onError: (error: any) => {
-      // close loading toast
+    onError: () => {
       toast.dismiss();
-      toast.error(error.message || "Error Occurred!");
+      toast.error("發生錯誤！");
     },
     onSuccess: async (data: QuizReturnType) => {
-      // close loading toast
       toast.dismiss();
-      toast.success("Quiz Created Successfully!");
+      toast.success("成功創建測驗！");
 
-      // load the quiz
+      // convert every question to katex
+      data.questions.forEach((question) => {
+        question.text = convertKatex(question.text);
+        question.options = question.options.map((option) =>
+          convertKatex(option)
+        );
+      });
       loadQuiz(data);
 
       // redirect to quiz page
@@ -64,7 +129,7 @@ export const useSubmitQuiz = () => {
     mutationFn: ({ quizId, answers }: SubmitQuizType) =>
       submitQuiz({ token: token!, quizId, answers }),
     onMutate: () => {
-      toast.loading("Submitting Quiz...");
+      toast.loading("提交測驗中...");
     },
     onError: (error: any) => {
       // close loading toast
@@ -74,7 +139,7 @@ export const useSubmitQuiz = () => {
     onSuccess: async () => {
       // close loading toast
       toast.dismiss();
-      toast.success("Quiz Submitted Successfully!");
+      toast.success("成功提交測驗！");
 
       // redirect to result page
       await DelayFunc({
@@ -89,34 +154,24 @@ export const useSubmitQuiz = () => {
   });
 };
 
-export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(quizId: string, isAnswered: boolean) => {
+export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(
+  quizId: string,
+  isAnswered: boolean
+) => {
   const { token } = useUserStore();
 
-  return useQuery({
+  const response = useQuery({
     queryKey: ["quiz", "get"],
     queryFn: () => getQuiz<T>(quizId, token!, isAnswered),
     enabled: !!quizId,
   });
-};
 
-export const useUpdateQuiz = () => {
-  return useMutation({
-    mutationKey: ["quiz", "update"],
-    mutationFn: updateQuiz,
-    onMutate: () => {
-      toast.loading("Updating Quiz...");
-    },
-    onError: (error: any) => {
-      // close loading toast
-      toast.dismiss();
-      toast.error(error.message || "Error Occurred!");
-    },
-    onSuccess: async () => {
-      // close loading toast
-      toast.dismiss();
-      toast.success("Quiz Updated Successfully!");
-    },
-  });
+  return {
+    quiz: response.data,
+    isSuccess: response.isSuccess,
+    isPending: response.isPending,
+    isError: response.isError,
+  };
 };
 
 export const useDeleteQuiz = () => {
@@ -127,7 +182,7 @@ export const useDeleteQuiz = () => {
     mutationKey: ["quiz", "delete"],
     mutationFn: (id: string) => deleteQuiz(id, token!),
     onMutate: () => {
-      toast.loading("Deleting Quiz...");
+      toast.loading("刪除測驗中...");
     },
     onError: (error: any) => {
       // close loading toast
@@ -137,7 +192,7 @@ export const useDeleteQuiz = () => {
     onSuccess: async () => {
       // close loading toast
       toast.dismiss();
-      toast.success("Quiz Deleted Successfully!");
+      toast.success("成功刪除測驗！");
 
       // refresh ["quiz"] cache
       queryClient.invalidateQueries({ queryKey: ["quiz", "get-all"] });
@@ -148,17 +203,33 @@ export const useDeleteQuiz = () => {
 export const useGetAllQuiz = () => {
   const { token } = useUserStore();
 
-  return useQuery({
+  const response = useQuery({
     queryKey: ["quiz", "get-all"],
     queryFn: () => getAllQuiz(token!),
+    retry: 1,
   });
+
+  return {
+    quizzes: response.data,
+    isSuccess: response.isSuccess,
+    isPending: response.isPending,
+    isError: response.isError,
+  };
 };
 
 export const useGetAllQuizDetails = () => {
   const { token } = useUserStore();
 
-  return useQuery({
+  const response = useQuery({
     queryKey: ["quiz", "get-all-details", token],
     queryFn: () => getDetailsAllQuiz(token!),
+    retry: 1,
   });
+
+  return {
+    quiz: response.data,
+    isSuccess: response.isSuccess,
+    isPending: response.isPending,
+    isError: response.isError,
+  };
 };
