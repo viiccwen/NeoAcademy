@@ -27,7 +27,7 @@ export const useChatbot = () => {
       // add chatbot response
       mutation
         .mutateAsync({
-          previousMessages: messages,
+          previousMessages: messages.slice(-5), // only send last 5 messages
           currentMessage: userInput,
         })
         .then((response) => {
