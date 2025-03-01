@@ -53,7 +53,7 @@ export function ChatBot() {
           </div>
 
           {/* messages */}
-          <div className="p-4 text-sm max-h-[50vh] space-y-10 overflow-y-auto">
+          <div className="p-4 text-sm max-h-[50vh] space-y-10 overflow-y-auto overflow-x-hidden">
             {messages.map((message, index) => (
               <>
                 {message.startsWith("bot:") ? (
@@ -62,7 +62,7 @@ export function ChatBot() {
                     className={"mb-2 space-y-5 text-left"}
                   >
                     <ReactMarkdown
-                      remarkPlugins={[[math]]}
+                      remarkPlugins={[math]}
                       rehypePlugins={[RehypeKatex]}
                       components={{
                         ul: ({ children }) => (
@@ -73,6 +73,11 @@ export function ChatBot() {
                         ),
                         li: ({ children }) => (
                           <li className="pl-2 pt-2">{children}</li>
+                        ),
+                        code: ({ children }) => (
+                          <code className="bg-gray-800 text-sm p-1 rounded-md break-words text-wrap">
+                            {children}
+                          </code>
                         ),
                       }}
                     >
