@@ -30,10 +30,6 @@ export const getAllQuiz = async (req: Request, res: Response) => {
             res.status(400).json({ message: '沒有這個操作！' });
         }
 
-        if (!quizzes.length) {
-            res.status(404).json({ message: '找不到任何測驗！' });
-            return;
-        }
         res.status(200).json(quizzes);
     } catch (error: any) {
         console.error(error);
