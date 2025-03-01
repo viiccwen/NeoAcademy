@@ -2,6 +2,7 @@ import { users } from 'database';
 import type { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import type { createRoadmapSchema } from 'schemas/roadmap';
+import type { updateSection } from 'types/Roadmap';
 import { omitProperties } from 'utils/objects';
 import { generateRoadmap, recordRoadmap } from 'utils/roadmap';
 import type { z } from 'zod';
@@ -77,7 +78,7 @@ export async function deleteRoadmap(req: Request, res: Response): Promise<void> 
 export async function checkSection(req: Request, res: Response): Promise<void> {
     try {
         const { roadmapId } = req.params;
-        const { sectionId, subsectionId, checked } = req.body;
+        const { sectionId, subsectionId, checked } = req.body as updateSection;
 
         if (!subsectionId) {
             await users.updateMany(

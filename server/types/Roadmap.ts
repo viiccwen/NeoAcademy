@@ -24,3 +24,9 @@ export interface Subsection {
     description: string;
     checked: boolean;
 }
+
+export interface updateSection {
+    sectionId: string;
+    subsectionId: string;
+    checked: boolean;
+}
