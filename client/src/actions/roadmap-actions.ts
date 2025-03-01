@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { CreateRoadmapType, Roadmap, Roadmaps, updateSubsectionType } from "@/lib/type";
+import { CreateRoadmapType, Roadmap, Roadmaps, updateSectionType } from "@/lib/type";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -96,7 +96,7 @@ export const deleteRoadmap = async (token: string, id: string) => {
 export const updateRoadmap = async (
   token: string,
   roadmapId: string,
-  formdata: updateSubsectionType
+  formdata: updateSectionType
 ) => {
   try {
     const response: AxiosResponse = await axios.patch(
