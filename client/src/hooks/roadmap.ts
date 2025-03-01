@@ -45,13 +45,14 @@ export const useRoadmap = () => {
     )?.id;
 
     if (!sectionId) {
-      toast.error("找不到路徑章節！");
+      toast.error("找不到路徑章節！請重試！");
       return;
     }
 
     const formdata: updateSubsectionType = {
       sectionId,
       subsectionId: id,
+      checked: !progress[id],
     };
 
     toast.promise(updateRoadmap(token!, roadmap.id, formdata), {

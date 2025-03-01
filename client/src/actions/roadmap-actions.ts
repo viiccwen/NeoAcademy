@@ -31,7 +31,7 @@ export const createRoadmap = async (
 // single roadmap
 export const getRoadmap = async (token: string, id: string) => {
   try {
-    const response: AxiosResponse<Roadmap, any> = await axios.get(
+    const response: AxiosResponse<Roadmap> = await axios.get(
       `${API_URL}/roadmap/${id}`,
       {
         headers: {
@@ -53,7 +53,7 @@ export const getRoadmap = async (token: string, id: string) => {
 // all roadmap
 export const getRoadmaps = async (token: string) => {
   try {
-    const response: AxiosResponse<Roadmaps[], any> = await axios.get(
+    const response: AxiosResponse<Roadmaps[]> = await axios.get(
       `${API_URL}/roadmap`,
       {
         headers: {
@@ -74,7 +74,7 @@ export const getRoadmaps = async (token: string) => {
 
 export const deleteRoadmap = async (token: string, id: string) => {
   try {
-    const response: AxiosResponse<any, any> = await axios.delete(
+    const response: AxiosResponse = await axios.delete(
       `${API_URL}/roadmap/${id}`,
       {
         headers: {
@@ -99,7 +99,7 @@ export const updateRoadmap = async (
   formdata: updateSubsectionType
 ) => {
   try {
-    const response: AxiosResponse<boolean, any> = await axios.put(
+    const response: AxiosResponse = await axios.patch(
       `${API_URL}/roadmap/${roadmapId}`,
       formdata,
       {
@@ -109,10 +109,10 @@ export const updateRoadmap = async (
       }
     );
 
-    if (response.status === 200) {
+    if (response.status === 204) {
       return true;
     } else {
-      throw new Error("更新學習路徑錯誤！");
+      throw new Error();
     }
   } catch (error: any) {
     throw new Error(error.message || "未知錯誤發生！");
