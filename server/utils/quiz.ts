@@ -13,8 +13,6 @@ import { model } from 'app';
 
 
 export function getQuiz(user: User, quizId: string): Quiz | UnansweredQuiz | undefined {
-    console.log(user.quizzes);
-    console.log(quizId);
     return user.quizzes.find(({ id }) => id.toString() === quizId);
 }
 
@@ -43,7 +41,6 @@ export async function generateQuiz(
         systemMessage,
         humanMessage,
     ]);
-
     const questions = JSON.parse(
         aiMessage.content.toString()
     ) as UnansweredQuestion[];

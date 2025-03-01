@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import axios, { AxiosResponse } from "axios";
 import {
   AnsweredQuestionType,
@@ -54,7 +53,7 @@ export const submitQuiz = async ({
       }
     );
 
-    if (response.status === 200) {
+    if (response.status === 204) {
       return response.data;
     } else {
       throw new Error("提交測驗錯誤！");
@@ -90,39 +89,6 @@ export const getQuiz = async <T extends QuestionType | AnsweredQuestionType>(
   }
 };
 
-// todo: only support update name now
-interface UpdateQuizType {
-  type: "name" | "category" | "description" | "questions";
-  text: string;
-}
-
-export const updateQuiz = async ({ type, text }: UpdateQuizType) => {
-  try {
-    const token = await Cookies.get("token");
-    if (!token) {
-      throw new Error("使用者請重新登入！");
-    }
-
-    const response: AxiosResponse<QuizReturnType, any> = await axios.post(
-      `${API_URL}/quiz/update/${type}`,
-      text,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      throw new Error("建立測驗錯誤！");
-    }
-  } catch (error: any) {
-    throw new Error(error.message || "未知錯誤發生！");
-  }
-};
-
 export const deleteQuiz = async (id: string, token: string) => {
   try {
     const response = await axios.delete(`${API_URL}/quiz/${id}`, {
@@ -131,7 +97,7 @@ export const deleteQuiz = async (id: string, token: string) => {
       },
     });
 
-    if (response.status === 200) {
+    if (response.status === 204) {
       return;
     } else {
       throw new Error("刪除測驗資料錯誤！");
