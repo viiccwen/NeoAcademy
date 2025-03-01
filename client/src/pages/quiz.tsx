@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { Toaster } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -7,67 +5,37 @@ import { Progress } from "@/components/ui/progress";
 import { QuestionCard } from "@/components/customs/quiz/question-card";
 import { ConfirmDialog } from "@/components/customs/quiz/confirm-dialog";
 import { Metadata } from "@/components/customs/metadata";
-import { parseQuestionIndex } from "@/lib/utils";
-import { useQuizStore } from "@/stores/quiz-store";
-import { useQuestion } from "@/hooks/question";
-import { useGetQuiz, useSubmitQuiz } from "@/hooks/quiz";
-
+import { useQuiz } from "@/hooks/quiz";
+import { useNavigate } from "react-router-dom";
 export default function Quiz() {
-  const { quizId: currentQuizId, index: questionIndex } = useParams();
-  const { prevQuestion, nextQuestion } = useQuestion();
-  const navigate = useNavigate();
-  const submit = useSubmitQuiz();
-
   const {
-    quizId,
-    questions,
+    prevQuestion,
+    nextQuestion,
+    showSubmitDialog,
+    setShowSubmitDialog,
+    isQuizCompleted,
+    handleSubmitQuiz,
+    confirmSubmitQuiz,
     currentQuestionIndex,
     amount,
-    userAnswers,
-    setCurrentQuestionIndex,
-    loadQuiz,
-  } = useQuizStore();
-
-  const { quiz, isError, isSuccess } = useGetQuiz(currentQuizId!, false);
-
-  const [showSubmitDialog, setShowSubmitDialog] = useState(false);
-
-  const isQuizCompleted = userAnswers.every((answer) => answer.length > 0);
-
-  // check quiz is loading
-  useEffect(() => {
-    if ((questions === null || quizId != currentQuizId) && isSuccess) {
-      loadQuiz(quiz!);
-    } else if (questions === null && isError) {
-      navigate("/dashboard");
-    }
-  }, [isSuccess, quiz, isError, questions]);
-
-  const handleSubmitQuiz = () => {
-    setShowSubmitDialog(true);
-  };
-
-  const confirmSubmitQuiz = () => {
-    setShowSubmitDialog(false);
-    submit.mutate({ quizId, answers: userAnswers });
-  };
-
-  useEffect(() => {
-    const validIndex = parseQuestionIndex(questionIndex, amount);
-
-    if (!validIndex && questions) {
-      console.log(validIndex);
-      navigate("/notfound");
-      return;
-    }
-    if (validIndex) setCurrentQuestionIndex(validIndex);
-  }, [questionIndex, setCurrentQuestionIndex]);
+    questions,
+  } = useQuiz();
+  const navigate = useNavigate();
 
   return (
     <>
       <Metadata title="測驗" description="Taking quiz!" />
       <Toaster richColors />
       <div className="w-full min-h-screen flex flex-col justify-center items-center text-white p-6">
+        {/* back */}
+        <Button
+          variant="outline"
+          className="absolute top-6 left-6"
+          onClick={() => navigate("/dashboard")}
+        >
+          返回
+        </Button>
+
         {/* progress bar */}
         <div className="w-full max-w-xl mb-4">
           <Progress value={(currentQuestionIndex / amount) * 100} />
@@ -83,7 +51,7 @@ export default function Quiz() {
           />
         )}
 
-        {/* 按鈕區域 */}
+        {/* button */}
         <div className="flex justify-center gap-3 mt-6 w-full max-w-xl">
           {currentQuestionIndex > 1 && (
             <Button
@@ -92,7 +60,7 @@ export default function Quiz() {
               onClick={prevQuestion}
             >
               <ArrowBigLeft size={30} className="mr-2" />
-              Previous
+              前一題
             </Button>
           )}
           {currentQuestionIndex < amount && (
@@ -101,7 +69,7 @@ export default function Quiz() {
               className="flex-1 p-3 border border-gray-600 hover:bg-gray-700 transition-all"
               onClick={nextQuestion}
             >
-              Next
+              下一題
               <ArrowBigRight size={30} className="ml-2" />
             </Button>
           )}
@@ -111,12 +79,12 @@ export default function Quiz() {
               onClick={handleSubmitQuiz}
               disabled={!isQuizCompleted}
             >
-              Submit
+              提交
             </Button>
           )}
         </div>
 
-        {/* 提交確認對話框 */}
+        {/* submit confirmation dialog */}
         <ConfirmDialog
           showSubmitDialog={showSubmitDialog}
           setShowSubmitDialog={setShowSubmitDialog}

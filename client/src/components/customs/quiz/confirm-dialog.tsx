@@ -8,32 +8,31 @@ import {
 } from "@/components/ui/dialog";
 
 interface ConfirmDialogProps {
-    showSubmitDialog: boolean;
-    setShowSubmitDialog: (show: boolean) => void;
-    confirmSubmitQuiz: () => void;
+  showSubmitDialog: boolean;
+  setShowSubmitDialog: (show: boolean) => void;
+  confirmSubmitQuiz: () => void;
 }
 
 export const ConfirmDialog = ({
-    showSubmitDialog,
-    setShowSubmitDialog,
-    confirmSubmitQuiz,
-} : ConfirmDialogProps) => {
+  showSubmitDialog,
+  setShowSubmitDialog,
+  confirmSubmitQuiz,
+}: ConfirmDialogProps) => {
   return (
     <Dialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Confirm Submission</DialogTitle>
+          <DialogTitle>提交測驗答案</DialogTitle>
         </DialogHeader>
         <p className="text-gray-300">
-          Are you sure you want to submit the quiz? You cannot change your
-          answers after submission.
+          你確定要提交測驗嗎？提交後將無法更改答案。
         </p>
         <DialogFooter>
           <Button variant="outline" onClick={() => setShowSubmitDialog(false)}>
-            Cancel
+            取消
           </Button>
           <Button variant="default" onClick={confirmSubmitQuiz}>
-            Confirm
+            確認
           </Button>
         </DialogFooter>
       </DialogContent>

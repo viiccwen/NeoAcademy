@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { DelayFunc } from "@/lib/utils";
+import { DelayFunc, parseQuestionIndex } from "@/lib/utils";
 import {
   createQuiz,
   deleteQuiz,
@@ -19,7 +19,70 @@ import {
 } from "@/lib/type";
 import { useQuizStore } from "@/stores/quiz-store";
 import { useUserStore } from "@/stores/user-store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useQuestion } from "./question";
+
+export const useQuiz = () => {
+  const navigate = useNavigate();
+  const { quizId: currentQuizId, index: questionIndex } = useParams();
+  const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+  const { quiz, isSuccess, isError } = useGetQuiz(currentQuizId!, false);
+  const {
+    quizId,
+    questions,
+    currentQuestionIndex,
+    amount,
+    userAnswers,
+    setCurrentQuestionIndex,
+    loadQuiz,
+  } = useQuizStore();
+  const submit = useSubmitQuiz();
+  const { prevQuestion, nextQuestion } = useQuestion();
+  const isQuizCompleted = userAnswers.every((answer) => answer.length > 0);
+
+  const handleSubmitQuiz = () => {
+    setShowSubmitDialog(true);
+  };
+
+  const confirmSubmitQuiz = () => {
+    setShowSubmitDialog(false);
+    submit.mutate({ quizId, answers: userAnswers });
+  };
+
+  // check quiz is loading
+  useEffect(() => {
+    if ((questions === null || quizId != currentQuizId) && isSuccess) {
+      loadQuiz(quiz!);
+    } else if (questions === null && isError) {
+      navigate("/dashboard");
+    }
+  }, [isSuccess, quiz, isError, questions]);
+
+  useEffect(() => {
+    const validIndex = parseQuestionIndex(questionIndex, amount);
+
+    if (!validIndex && questions) {
+      console.log(validIndex);
+      navigate("/notfound");
+      return;
+    }
+    if (validIndex) setCurrentQuestionIndex(validIndex);
+  }, [questionIndex, setCurrentQuestionIndex]);
+
+  return {
+    prevQuestion,
+    nextQuestion,
+    showSubmitDialog,
+    setShowSubmitDialog,
+    isQuizCompleted,
+    handleSubmitQuiz,
+    confirmSubmitQuiz,
+    currentQuestionIndex,
+    amount,
+    questions,
+  };
+};
 
 export const useCreateQuiz = () => {
   const { token } = useUserStore();
@@ -106,7 +169,7 @@ export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(
     isSuccess: response.isSuccess,
     isPending: response.isPending,
     isError: response.isError,
-  }
+  };
 };
 
 export const useUpdateQuiz = () => {
