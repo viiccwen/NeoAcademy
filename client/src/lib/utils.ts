@@ -28,7 +28,6 @@ export const DelayFunc = async <T>(props: DelayFuncProps<T>): Promise<T> => {
   });
 };
 
-
 export const translateCategory = (category: string) => {
   switch (category) {
     case "Math":
@@ -44,7 +43,7 @@ export const translateCategory = (category: string) => {
     default:
       return "N/A";
   }
-}
+};
 
 export const translateDifficulty = (difficulty: string) => {
   switch (difficulty) {
@@ -57,7 +56,7 @@ export const translateDifficulty = (difficulty: string) => {
     default:
       return "N/A";
   }
-}
+};
 
 export const parseQuestionIndex = (
   questionIndex: string | undefined,
@@ -79,29 +78,26 @@ export const prevQuestion = (
 };
 
 export const FilterHelper = (
-  quiz: GetAllQuizType,
+  quizzes: GetAllQuizType,
   filterCategory: string | null,
-  filterDifficulty: string | null,
-  setFilterCategory: (value: string | null) => void,
-  setFilterDifficulty: (value: string | null) => void
+  filterDifficulty: string | null
 ): GetAllQuizType => {
-  let filteredQuiz = [...quiz];
-  if (filterCategory) {
-    if (filterCategory === "All") {
-      setFilterCategory(null);
-    }
-    filteredQuiz = filteredQuiz.filter((q) => q.category === filterCategory);
-  }
-  if (filterDifficulty) {
-    if (filterDifficulty === "All") {
-      setFilterDifficulty(null);
-    }
-    filteredQuiz = filteredQuiz.filter(
-      (q) => q.difficulty === filterDifficulty
-    );
+  if (!filterCategory && !filterDifficulty) {
+    return quizzes;
   }
 
-  return filteredQuiz;
+  return quizzes.filter((quiz) => {
+    const matchesCategory =
+      !filterCategory ||
+      filterCategory === "All" ||
+      quiz.category === filterCategory;
+    const matchesDifficulty =
+      !filterDifficulty ||
+      filterDifficulty === "All" ||
+      quiz.difficulty === filterDifficulty;
+
+    return matchesCategory && matchesDifficulty;
+  });
 };
 
 export const SortHelper = (

@@ -46,11 +46,11 @@ export default function RoadmapsPage() {
 
   return (
     <>
+      <Toaster richColors />
       <Metadata
         title="學習路徑"
         description="View all available quizzes and start learning!"
       />
-      <Toaster richColors />
 
       <div className="min-h-screen p-4">
         <NavBar />

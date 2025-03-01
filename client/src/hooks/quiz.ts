@@ -165,7 +165,7 @@ export const useGetAllQuiz = () => {
   });
 
   return {
-    quiz: response.data,
+    quizzes: response.data,
     isSuccess: response.isSuccess,
     isPending: response.isPending,
     isError: response.isError,

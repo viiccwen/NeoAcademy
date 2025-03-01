@@ -21,7 +21,7 @@ type compType = {
 
 const components: compType[] = [
   {
-    title: "總覽",
+    title: "測驗",
     href: "/dashboard",
   },
   {
