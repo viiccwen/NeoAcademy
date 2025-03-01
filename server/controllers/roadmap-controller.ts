@@ -78,7 +78,7 @@ export async function checkSection(req: Request, res: Response): Promise<void> {
     try {
         const { roadmapId } = req.params;
         const { sectionId, subsectionId, checked } = req.body;
-        
+
         if (!subsectionId) {
             await users.updateMany(
                 { _id: req.user!._id, 'roadmaps.id': new ObjectId(roadmapId), 'roadmaps.sections.id': new ObjectId(sectionId) },
@@ -88,7 +88,11 @@ export async function checkSection(req: Request, res: Response): Promise<void> {
         } else {
             await users.updateOne(
                 { _id: req.user!._id, 'roadmaps.id': new ObjectId(roadmapId), 'roadmaps.sections.id': new ObjectId(sectionId), 'roadmaps.sections.subsections.id': new ObjectId(subsectionId) },
-                { $set: { 'roadmaps.$[].sections.$[].subsections.$[].checked': checked } },
+                { $set: { 'roadmaps.$[].sections.$[section].subsections.$[subsection].checked': checked } },
+                { arrayFilters: [
+                    { 'section.id': new ObjectId(sectionId) },
+                    { 'subsection.id': new ObjectId(subsectionId) }
+                ] }
             );
         }
 
