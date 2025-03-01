@@ -41,5 +41,5 @@ export async function findByOAuthId(
 }
 
 export async function deleteUserById(userId: ObjectId): Promise<DeleteResult> {
-    return await users.deleteOne({ id: userId });
+    return await users.deleteOne({ _id: userId });
 }
