@@ -121,7 +121,7 @@ export interface ChatMessages {
   currentMessage: string;
 }
 
-export type updateSubsectionType = {
+export type updateSectionType = {
   sectionId: string;
   subsectionId?: string;
   checked: boolean;

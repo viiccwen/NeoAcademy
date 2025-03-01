@@ -16,8 +16,8 @@ export default function RoadMap() {
     isPending,
     expandedSections,
     progress,
-    setProgress,
-    toggleProgress,
+    updateSection,
+    updateSubsection,
     overallProgress,
     toggleSection,
     isSectionCompleted,
@@ -81,14 +81,7 @@ export default function RoadMap() {
                   <div className="flex items-center gap-4">
                     <Checkbox
                       checked={isSectionCompleted(section)}
-                      onCheckedChange={() => {
-                        // if all subsections are completed, uncheck all
-                        const newProgress = { ...progress };
-                        section.subsections.forEach((sub) => {
-                          newProgress[sub.id] = !isSectionCompleted(section);
-                        });
-                        setProgress(newProgress);
-                      }}
+                      onCheckedChange={() => updateSection(section)}
                     />
                     <div className="flex-1">
                       <div
@@ -125,7 +118,7 @@ export default function RoadMap() {
                         <Checkbox
                           id={subsection.id}
                           checked={progress[subsection.id] || false}
-                          onCheckedChange={() => toggleProgress(subsection.id)}
+                          onCheckedChange={() => updateSubsection(subsection.id)}
                         />
                         <div className="flex-1">
                           <label

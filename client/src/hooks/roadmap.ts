@@ -1,3 +1,6 @@
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import {
   createRoadmap,
   deleteRoadmap,
@@ -5,13 +8,15 @@ import {
   getRoadmaps,
   updateRoadmap,
 } from "@/actions/roadmap-actions";
-import { CreateRoadmapType, Roadmap, updateSubsectionType } from "@/lib/type";
+import {
+  CreateRoadmapType,
+  Roadmap,
+  Section,
+  updateSectionType,
+} from "@/lib/type";
 import { DelayFunc } from "@/lib/utils";
 import { useUserStore } from "@/stores/user-store";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
-import { useCallback, useEffect, useState } from "react";
 
 export const useRoadmap = () => {
   const { id } = useParams();
@@ -21,38 +26,55 @@ export const useRoadmap = () => {
   const [progress, setProgress] = useState<{ [key: string]: boolean }>({});
   const [overallProgress, setOverallProgress] = useState(0);
 
-  useEffect(() => {
-    if (roadmap) {
-      const initialProgress: { [key: string]: boolean } = {};
-      roadmap.sections.forEach((section) => {
-        section.subsections.forEach((subsection) => {
-          initialProgress[subsection.id] = subsection.checked;
-        });
-      });
-      setProgress(initialProgress);
+  // update section
+  // if all subsections are completed, uncheck all
+  const updateSection = (section: Section) => {
+    const newProgress = { ...progress };
+    section.subsections.forEach((sub) => {
+      newProgress[sub.id] = !isSectionCompleted(section);
+    });
+    setProgress(newProgress);
+
+    if (!roadmap) {
+      toast.error("找不到路徑！請重試！");
+      return;
     }
-  }, [roadmap]);
+
+    const formdata: updateSectionType = {
+      sectionId: section.id,
+      checked: !isSectionCompleted(section),
+    };
+
+    toast.promise(updateRoadmap(token!, roadmap.id, formdata), {
+      loading: "更新學習進度中...",
+      success: "學習進度更新成功！",
+      error: "更新學習進度失敗！",
+    });
+  };
 
   // update progress
-  const toggleProgress = (id: string) => {
+  const updateSubsection = (subsectionId: string) => {
+    console.log(subsectionId);
     setProgress((prev) => ({
       ...prev,
-      [id]: !prev[id],
+      [subsectionId]: !prev[subsectionId],
     }));
 
     const sectionId = roadmap?.sections.find((section) =>
-      section.subsections.find((sub) => sub.id === id)
+      section.subsections.find((sub) => sub.id === subsectionId)
     )?.id;
+
+    console.log(sectionId, subsectionId);
 
     if (!sectionId) {
       toast.error("找不到路徑章節！請重試！");
       return;
     }
 
-    const formdata: updateSubsectionType = {
+    const formdata: updateSectionType = {
       sectionId,
-      subsectionId: id,
-      checked: !progress[id],
+      subsectionId,
+      checked: !progress[subsectionId],
     };
 
     toast.promise(updateRoadmap(token!, roadmap.id, formdata), {
@@ -88,6 +110,18 @@ export const useRoadmap = () => {
     return section.subsections.every((sub) => progress[sub.id] || false);
   };
 
+  useEffect(() => {
+    if (roadmap) {
+      const initialProgress: { [key: string]: boolean } = {};
+      roadmap.sections.forEach((section) => {
+        section.subsections.forEach((subsection) => {
+          initialProgress[subsection.id] = subsection.checked;
+        });
+      });
+      setProgress(initialProgress);
+    }
+  }, [roadmap]);
+
   // update overall progress
   useEffect(() => {
     setOverallProgress(calculateProgress());
@@ -100,7 +134,8 @@ export const useRoadmap = () => {
     expandedSections,
     progress,
     setProgress,
-    toggleProgress,
+    updateSection,
+    updateSubsection,
     overallProgress,
     toggleSection,
     isSectionCompleted,
@@ -157,7 +192,7 @@ export const useGetRoadmaps = () => {
 // get single roadmap
 export const useGetRoadmap = (id: string) => {
   const { token } = useUserStore();
-  
+
   const response = useQuery({
     queryKey: ["roadmap", "get", id],
     queryFn: () => getRoadmap(token!, id),
