@@ -66,7 +66,7 @@ export default function RoadmapsPage() {
           <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <h1 className="text-3xl font-bold">學習路徑</h1>
-              <p>管理和創建您的學習路徑</p>
+              <p>管理和創造你的學習路徑！</p>
             </div>
             <AIButton
               text="創建路徑"

@@ -52,8 +52,8 @@ export default function Dashboard() {
           {/* Header */}
           <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              <h1 className="text-3xl font-bold">學習路徑</h1>
-              <p>管理和創建您的學習路徑</p>
+              <h1 className="text-3xl font-bold">測驗總覽</h1>
+              <p>管理和創造你的測驗！</p>
             </div>
             <AIButton
               type="button"

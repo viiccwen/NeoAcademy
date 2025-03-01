@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { DelayFunc, parseQuestionIndex } from "@/lib/utils";
+import { convertKatex, DelayFunc, parseQuestionIndex } from "@/lib/utils";
 import {
   createQuiz,
   deleteQuiz,
@@ -8,7 +8,6 @@ import {
   getDetailsAllQuiz,
   getQuiz,
   submitQuiz,
-  updateQuiz,
 } from "@/actions/quiz-actions";
 import {
   AnsweredQuestionType,
@@ -95,17 +94,21 @@ export const useCreateQuiz = () => {
     onMutate: () => {
       toast.loading("創建測驗中...");
     },
-    onError: (error: any) => {
-      // close loading toast
+    onError: () => {
       toast.dismiss();
-      toast.error(error.message || "Error Occurred!");
+      toast.error("發生錯誤！");
     },
     onSuccess: async (data: QuizReturnType) => {
-      // close loading toast
       toast.dismiss();
       toast.success("成功創建測驗！");
 
-      // load the quiz
+      // convert every question to katex
+      data.questions.forEach((question) => {
+        question.text = convertKatex(question.text);
+        question.options = question.options.map((option) =>
+          convertKatex(option)
+        );
+      });
       loadQuiz(data);
 
       // redirect to quiz page
@@ -170,26 +173,6 @@ export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(
     isPending: response.isPending,
     isError: response.isError,
   };
-};
-
-export const useUpdateQuiz = () => {
-  return useMutation({
-    mutationKey: ["quiz", "update"],
-    mutationFn: updateQuiz,
-    onMutate: () => {
-      toast.loading("更新測驗中...");
-    },
-    onError: (error: any) => {
-      // close loading toast
-      toast.dismiss();
-      toast.error(error.message || "Error Occurred!");
-    },
-    onSuccess: async () => {
-      // close loading toast
-      toast.dismiss();
-      toast.success("成功更新測驗！");
-    },
-  });
 };
 
 export const useDeleteQuiz = () => {

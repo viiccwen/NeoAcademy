@@ -1,5 +1,6 @@
 import { sendMessage } from "@/actions/message-actions";
 import { ChatMessages } from "@/lib/type";
+import { convertKatex } from "@/lib/utils";
 import { useChatbotStore } from "@/stores/chatbot";
 import { useMessageStore } from "@/stores/message-store";
 import { useUserStore } from "@/stores/user-store";
@@ -31,14 +32,7 @@ export const useChatbot = () => {
           currentMessage: userInput,
         })
         .then((response) => {
-          // replace LaTeX syntax
-          // \(...\) -> $...$
-          // \[...\] -> $$...$$
-          const replacedResponse = response
-            .replace(/\\\(/g, "$")
-            .replace(/\\\)/g, "$")
-            .replace(/\\\[/g, "$$")
-            .replace(/\\\]/g, "$$");
+          const replacedResponse = convertKatex(response);
 
           setMessage(`bot: ${replacedResponse}`);
         })

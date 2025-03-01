@@ -53,7 +53,7 @@ export const CreateQuizForm = (props: CreateQuizFormProps) => {
       <Card className={props.className}>
         <CardHeader>
           <CardTitle>
-            <h1 className="text-3xl font-bold">New Quiz</h1>
+            <h1 className="text-3xl font-bold">Quiz</h1>
             <h2 className="text-sm text-gray-500">
               NeoAcademy - AI 驅動的線上測驗平台
             </h2>

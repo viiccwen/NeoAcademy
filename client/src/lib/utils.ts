@@ -148,3 +148,11 @@ export function useFollowPointer(ref: RefObject<HTMLElement>) {
 
   return { x, y };
 }
+
+export const convertKatex = (text: string) => {
+  return text
+    .replace(/\\\(/g, "$")
+    .replace(/\\\)/g, "$")
+    .replace(/\\\[/g, "$$")
+    .replace(/\\\]/g, "$$");
+};
