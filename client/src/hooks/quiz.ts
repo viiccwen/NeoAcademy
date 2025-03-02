@@ -51,22 +51,32 @@ export const useQuiz = () => {
 
   // check quiz is loading
   useEffect(() => {
-    if ((questions === null || quizId != currentQuizId) && isSuccess) {
-      loadQuiz(quiz!);
-    } else if (questions === null && isError) {
+    if (isSuccess && quiz && (questions === null || quizId !== currentQuizId)) {
+      loadQuiz(quiz);
+    } else if (isError && questions === null) {
       navigate("/dashboard");
     }
-  }, [isSuccess, quiz, isError, questions]);
+  }, [
+    isSuccess,
+    isError,
+    quiz,
+    questions,
+    quizId,
+    currentQuizId,
+    loadQuiz,
+    navigate,
+  ]);
 
   useEffect(() => {
-    const validIndex = parseQuestionIndex(questionIndex, amount);
+    if (!questions || amount === 0) return;
 
-    if (!validIndex && questions) {
+    const validIndex = parseQuestionIndex(questionIndex, amount);
+    if (validIndex === null) {
       navigate("/notfound");
       return;
     }
-    if (validIndex) setCurrentQuestionIndex(validIndex);
-  }, [questionIndex, setCurrentQuestionIndex]);
+    setCurrentQuestionIndex(validIndex);
+  }, [questionIndex, questions, amount, setCurrentQuestionIndex, navigate]);
 
   return {
     prevQuestion,
@@ -163,7 +173,7 @@ export const useGetQuiz = <T extends QuestionType | AnsweredQuestionType>(
   const response = useQuery({
     queryKey: ["quiz", "get"],
     queryFn: () => getQuiz<T>(quizId, token!, isAnswered),
-    enabled: !!quizId,
+    staleTime: 0,
   });
 
   return {
