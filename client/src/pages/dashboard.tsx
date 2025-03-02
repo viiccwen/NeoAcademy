@@ -48,12 +48,12 @@ export default function Dashboard() {
       <div className="min-h-screen p-4">
         <NavBar />
 
-        <div className="max-w-7xl mx-auto mt-10">
+        <div className="max-w-7xl mx-auto mt-5 sm:mt-10">
           {/* Header */}
-          <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="mb-8 flex justify-between gap-4 items-center">
             <div>
-              <h1 className="text-3xl font-bold">測驗總覽</h1>
-              <p>管理和創造你的測驗！</p>
+              <h1 className="text-xl sm:text-3xl font-bold">測驗總覽</h1>
+              <p className="hidden sm:block">管理和創造你的測驗！</p>
             </div>
             <AIButton
               type="button"
@@ -74,64 +74,65 @@ export default function Dashboard() {
                 className="pl-10 focus:ring-blue-500"
               />
             </div>
+            <div className="flex gap-4 sm:gap-6">
+              {/* Filter by Category */}
+              <Select
+                value={filterCategory || "All"}
+                onValueChange={(value) =>
+                  setFilterCategory(value === "All" ? null : value)
+                }
+              >
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="種類" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="All">所有</SelectItem>
+                  <SelectItem value="Math">數學</SelectItem>
+                  <SelectItem value="Science">自然</SelectItem>
+                  <SelectItem value="History">歷史</SelectItem>
+                  <SelectItem value="Language">語言</SelectItem>
+                  <SelectItem value="Programming">程式語言</SelectItem>
+                </SelectContent>
+              </Select>
 
-            {/* Filter by Category */}
-            <Select
-              value={filterCategory || "All"}
-              onValueChange={(value) =>
-                setFilterCategory(value === "All" ? null : value)
-              }
-            >
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="種類" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">所有</SelectItem>
-                <SelectItem value="Math">數學</SelectItem>
-                <SelectItem value="Science">自然</SelectItem>
-                <SelectItem value="History">歷史</SelectItem>
-                <SelectItem value="Language">語言</SelectItem>
-                <SelectItem value="Programming">程式語言</SelectItem>
-              </SelectContent>
-            </Select>
+              {/* Filter by Difficulty */}
+              <Select
+                value={filterDifficulty || "All"}
+                onValueChange={(value) =>
+                  setFilterDifficulty(value === "All" ? null : value)
+                }
+              >
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="難度" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="All">所有</SelectItem>
+                  <SelectItem value="Easy">簡單</SelectItem>
+                  <SelectItem value="Medium">中等</SelectItem>
+                  <SelectItem value="Hard">困難</SelectItem>
+                </SelectContent>
+              </Select>
 
-            {/* Filter by Difficulty */}
-            <Select
-              value={filterDifficulty || "All"}
-              onValueChange={(value) =>
-                setFilterDifficulty(value === "All" ? null : value)
-              }
-            >
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="難度" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">所有</SelectItem>
-                <SelectItem value="Easy">簡單</SelectItem>
-                <SelectItem value="Medium">中等</SelectItem>
-                <SelectItem value="Hard">困難</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Sort Order */}
-            <Select
-              value={sortOrder}
-              onValueChange={(value) =>
-                setSortOrder(
-                  value as "name" | "date" | "difficulty" | "category"
-                )
-              }
-            >
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="排序" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">名稱</SelectItem>
-                <SelectItem value="date">日期</SelectItem>
-                <SelectItem value="difficulty">難度</SelectItem>
-                <SelectItem value="category">種類</SelectItem>
-              </SelectContent>
-            </Select>
+              {/* Sort Order */}
+              <Select
+                value={sortOrder}
+                onValueChange={(value) =>
+                  setSortOrder(
+                    value as "name" | "date" | "difficulty" | "category"
+                  )
+                }
+              >
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="排序" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name">名稱</SelectItem>
+                  <SelectItem value="date">日期</SelectItem>
+                  <SelectItem value="difficulty">難度</SelectItem>
+                  <SelectItem value="category">種類</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Quiz Grid */}

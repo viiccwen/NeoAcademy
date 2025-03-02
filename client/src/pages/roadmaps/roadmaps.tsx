@@ -61,12 +61,12 @@ export default function RoadmapsPage() {
       <div className="min-h-screen p-4">
         <NavBar />
 
-        <div className="mx-auto max-w-7xl mt-10">
+        <div className="max-w-7xl mx-auto mt-5 sm:mt-10">
           {/* Header */}
-          <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="mb-8 flex justify-between gap-4 items-center">
             <div>
-              <h1 className="text-3xl font-bold">學習路徑</h1>
-              <p>管理和創造你的學習路徑！</p>
+              <h1 className="text-xl sm:text-3xl font-bold">學習路徑</h1>
+              <p className="hidden sm:block">管理和創造你的學習路徑！</p>
             </div>
             <AIButton
               text="創建路徑"
