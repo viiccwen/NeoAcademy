@@ -37,7 +37,7 @@ export default function Quiz() {
         </Button>
 
         {/* progress bar */}
-        <div className="w-full max-w-xl mb-4">
+        <div className="w-full max-w-3xl mb-4 mt-12">
           <Progress value={(currentQuestionIndex / amount) * 100} />
           <p className="text-center text-gray-400 text-sm mt-1">
             Question {currentQuestionIndex} / {amount}
@@ -52,7 +52,7 @@ export default function Quiz() {
         )}
 
         {/* button */}
-        <div className="flex justify-center gap-3 mt-6 w-full max-w-xl">
+        <div className="flex justify-center gap-3 mt-6 w-full max-w-3xl">
           {currentQuestionIndex > 1 && (
             <Button
               variant="outline"

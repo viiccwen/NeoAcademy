@@ -63,10 +63,10 @@ export default function RoadMap() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
-              <h1 className="mb-2 text-3xl font-bold">{roadmap.name}</h1>
+              <h1 className="text-xl sm:text-3xl font-bold">{roadmap.name}</h1>
               <DeleteRoadmapDialog roadmapId={roadmap.id} />
             </div>
-            <p className="mb-4">{roadmap.description}</p>
+            <p className="mb-4 text-sm text-slate-300 sm:text-base mt-3">{roadmap.description}</p>
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium">總體進度</span>
@@ -100,11 +100,11 @@ export default function RoadMap() {
                         <div>
                           <label
                             htmlFor={section.id}
-                            className="text-lg font-medium hover:cursor-pointer"
+                            className="text-base sm:text-lg font-medium hover:cursor-pointer"
                           >
                             {section.title}
                           </label>
-                          <p className="text-sm">{section.description}</p>
+                          <p className="text-sm text-slate-400">{section.description}</p>
                         </div>
                       </div>
                     </div>
@@ -147,7 +147,7 @@ export default function RoadMap() {
                           >
                             {subsection.title}
                           </label>
-                          <p className="text-sm">{subsection.description}</p>
+                          <p className="text-sm text-slate-400">{subsection.description}</p>
                         </div>
                         {/* 複製按鈕 */}
                         <Button
