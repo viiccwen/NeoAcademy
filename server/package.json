@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@langchain/core": "^0.3.27",
+    "@langchain/deepseek": "^0.0.1",
     "@langchain/openai": "^0.3.16",
     "cors": "^2.8.5",
     "express": "^4.21.2",

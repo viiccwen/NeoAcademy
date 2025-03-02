@@ -24,11 +24,11 @@ export const QuestionCard = (props: QuestionCardProps) => {
   };
 
   return (
-    <Card className="max-w-xl w-full bg-gray-800 text-white shadow-lg rounded-lg transition-all duration-300">
+    <Card className="max-w-3xl w-full bg-gray-800 text-white shadow-lg rounded-lg transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex flex-col w-full gap-6">
           {/* question title */}
-          <div className="flex gap-2 text-xl font-semibold text-center">
+          <div className="flex gap-2 text-sm sm:text-base">
             {currentQuestionIndex}.
             <Markdown remarkPlugins={[math]} rehypePlugins={[RehypeKatex]}>
               {questionText}
@@ -49,7 +49,7 @@ export const QuestionCard = (props: QuestionCardProps) => {
                     handleOptionClick(props.questionIndex, optionId)
                   }
                   className={cn(
-                    "w-full p-3 rounded-md shadow-md font-medium transition-all duration-300",
+                    "w-full p-3 rounded-md shadow-md font-medium transition-all duration-300 text-sm text-wrap sm:text-base",
                     isSelected
                       ? "bg-blue-500 hover:bg-blue-600 text-white"
                       : "bg-gray-700 hover:bg-gray-600 text-gray-200"
