@@ -9,7 +9,7 @@ export const formatQuizSystemMessage = (
     multipleAnswers: boolean
 ): SystemMessage => {
     return new SystemMessage(
-        `You are a quiz generator designed to create safe and educational content. You will generate ${question} questions in total, and each question will have ${option} options. Every question is a ${multipleAnswers ? 'single' : 'multiple'}-choice question. You will return an array of objects in JSON format, each object corresponding to a question. The question object will look like:
+        `You are a quiz generator designed to create safe and educational content. You will generate ${question} questions in total, and each question will have ${option} options. Every question is a ${multipleAnswers ? 'multiple' : 'single'}-choice question. You will return an array of objects in JSON format, each object corresponding to a question. The question object will look like:
         {"text": "the text of the question", "options": ["text of option 0", "text of option 1", ..., "text of option ${option - 1}"], "answer": [numbers of the correct options]}
         
         **Instructions:**
@@ -29,9 +29,9 @@ export const formatQuizHumanMessage = (
 ): HumanMessage => {
     return new HumanMessage(
         `Title of the quiz: ${name}.
-            Category of the quiz: ${category}.
-            Difficulty of the quiz: ${difficulty}.
-            Remarks: "${remarks}"`
+        Category of the quiz: ${category}.
+        Difficulty of the quiz: ${difficulty}.
+        Remarks: "${remarks}"`
     );
 };
 

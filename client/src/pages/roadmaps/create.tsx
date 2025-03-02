@@ -49,12 +49,12 @@ export default function CreateRoadmap() {
   return (
     <>
       <Toaster richColors />
-      <div className="min-h-screen p-4 md:p-8">
+      <div className="min-h-screen p-4 sm:p-6 md:p-8">
         <div className="mx-auto max-w-2xl">
           {/* Back Button */}
           <Button
             variant="ghost"
-            className="mb-6 gap-2"
+            className="mb-6 gap-2 text-sm sm:text-base"
             onClick={() => navigate("/roadmap")}
           >
             <ArrowLeft className="h-4 w-4" />
@@ -64,8 +64,10 @@ export default function CreateRoadmap() {
           {/* Main Card */}
           <Card className="border-none shadow-lg">
             <CardHeader>
-              <CardTitle className="text-2xl">創建學習路徑</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl sm:text-2xl">
+                創建學習路徑
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 設定您的學習路徑基本訊息，創建後可以增加具體的學習章節。
               </CardDescription>
             </CardHeader>
@@ -75,30 +77,39 @@ export default function CreateRoadmap() {
                 {/* Basic Info Card */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">基本訊息</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-base sm:text-lg">
+                      基本訊息
+                    </CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">
                       填寫路徑的基本訊息，讓 AI 了解這個路徑的主要內容。
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-medium">
+                      <label
+                        htmlFor="name"
+                        className="text-sm sm:text-base font-medium"
+                      >
                         路徑名稱
                       </label>
                       <Input
                         id="name"
-                        placeholder="例如：JavaScript 完整入門指南"
+                        placeholder="JavaScript 完整入門指南..."
                         {...register("name")}
+                        className=" text-xs sm:text-base"
                       />
                       {errors.name && (
-                        <span className=" text-red-500 text-sm">
+                        <span className="text-xs sm:text-sm text-red-500">
                           {errors.name.message}
                         </span>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <label htmlFor="topic" className="text-sm font-medium">
+                      <label
+                        htmlFor="topic"
+                        className="text-sm sm:text-base font-medium"
+                      >
                         主題分類
                       </label>
                       <Controller
@@ -109,12 +120,15 @@ export default function CreateRoadmap() {
                             value={field.value}
                             onValueChange={(value) => field.onChange(value)}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className=" text-xs sm:text-base">
                               <SelectValue placeholder="選擇主題分類" />
                             </SelectTrigger>
                             <SelectContent>
                               {categories.map((item, index) => (
-                                <SelectItem key={index} value={item.toString()}>
+                                <SelectItem
+                                  key={index}
+                                  value={item.toString()}
+                                >
                                   {translateCategory(item.toString())}
                                 </SelectItem>
                               ))}
@@ -123,7 +137,7 @@ export default function CreateRoadmap() {
                         )}
                       />
                       {errors.topic && (
-                        <span className="text-sm text-red-500">
+                        <span className="text-xs sm:text-sm text-red-500">
                           {errors.topic.message}
                         </span>
                       )}
@@ -134,8 +148,10 @@ export default function CreateRoadmap() {
                 {/* Description Card */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">路徑描述</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-base sm:text-lg">
+                      路徑描述
+                    </CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">
                       詳細描述這個學習路徑的目標、適合對象和預期成果。
                     </CardDescription>
                   </CardHeader>
@@ -143,12 +159,11 @@ export default function CreateRoadmap() {
                     <Textarea
                       id="description"
                       placeholder="描述這個學習路徑的內容、目標和適合的學習者..."
-                      className="min-h-[120px]"
+                      className="min-h-[100px] sm:min-h-[120px] text-xs sm:text-base"
                       {...register("description")}
                     />
-
                     {errors.description && (
-                      <span className=" text-red-500 text-sm">
+                      <span className="text-xs sm:text-sm text-red-500">
                         {errors.description.message}
                       </span>
                     )}
@@ -158,7 +173,7 @@ export default function CreateRoadmap() {
 
               <CardFooter className="flex justify-end gap-4">
                 <AIButton
-                  className="w-full"
+                  className="w-full sm:w-auto sm:min-w-[200px]"
                   type="submit"
                   text={isSubmitting ? "創建中" : "創建路徑"}
                   disabled={isSubmitting}

@@ -1,4 +1,4 @@
-import { AnalyzeUser, deleteUser, getUser } from "@/actions/user-actions";
+import { deleteUser, getUser } from "@/actions/user-actions";
 import { DelayFunc } from "@/lib/utils";
 import { UserType, useUserStore } from "@/stores/user-store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -70,31 +70,4 @@ export const useDeleteUser = () => {
       });
     },
   });
-};
-
-export const useAnalyze = () => {
-  const { token, analysis, setAnalysis } = useUserStore();
-
-  const mutation = useMutation({
-    mutationKey: ["user", "analyze"],
-    mutationFn: () => AnalyzeUser(token),
-    onMutate: () => {
-      toast.loading("Analyzing User...");
-    },
-    onError: (error: any) => {
-      toast.dismiss();
-      toast.error(error.message || "Error Occurred!");
-    },
-    onSuccess: (content: string) => {
-      toast.dismiss();
-      setAnalysis(content);
-      toast.success("Analysis Completed!");
-    },
-  });
-
-  return {
-    analyze: mutation.mutate,
-    content: analysis || mutation.data,
-    isLoading: mutation.isPending,
-  };
 };

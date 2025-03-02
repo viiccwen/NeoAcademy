@@ -1,24 +1,25 @@
 import { useEffect, useRef } from "react";
 import { Zap, Bot, Shapes, User } from "lucide-react";
+import { cn } from "@/lib/utils"; // 假設你有這個工具函數來合併 className
 
 const features = [
   {
     icon: Bot,
-    title: "AI 驅動客製化學習",
+    title: "AI 驅動個人化學習",
     description:
       "運用 LLM 技術，提供量身打造的學習內容，讓學習更加符合你的需求。",
+  },
+  {
+    icon: User,
+    title: "學習詢問及回饋",
+    description:
+      "詢問智慧教學助理，即時獲得學習資訊，讓你能夠快速修正並持續進步。",
   },
   {
     icon: Zap,
     title: "最佳化學習路徑",
     description:
-      "透過 AI 智能學習規劃，根據你的目標自動調整，幫助你高效達成學習成果。",
-  },
-  {
-    icon: User,
-    title: "錯誤回饋及補救",
-    description:
-    "即時回饋學習錯誤，並提供補救方案，讓你能夠快速修正並持續進步。",
+      "透過 AI 智能學習規劃，根據你的程度、目標自動調整，幫助你高效達成學習成果。",
   },
   {
     icon: Shapes,
@@ -51,24 +52,43 @@ export const Features = () => {
   }, []);
 
   return (
-    <section id="features" ref={sectionRef} className="py-20 bg-gray-800">
+    <section
+      id="features"
+      ref={sectionRef}
+      className="py-12 sm:py-20 bg-gradient-to-b from-gray-900 to-gray-800"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-extrabold text-center text-white mb-12">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center text-white mb-10 sm:mb-12 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
           我們的特色
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="feature-item p-6 bg-gray-700 rounded-lg shadow-md transition duration-300 ease-in-out transform opacity-0 hover:shadow-2xl"
-              style={{ animationDelay: `${index * 300}ms` }}
+              className={cn(
+                "feature-item group relative p-6 bg-gray-800/50 rounded-xl shadow-lg border border-gray-700/50",
+                "transition-all duration-300 ease-in-out opacity-0",
+                "hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-2 hover:bg-gray-800/80"
+              )}
+              style={{ animationDelay: `${index * 200}ms` }}
             >
-              {/* <feature.icon className="h-12 w-12 text-blue-400 mb-4" /> */}
-              <feature.icon className="mb-4 h-8 w-8 text-blue-400 transition-transform duration-300 group-hover:scale-110" />
-              <h3 className="text-xl font-semibold text-white mb-2">
+              {/* background */}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+              {/* icon */}
+              <feature.icon
+                className="h-10 w-10 sm:h-12 sm:w-12 text-blue-400 mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:text-blue-300"
+              />
+
+              {/* title */}
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 group-hover:text-blue-200 transition-colors duration-300">
                 {feature.title}
               </h3>
-              <p className="text-gray-300">{feature.description}</p>
+
+              {/* desdription */}
+              <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+                {feature.description}
+              </p>
             </div>
           ))}
         </div>

@@ -1,6 +1,6 @@
-import { NavBar } from "@/components/customs/dashboard/navbar";
+import { Toaster } from "sonner";
 import Markdown from "react-markdown";
-import { useNavigate } from "react-router-dom";
+import { NavBar } from "@/components/customs/dashboard/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pie, Bar } from "react-chartjs-2";
 import {
@@ -11,7 +11,6 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-
 import {
   Chart as ChartJS,
   ArcElement,
@@ -22,12 +21,11 @@ import {
   BarElement,
 } from "chart.js";
 import { Metadata } from "@/components/customs/metadata";
-import { AnsweredQuestionType, GetQuizType } from "@/lib/type";
-import { useGetAllQuizDetails } from "@/hooks/quiz";
-import { useAnalyze } from "@/hooks/user";
-import { Toaster } from "sonner";
+import { AnsweredQuestionType } from "@/lib/type";
 import { translateCategory, translateDifficulty } from "@/lib/utils";
 import { AISmallButton } from "@/components/customs/quiz/ai-button";
+import { useAnalyze } from "@/hooks/analytics";
+
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -38,101 +36,16 @@ ChartJS.register(
 );
 
 export default function Analytics() {
-  const navigate = useNavigate();
-  const { analyze, content, isLoading } = useAnalyze();
-  const { quiz, isPending, isError, isSuccess } = useGetAllQuizDetails();
-
-  const onAnalyze = () => {
-    analyze();
-  };
+  const { analyze, content, isLoading, isPending, isSuccess, quiz, quizStats } =
+    useAnalyze();
 
   if (isPending) {
     return (
-      <div className="min-h-screen flex justify-center items-center text-white">
+      <div className="min-h-screen flex justify-center items-center text-white text-base sm:text-lg">
         Loading...
       </div>
     );
   }
-
-  if (isError) {
-    navigate("/notfound");
-    return null;
-  }
-
-  // calculate quiz stats
-  const quizStats = () => {
-    if (!quiz) return null;
-
-    const difficultyCount: Record<string, number> = {
-      Easy: 0,
-      Medium: 0,
-      Hard: 0,
-    };
-    const categoryCount: Record<string, number> = {
-      Math: 0,
-      Science: 0,
-      History: 0,
-      Language: 0,
-      Programming: 0,
-    };
-
-    quiz.forEach((q) => {
-      if (difficultyCount[q.difficulty] !== undefined)
-        difficultyCount[q.difficulty]++;
-      if (categoryCount[q.category] !== undefined) categoryCount[q.category]++;
-    });
-
-    const completedQuizzes: GetQuizType<AnsweredQuestionType>[] = quiz.filter(
-      (q) => q.answered
-    ) as GetQuizType<AnsweredQuestionType>[];
-    const totalQuizzes = quiz.length;
-    const totalQuestions = quiz.reduce((sum, q) => sum + q.questions.length, 0);
-
-    const totalCorrectAnswers = completedQuizzes.reduce(
-      (sum, q) =>
-        sum +
-        q.questions.reduce(
-          (qSum, qItem) =>
-            qSum +
-            (qItem.response.filter((r) => qItem.answer.includes(r)).length > 0
-              ? 1
-              : 0),
-          0
-        ),
-      0
-    );
-
-    const correctRate = (totalCorrectAnswers / totalQuestions) * 100;
-    const highestScore = Math.max(
-      ...completedQuizzes.map(
-        (q) =>
-          q.questions.filter((qItem) =>
-            qItem.response.every((r) => qItem.answer.includes(r))
-          ).length
-      )
-    );
-    const lowestScore = Math.min(
-      ...completedQuizzes.map(
-        (q) =>
-          q.questions.filter((qItem) =>
-            qItem.response.every((r) => qItem.answer.includes(r))
-          ).length
-      )
-    );
-    const averageScore = totalCorrectAnswers / totalQuizzes;
-
-    return {
-      totalQuizzes,
-      completedQuizzes,
-      totalQuestions,
-      correctRate,
-      highestScore,
-      lowestScore,
-      averageScore,
-      difficultyCount,
-      categoryCount,
-    };
-  };
 
   if (isSuccess && quiz && quizStats) {
     const QuizStats = quizStats();
@@ -143,78 +56,88 @@ export default function Analytics() {
           title="分析"
           description="Track your learning progress with AI-driven analytics and personalized insights."
         />
-        <div className="min-h-screen py-4 px-4 text-white">
+        <div className="min-h-screen py-4 px-4 sm:px-6 md:px-8 text-white">
           <NavBar />
-          <div className="max-w-5xl w-1/2 mx-auto pt-20">
-            <h1 className="text-4xl font-extrabold text-center mb-8">
+          <div className="max-w-5xl w-full mx-auto pt-16 sm:pt-20">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center mb-6 sm:mb-8">
               測驗分析
             </h1>
 
-            {/* 測驗總覽數據 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Quiz Overview */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>測驗總計</CardTitle>
+                  <CardTitle className="text-sm sm:text-base">
+                    測驗總計
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="text-2xl font-bold text-center">
+                <CardContent className="text-xl sm:text-2xl font-bold text-center">
                   {QuizStats?.totalQuizzes}
                 </CardContent>
               </Card>
-
               <Card>
                 <CardHeader>
-                  <CardTitle>平均分數</CardTitle>
+                  <CardTitle className="text-sm sm:text-base">
+                    平均分數
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="text-2xl font-bold text-center">
+                <CardContent className="text-xl sm:text-2xl font-bold text-center">
                   {QuizStats?.averageScore.toFixed(2)}
                 </CardContent>
               </Card>
-
               <Card>
                 <CardHeader>
-                  <CardTitle>正確率</CardTitle>
+                  <CardTitle className="text-sm sm:text-base">
+                    正確率
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="text-2xl font-bold text-center">
+                <CardContent className="text-xl sm:text-2xl font-bold text-center">
                   {QuizStats?.correctRate.toFixed(2)}%
                 </CardContent>
               </Card>
             </div>
 
-            {/* 圖表區域 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
-              {/* 測驗難度分析 */}
+            {/* Graph Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-10">
+              {/* Quiz Difficulty */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center h-[36px]">
+                  <CardTitle className="flex items-center text-sm sm:text-base h-[36px]">
                     測驗難度統計
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <Pie
-                    data={{
-                      labels: ["簡單", "中等", "困難"],
-                      datasets: [
-                        {
-                          data: QuizStats
-                            ? Object.values(QuizStats.difficultyCount)
-                            : [],
-                          backgroundColor: ["#4caf50", "#ff9800", "#f44336"],
-                        },
-                      ],
-                    }}
-                  />
+                <CardContent className="flex justify-center">
+                  <div className="w-full max-w-[300px] sm:max-w-[400px]">
+                    <Pie
+                      data={{
+                        labels: ["簡單", "中等", "困難"],
+                        datasets: [
+                          {
+                            data: QuizStats
+                              ? Object.values(QuizStats.difficultyCount)
+                              : [],
+                            backgroundColor: ["#4caf50", "#ff9800", "#f44336"],
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                      }}
+                    />
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* AI 評語區塊 */}
+              {/* AI Analytics */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
-                    AI 分析 & 建議{" "}
-                    <AISmallButton onClick={onAnalyze} disabled={isLoading} />
+                  <CardTitle className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base">
+                    AI 分析 & 建議
+                    <AISmallButton onClick={analyze} disabled={isLoading} />
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-gray-300">
+                <CardContent className="text-gray-300 text-sm sm:text-base max-h-[300px] overflow-y-auto">
                   {QuizStats && content ? (
                     <Markdown>{content}</Markdown>
                   ) : (
@@ -224,30 +147,36 @@ export default function Analytics() {
               </Card>
             </div>
 
-            {/* 測驗結果統計表格 */}
-            <Card className=" mt-10">
+            {/* Quiz Result */}
+            <Card className="mt-8 sm:mt-10">
               <CardHeader>
-                <CardTitle>測驗結果</CardTitle>
+                <CardTitle className="text-sm sm:text-base">
+                  測驗結果
+                </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>名稱</TableHead>
-                      <TableHead>種類</TableHead>
-                      <TableHead>難度</TableHead>
-                      <TableHead>分數</TableHead>
+                      <TableHead className="text-xs sm:text-sm">名稱</TableHead>
+                      <TableHead className="text-xs sm:text-sm">種類</TableHead>
+                      <TableHead className="text-xs sm:text-sm">難度</TableHead>
+                      <TableHead className="text-xs sm:text-sm">分數</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {quiz.map((q, _) => (
+                    {quiz.map((q) => (
                       <TableRow key={q.id}>
-                        <TableCell>{q.name}</TableCell>
-                        <TableCell>{translateCategory(q.category)}</TableCell>
-                        <TableCell>
+                        <TableCell className="text-xs sm:text-sm">
+                          {q.name}
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm">
+                          {translateCategory(q.category)}
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm">
                           {translateDifficulty(q.difficulty)}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="text-xs sm:text-sm">
                           {q.answered
                             ? (q.questions as AnsweredQuestionType[]).filter(
                                 (qItem) =>
@@ -264,70 +193,75 @@ export default function Analytics() {
               </CardContent>
             </Card>
 
-            {/* 科目類別分析 */}
-            <Card className=" mt-10">
+            {/* Quiz Category Analytics */}
+            <Card className="mt-8 sm:mt-10">
               <CardHeader>
-                <CardTitle>測驗類別統計</CardTitle>
+                <CardTitle className="text-sm sm:text-base">
+                  測驗類別統計
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <Bar
-                  data={{
-                    labels: ["數學", "自然", "歷史", "語言", "程式語言"],
-                    datasets: [
-                      {
-                        label: "數學",
-                        data: [QuizStats?.categoryCount.Math, 0, 0, 0],
-                        backgroundColor: "#3b82f6", // 藍色
+              <CardContent className="flex justify-center">
+                <div className="w-full max-w-[500px] sm:max-w-[600px]">
+                  <Bar
+                    data={{
+                      labels: ["數學", "自然", "歷史", "語言", "程式語言"],
+                      datasets: [
+                        {
+                          label: "數學",
+                          data: [QuizStats?.categoryCount.Math, 0, 0, 0, 0],
+                          backgroundColor: "#3b82f6",
+                        },
+                        {
+                          label: "自然",
+                          data: [0, QuizStats?.categoryCount.Science, 0, 0, 0],
+                          backgroundColor: "#22c55e",
+                        },
+                        {
+                          label: "歷史",
+                          data: [0, 0, QuizStats?.categoryCount.History, 0, 0],
+                          backgroundColor: "#f59e0b",
+                        },
+                        {
+                          label: "語言",
+                          data: [0, 0, 0, QuizStats?.categoryCount.Language, 0],
+                          backgroundColor: "#ec4899",
+                        },
+                        {
+                          label: "程式語言",
+                          data: [
+                            0,
+                            0,
+                            0,
+                            0,
+                            QuizStats?.categoryCount.Programming,
+                          ],
+                          backgroundColor: "#f87171",
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: { position: "top" },
                       },
-                      {
-                        label: "自然",
-                        data: [0, QuizStats?.categoryCount.Science, 0, 0],
-                        backgroundColor: "#22c55e", // 綠色
+                      scales: {
+                        x: { stacked: true },
+                        y: { stacked: true },
                       },
-                      {
-                        label: "歷史",
-                        data: [0, 0, QuizStats?.categoryCount.History, 0],
-                        backgroundColor: "#f59e0b", // 黃色
-                      },
-                      {
-                        label: "語言",
-                        data: [0, 0, 0, QuizStats?.categoryCount.Language],
-                        backgroundColor: "#ec4899", // 粉色
-                      },
-                      {
-                        label: "程式語言",
-                        data: [
-                          0,
-                          0,
-                          0,
-                          0,
-                          QuizStats?.categoryCount.Programming,
-                        ],
-                        backgroundColor: "#f87171", // 紅色
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: { position: "top" },
-                    },
-                    scales: {
-                      x: { stacked: true },
-                      y: { stacked: true },
-                    },
-                  }}
-                />
+                    }}
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>
-        </div>{" "}
+        </div>
       </>
     );
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center text-white">
+    <div className="min-h-screen flex justify-center items-center text-white text-base sm:text-lg">
       Something went wrong...
     </div>
   );
