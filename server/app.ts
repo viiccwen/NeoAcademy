@@ -3,14 +3,14 @@ import cors from "cors";
 import userRouter from "routers/user-router";
 import authRouter from "routers/auth-router";
 import quizRouter from "routers/quiz-router";
-import { ChatDeepSeek } from "@langchain/deepseek";
+import { ChatOpenAI } from "@langchain/openai";
 import roadmapRouter from "routers/roadmap-router";
 import chatbotRouter from "routers/chatbot-router";
 
 const API_PORT = process.env.API_PORT ?? 3000;
 const app = express();
-export const model = new ChatDeepSeek({
-  model: "deepseek-chat",
+export const model = new ChatOpenAI({
+  model: "o3-mini",
 });
 
 app.use(cors());
