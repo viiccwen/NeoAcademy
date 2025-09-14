@@ -24,7 +24,7 @@
     "@types/react-helmet": "^6.1.11",
     "@xyflow/react": "^12.4.3",
     "autoprefixer": "^10.4.20",
-    "axios": "^1.8.2",
+    "axios": "^1.12.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
